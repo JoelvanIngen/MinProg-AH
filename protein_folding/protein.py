@@ -11,9 +11,17 @@ _protein_letter_mapping = {
 }
 
 
+class InvalidSequenceError(Exception):
+	pass
+
+
 class Protein:
 
 	def __init__(self, sequence: str, order: NDArray = None) -> None:
+		# Ensure sequence only consists of valid letters
+		if not all(c in _protein_letter_mapping.keys() for c in sequence):
+			raise InvalidSequenceError
+
 		# sequence as ints: 1 = H, 2 = P
 		self.sequence = sequence
 		self.encoded_sequence = np.asarray([_protein_letter_mapping[letter] for letter in sequence], dtype=np.int8)
