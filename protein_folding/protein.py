@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from definitions import *
 
 
 _protein_letter_mapping = {
@@ -51,8 +52,8 @@ class Protein:
 		# list of tuples containing (x, y)-coordinates for all present acids
 		self.acid_coords = list()
 		for i in range(len(self.sequence)):
-			x = self.order[:i].count(1) - self.order[:i].count(-1)
-			y = self.order[:i].count(2) - self.order[:i].count(-2)
+			x = self.order[:i].count(LEFT) - self.order[:i].count(RIGHT)
+			y = self.order[:i].count(UP) - self.order[:i].count(DOWN)
 			self.acid_coords.append((x, y))
 	
 	def get_order_quality(self) -> float:
