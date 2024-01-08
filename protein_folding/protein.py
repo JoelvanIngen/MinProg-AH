@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from numpy.typing import NDArray
- 
 
 _protein_letter_mapping = {
 	'H': 1,
@@ -10,9 +8,10 @@ _protein_letter_mapping = {
 	'C': 3,
 }
 
+
 class InvalidSequenceError(Exception):
 	pass
- 
+
 
 class Protein:
 
