@@ -72,14 +72,14 @@ class Protein:
 				if (
 					# "nearby": 1 space away
 					((crds_1[0] == crds_2[0] and 
-						abs(crds_1[1] - crds_2[1]) == 1) or 
+						crds_1[1] - crds_2[1] == 1) or
 					(crds_1[1] == crds_2[1] and 
-						abs(crds_1[0] - crds_2[0]) == 1)) and 
+						crds_1[0] - crds_2[0]) == 1) and
 					# ignore next and previous in chain
 					self.sequence[i] == 'H' and
 					self.sequence[self.acid_coords.index(crds_2)] == 'H'
 				):
-					n_H_bonds += .5 # account for double counting
+					n_H_bonds += 1
 
 		return -n_H_bonds # TODO: compactness
 
