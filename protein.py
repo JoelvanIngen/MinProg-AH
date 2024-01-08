@@ -14,11 +14,22 @@ class Protein:
 		else:
 			self.order = np.ones(len(sequence) - 1)
 
-	def plot_grid(self) -> None:
-		# TODO
+	def plot(self) -> None:
+		fig = plt.figure()
+		plt.xlim(-len(self.sequence), len(self.sequence))
+		plt.ylim(-len(self.sequence), len(self.sequence))
+		x, y = 0, 0
+		for i, acid in enumerate(self.sequence):
+			x_new = self.order[:i].count(1) - self.order[:i].count(-1)
+			y_new = self.order[:i].count(2) - self.order[:i].count(-2)
+			plt.text(x_new, y_new, acid, size='10')
+			plt.plot([x, x_new], [y, y_new], '--', color='black', linewidth=1)
+			x, y = x_new, y_new
+		plt.savefig("test.png")
 
 
 if __name__ == "__main__":
-	seq = "abcdef"
-	order = [1,2,1,-2,1]
+	seq = "HHPHHHPH"
+	order = [1,2,1,-2,-2,-1,-2]
 	protein = Protein(seq, order)
+	protein.plot()
