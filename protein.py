@@ -4,12 +4,20 @@ import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
 
+_protein_letter_mapping = {
+	'H': 1,
+	'P': 2,
+	'C': 3,
+}
+
+
 class Protein:
 
 	def __init__(self, sequence: str, order: NDArray = None) -> None:
 		# sequence as ints: 1 = H, 2 = P
 		self.sequence = sequence
-		#self.seq_as_int = [1 if acid == 'H' else 2 for acid in sequence]
+		self.encoded_sequence = np.asarray([_protein_letter_mapping[letter] for letter in sequence], dtype=np.int8)
+
 		# initial order: straight line
 		if order is not None:
 			self.order = order
