@@ -60,7 +60,7 @@ class Protein:
 		# list of tuples containing (x, y)-coordinates for all present acids
 		self.acid_coords = list()
 		for i in range(len(self.sequence)):
-			x = self.order[:i].count(LEFT) - self.order[:i].count(RIGHT)
+			x = self.order[:i].count(RIGHT) - self.order[:i].count(LEFT)
 			y = self.order[:i].count(UP) - self.order[:i].count(DOWN)
 			self.acid_coords.append((x, y))
 
