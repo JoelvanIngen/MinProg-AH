@@ -4,9 +4,9 @@ from typing import Optional
 
 
 _bond_values = {
-    frozenset({'H', 'H'}): 1,
-    frozenset({'C', 'C'}): 5,
-    frozenset({'C', 'H'}): 1,
+    frozenset({'H', 'H'}): -1,
+    frozenset({'C', 'C'}): -5,
+    frozenset({'C', 'H'}): -1,
 }
 
 
