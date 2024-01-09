@@ -17,7 +17,7 @@ class InvalidSequenceError(Exception):
 
 class Protein:
 
-	def __init__(self, sequence: str, order: list) -> None:
+	def __init__(self, sequence: str) -> None:
 		"""
 		representation of a simple protein consisting of polar or hydrophobic
 		amino acids in a chain. 
@@ -36,7 +36,7 @@ class Protein:
 		# Create list of all the nodes
 		self.nodes = [Node(self.sequence[0], 0, 0, 0, direction=None)]
 
-		for c, direction in zip(self.sequence[1:], order):
+		for c in self.sequence[1:]:
 			# Initalise new node in a straight line
 			self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
 
