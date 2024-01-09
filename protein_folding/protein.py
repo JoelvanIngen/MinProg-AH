@@ -96,24 +96,14 @@ class Protein:
 		post:
 			- a float is returned representing the fold quality
 		"""
-		# TODO: quantify compactness (n needlessly empty blocks?)
-		n_H_bonds = 0
-		for i, crds_1 in enumerate(self.acid_coords):
-			for j, crds_2 in enumerate(
-					self.acid_coords[:i - 1] + self.acid_coords[i + 2:]):
-				if (
-					# "nearby": 1 space away
-					((crds_1[0] == crds_2[0] and 
-						crds_1[1] - crds_2[1] == 1) or
-					(crds_1[1] == crds_2[1] and 
-						crds_1[0] - crds_2[0]) == 1) and
-					# ignore next and previous in chain
-					self.sequence[i] == 'H' and
-					self.sequence[self.acid_coords.index(crds_2)] == 'H'
-				):
-					n_H_bonds += 1
 
-		return -n_H_bonds # TODO: compactness
+		quality = 0
+		for i, node1 in enumerate(self.nodes[:-1]):
+			for node2 in self.nodes[i+1:]:
+				if node1.is_neightbour(node2):
+					quality += node1.bond_value(node2)
+
+		return quality
 
 	def plot(self, filename="./unnamed_protein.png") -> None:
 		"""
