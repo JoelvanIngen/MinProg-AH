@@ -4,6 +4,9 @@ from protein_folding.definitions import *
 from protein_folding.node import Node
 
 
+_valid_protein_letters = {'H', 'P', 'C'}
+
+
 class InvalidSequenceError(Exception):
 	pass
 
@@ -21,7 +24,7 @@ class Protein:
 			- protein is initialised in straight line ordering
 		"""
 		# Ensure sequence only consists of valid letters
-		if not all(c in _protein_letter_mapping.keys() for c in sequence):
+		if not all(c in _valid_protein_letters for c in sequence):
 			raise InvalidSequenceError
 		self.sequence = sequence
 
