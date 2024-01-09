@@ -39,6 +39,10 @@ class Node:
     def __str__(self):
         return f"id: {self.id}"
 
+    def __repr__(self):
+        return (f'Node(id={self.id}, letter="{self.letter}", (x,y,z)=({self.x}, {self.y}, {self.z}), '
+                f'direction={self.direction_from_previous})')
+
     @classmethod
     def from_previous(cls, c, direction: int, prev: 'Node'):
         x = prev.x
