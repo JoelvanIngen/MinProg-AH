@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from definitions import *
+from node import Node
 
 
 _protein_letter_mapping = {
@@ -32,6 +33,10 @@ class Protein:
 		self.sequence = sequence
 		self.encoded_sequence = np.asarray([_protein_letter_mapping[letter] for letter in sequence], dtype=np.int8)
 
+		# Create list of all the nodes
+		self.nodes = []
+		for c in self.sequence:
+			self.nodes.append(Node(c, 0, 0, 0))
 		# initial order: straight line to right
 		self.set_order(list(np.ones(len(sequence) - 1)))
 

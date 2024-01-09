@@ -1,5 +1,6 @@
 class Node:
-    def __init__(self, x, y, z):
+    def __init__(self, letter, x, y, z):
+        self.letter = letter
         self.x: int = x
         self.y: int = y
         self.z: int = z
