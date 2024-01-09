@@ -1,5 +1,7 @@
 import definitions
 
+from typing import Optional
+
 
 _bond_values = {
     frozenset({'H', 'H'}): 1,
@@ -13,11 +15,16 @@ class NotNeighbourError(Exception):
 
 
 class Node:
-    def __init__(self, letter, x, y, z):
+    def __init__(self, letter, x, y, z, direction: int | None, prev_node: Optional['Node'] = None):
         self.letter = letter
         self.x: int = x
         self.y: int = y
         self.z: int = z
+
+        self.next: Node | None = None
+        self.prev: Node | None = prev_node
+
+        self.direction_from_previous = direction
 
         self._neighbours: list[Node]
 
@@ -37,8 +44,7 @@ class Node:
             case definitions.RIGHT:
                 x += 1
 
-        return cls(c, x, y, z)
-
+        return cls(c, x, y, z, direction, prev_node=prev)
 
     def is_neightbour(self, other: 'Node') -> bool:
         dx = abs(self.x - other.x)

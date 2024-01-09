@@ -17,7 +17,7 @@ class InvalidSequenceError(Exception):
 
 class Protein:
 
-	def __init__(self, sequence: str) -> None:
+	def __init__(self, sequence: str, order: list) -> None:
 		"""
 		representation of a simple protein consisting of polar or hydrophobic
 		amino acids in a chain. 
@@ -34,9 +34,12 @@ class Protein:
 		self.encoded_sequence = np.asarray([_protein_letter_mapping[letter] for letter in sequence], dtype=np.int8)
 
 		# Create list of all the nodes
-		self.nodes = []
-		for c in self.sequence:
-			self.nodes.append(Node(c, 0, 0, 0))
+		self.nodes = [Node(self.sequence[0], 0, 0, 0, direction=None)]
+
+		for c, direction in zip(self.sequence[1:], order):
+			# Initalise new node in a straight line
+			self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
+
 		# initial order: straight line to right
 		self.set_order(list(np.ones(len(sequence) - 1)))
 
