@@ -1,3 +1,7 @@
+class NotNeighbourError(Exception):
+    pass
+
+
 class Node:
     def __init__(self, letter, x, y, z):
         self.letter = letter
@@ -15,6 +19,9 @@ class Node:
         return dx + dy + dz == 1
 
     def touch_direction(self, other: 'Node'):
+        if not self.is_neightbour(other):
+            raise NotNeighbourError
+
         touch_x = abs(self.x - other.x) == 1
         touch_y = abs(self.y - other.y) == 1
         touch_z = abs(self.z - other.z) == 1
