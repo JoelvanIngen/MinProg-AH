@@ -71,7 +71,7 @@ class Protein:
 
     def get_order_quality(self) -> float:
         """
-        quantises the quality of the current fold, or order. Depends on bonds
+        quantifies the quality of the current fold, or order. Depends on bonds
         and compactness (?)
 
         pre:
