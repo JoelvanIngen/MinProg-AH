@@ -60,8 +60,7 @@ class Protein:
 			f"Wrong order size, got {len(order)} but expected {(len(self.nodes) - 1)}"
 
 		for node, direction in zip(self.nodes[1:], order):
-			node.directon_from_previous = direction
-			node.pos_from_direction(direction)
+			node.change_direction(direction)
 
 	def calc_volume(self, area_only=False):
 		coords = [(node.x, node.y, node.z) for node in self.nodes]
