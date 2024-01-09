@@ -64,16 +64,9 @@ class Protein:
 		y = [coord[1] for coord in coords]
 		z = [coord[2] for coord in coords]
 
-		x_min = min(x)
-		x_max = max(x)
-		y_min = min(y)
-		y_max = max(y)
-		z_min = min(z)
-		z_max = max(z)
-
-		dx = x_max - x_min
-		dy = y_max - y_min
-		dz = z_max - z_min
+		dx = max(x) - min(x)
+		dy = max(y) - min(y)
+		dz = max(z) - min(z)
 
 		if area_only:
 			return dx * dy
