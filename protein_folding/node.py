@@ -1,3 +1,6 @@
+import definitions
+
+
 _bond_values = {
     frozenset({'H', 'H'}): 1,
     frozenset({'C', 'C'}): 5,
@@ -17,6 +20,25 @@ class Node:
         self.z: int = z
 
         self._neighbours: list[Node]
+
+    @classmethod
+    def from_previous(cls, c, direction: int, prev: 'Node'):
+        x = prev.x
+        y = prev.y
+        z = prev.z
+
+        match direction:
+            case definitions.UP:
+                y += 1
+            case definitions.DOWN:
+                y -= 1
+            case definitions.LEFT:
+                x -= 1
+            case definitions.RIGHT:
+                x += 1
+
+        return cls(c, x, y, z)
+
 
     def is_neightbour(self, other: 'Node') -> bool:
         dx = abs(self.x - other.x)
