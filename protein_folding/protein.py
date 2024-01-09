@@ -55,14 +55,13 @@ class Protein:
 		post:
 			- attributes for acid coordinates and order are updated
 		"""
-		# TODO: determine requirements of valid order
-		self.order = order 
-		# list of tuples containing (x, y)-coordinates for all present acids
-		self.acid_coords = list()
-		for i in range(len(self.sequence)):
-			x = self.order[:i].count(RIGHT) - self.order[:i].count(LEFT)
-			y = self.order[:i].count(UP) - self.order[:i].count(DOWN)
-			self.acid_coords.append((x, y))
+
+		assert len(self.nodes) == len(order) + 1,\
+			f"Wrong order size, got {len(order)} but expected {(len(self.nodes) - 1)}"
+
+		for node, direction in zip(self.nodes[1:], order):
+			node.directon_from_previous = direction
+			node.pos_from_direction(direction)
 
 	def calc_volume(self, area_only=False):
 		coords = [(node.x, node.y, node.z) for node in self.nodes]
