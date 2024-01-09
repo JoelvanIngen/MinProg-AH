@@ -1,4 +1,4 @@
-import definitions
+import protein_folding.definitions as definitions
 
 from typing import Optional
 

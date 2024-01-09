@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from definitions import *
-from node import Node
+from protein_folding.definitions import *
+from protein_folding.node import Node
 
 
 _protein_letter_mapping = {
