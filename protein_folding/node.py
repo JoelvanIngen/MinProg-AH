@@ -1,7 +1,7 @@
 _bond_values = {
-    {'H', 'H'}: 1,
-    {'C', 'C'}: 5,
-    {'C', 'H'}: 1,
+    frozenset({'H', 'H'}): 1,
+    frozenset({'C', 'C'}): 5,
+    frozenset({'C', 'H'}): 1,
 }
 
 
@@ -36,4 +36,4 @@ class Node:
         return touch_x, touch_y, touch_z
 
     def bond_value(self, other: 'Node'):
-        return _bond_values.get({self.letter, other.letter}, 0)
+        return _bond_values.get(frozenset({self.letter, other.letter}), 0)
