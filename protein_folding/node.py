@@ -65,3 +65,11 @@ class Node:
 
     def bond_value(self, other: 'Node'):
         return _bond_values.get(frozenset({self.letter, other.letter}), 0)
+
+    def cascade_position(self, dx, dy, dz):
+        self.x += dx
+        self.y += dy
+        self.z += dz
+
+        if self.next is not None:
+            self.next.cascade_position(dx, dy, dz)
