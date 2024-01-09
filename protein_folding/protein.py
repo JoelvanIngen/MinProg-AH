@@ -4,13 +4,6 @@ from protein_folding.definitions import *
 from protein_folding.node import Node
 
 
-_protein_letter_mapping = {
-	'H': 1,
-	'P': 2,
-	'C': 3,
-}
-
-
 class InvalidSequenceError(Exception):
 	pass
 
@@ -31,7 +24,6 @@ class Protein:
 		if not all(c in _protein_letter_mapping.keys() for c in sequence):
 			raise InvalidSequenceError
 		self.sequence = sequence
-		self.encoded_sequence = np.asarray([_protein_letter_mapping[letter] for letter in sequence], dtype=np.int8)
 
 		# Create list of all the nodes
 		self.nodes = [Node(self.sequence[0], 0, 0, 0, direction=None)]
