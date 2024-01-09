@@ -15,7 +15,12 @@ class NotNeighbourError(Exception):
 
 
 class Node:
+    counter = 0
+
     def __init__(self, letter, x, y, z, direction: int | None, prev_node: Optional['Node'] = None):
+        self.id = Node.counter
+        Node.counter += 1
+
         self.letter = letter
         self.x: int = x
         self.y: int = y
@@ -27,6 +32,12 @@ class Node:
         self.direction_from_previous = direction
 
         self._neighbours: list[Node]
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __str__(self):
+        return f"id: {self.id}"
 
     @classmethod
     def from_previous(cls, c, direction: int, prev: 'Node'):
@@ -47,6 +58,9 @@ class Node:
         return cls(c, x, y, z, direction, prev_node=prev)
 
     def is_neightbour(self, other: 'Node') -> bool:
+        if abs(self.id - other.id) == 1:
+            return False
+
         dx = abs(self.x - other.x)
         dy = abs(self.y - other.y)
         dz = abs(self.z - other.z)
@@ -102,6 +116,8 @@ class Node:
         self.x = new_x
         self.y = new_y
         self.z = new_z
+
+        self.direction_from_previous = direction
 
         if self.next:
             self.next.cascade_position(dx, dy, dz)
