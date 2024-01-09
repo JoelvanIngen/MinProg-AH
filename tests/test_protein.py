@@ -25,8 +25,8 @@ def test_protein_quality_straight_line():
 
 
 def test_protein_quality_square():
-    seq = "HHHH"
+    seq = "CHHC"
     protein = Protein(seq)
     order = [LEFT, UP, RIGHT]
     protein.set_order(order)
-    assert protein.get_order_quality() == -1
+    assert protein.get_order_quality() == -5
