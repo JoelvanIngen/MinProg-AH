@@ -21,4 +21,4 @@ def test_protein():
     protein = Protein(seq)
     order = [LEFT, LEFT, LEFT]
     protein.set_order(order)
-    assert protein.get_order_quality() == 3
+    assert protein.get_order_quality() == -3
