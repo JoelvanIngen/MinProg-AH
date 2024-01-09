@@ -34,9 +34,6 @@ class Protein:
             # Initalise new node in a straight line
             self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
 
-        # initial order: straight line to right
-        self.set_order(list(np.ones(len(sequence) - 1)))
-
     def set_order(self, order: list) -> None:
         """
         sets order (shape) of protein to provided order, and recalculates
