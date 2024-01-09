@@ -1,3 +1,10 @@
+_bond_values = {
+    {'H', 'H'}: 1,
+    {'C', 'C'}: 5,
+    {'C', 'H'}: 1,
+}
+
+
 class NotNeighbourError(Exception):
     pass
 
@@ -27,3 +34,6 @@ class Node:
         touch_z = abs(self.z - other.z) == 1
 
         return touch_x, touch_y, touch_z
+
+    def bond_value(self, other: 'Node'):
+        return _bond_values.get({self.letter, other.letter}, 0)
