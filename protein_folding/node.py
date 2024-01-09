@@ -66,6 +66,46 @@ class Node:
     def bond_value(self, other: 'Node'):
         return _bond_values.get(frozenset({self.letter, other.letter}), 0)
 
+    def pos_from_direction(self, direction: int, prev: Optional['Node'] = None):
+        # Use self.prev if no previous node was specified
+        prev = prev if prev else self.prev
+
+        x = prev.x
+        y = prev.y
+        z = prev.z
+
+        match direction:
+            case definitions.UP:
+                y += 1
+            case definitions.DOWN:
+                y -= 1
+            case definitions.LEFT:
+                x -= 1
+            case definitions.RIGHT:
+                x += 1
+            case definitions.FORWARD:
+                z += 1
+            case definitions.BACKWARD:
+                z -= 1
+
+        return x, y, z
+
+    def change_direction(self, direction: int):
+        if not self.direction_from_previous:
+            raise Exception("First node in chain!")
+
+        new_x, new_y, new_z = self.pos_from_direction(direction)
+        dx = new_x - self.x
+        dy = new_y - self.y
+        dz = new_z - self.z
+
+        self.x = new_x
+        self.y = new_y
+        self.z = new_z
+
+        if self.next:
+            self.next.cascade_position(dx, dy, dz)
+
     def cascade_position(self, dx, dy, dz):
         self.x += dx
         self.y += dy
