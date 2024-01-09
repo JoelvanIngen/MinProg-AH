@@ -63,6 +63,29 @@ class Protein:
 			x = self.order[:i].count(LEFT) - self.order[:i].count(RIGHT)
 			y = self.order[:i].count(UP) - self.order[:i].count(DOWN)
 			self.acid_coords.append((x, y))
+
+	def calc_volume(self, area_only=False):
+		coords = [(node.x, node.y, node.z) for node in self.nodes]
+
+		x = [coord[0] for coord in coords]
+		y = [coord[1] for coord in coords]
+		z = [coord[2] for coord in coords]
+
+		x_min = min(x)
+		x_max = max(x)
+		y_min = min(y)
+		y_max = max(y)
+		z_min = min(z)
+		z_max = max(z)
+
+		dx = x_max - x_min
+		dy = y_max - y_min
+		dz = z_max - z_min
+
+		if area_only:
+			return dx * dy
+
+		return dx * dy * dz
 	
 	def get_order_quality(self) -> float:
 		"""
