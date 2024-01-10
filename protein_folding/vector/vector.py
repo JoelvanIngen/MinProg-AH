@@ -48,3 +48,6 @@ class Vec3D:
 
     def sum_components(self) -> int:
         return self.x + self.y + self.z
+
+    def len_sq(self) -> int:
+        return self.x ** 2 + self.y ** 2 + self.z ** 2
