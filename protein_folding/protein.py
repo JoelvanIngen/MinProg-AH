@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
-from protein_folding.definitions import *
-from protein_folding.node import Node
-from vector import *
+from .definitions import *
+from .node import Node
+from .vector import *
 
 _valid_protein_letters = {'H', 'P', 'C'}
 

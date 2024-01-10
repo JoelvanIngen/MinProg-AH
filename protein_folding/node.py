@@ -1,5 +1,5 @@
 import protein_folding.definitions as definitions
-from protein_folding.vector import Vec3D
+from .vector import Vec3D
 
 from typing import Optional
 
