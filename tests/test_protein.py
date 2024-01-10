@@ -1,6 +1,5 @@
 import pytest
 
-import numpy as np
 from protein_folding.protein import Protein, InvalidSequenceError
 from protein_folding.definitions import *
 
