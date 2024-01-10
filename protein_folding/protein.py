@@ -59,21 +59,15 @@ class Protein:
 
         return boundaries.len_sq()
 
-    def calc_volume(self, area_only=False):
-        coords = [node.pos for node in self.nodes]
+    def calc_area(self):
+        boundaries: Vec3D = get_min_max([node.pos for node in self.nodes])
 
-        x = [coord[0] for coord in coords]
-        y = [coord[1] for coord in coords]
-        z = [coord[2] for coord in coords]
+        return boundaries.area()
 
-        dx = max(x) - min(x)
-        dy = max(y) - min(y)
-        dz = max(z) - min(z)
+    def calc_volume(self):
+        boundaries: Vec3D = get_min_max([node.pos for node in self.nodes])
 
-        if area_only:
-            return dx * dy
-
-        return dx * dy * dz
+        return boundaries.volume()
 
     def get_order_quality(self) -> float:
         """
