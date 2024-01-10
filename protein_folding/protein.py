@@ -32,7 +32,7 @@ class Protein:
         # Create list of all the nodes
         self.nodes = [Node(self.sequence[0], 0, 0, 0, direction=None)]
         for c in self.sequence[1:]:
-            # Initalise new node in a straight line
+            # Initialise new node in a straight line
             self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
 
     def set_order(self, order: list) -> None:
