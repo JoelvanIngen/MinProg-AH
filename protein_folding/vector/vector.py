@@ -21,10 +21,11 @@ class Vec3D:
             z=self.z + other.z
         )
 
-    def __iadd__(self, other: 'Vec3D') -> None:
+    def __iadd__(self, other: 'Vec3D') -> 'Vec3D':
         self.x += other.x
         self.y += other.y
         self.z += other.z
+        return self
 
     def __iter__(self) -> iter:
         return iter((self.x, self.y, self.z))
