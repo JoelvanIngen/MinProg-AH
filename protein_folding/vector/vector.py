@@ -29,7 +29,7 @@ class Vec3D:
     def __iter__(self) -> iter:
         return iter((self.x, self.y, self.z))
 
-    def __len__(self):
+    def __len__(self) -> float:
         return sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
     def __sub__(self, other: 'Vec3D') -> 'Vec3D':
