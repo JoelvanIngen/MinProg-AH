@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from protein_folding.definitions import *
 from protein_folding.node import Node
