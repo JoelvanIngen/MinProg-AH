@@ -79,7 +79,6 @@ class Node:
     def bond_value(self, other: 'Node'):
         return _bond_values.get(frozenset({self.letter, other.letter}), 0)
 
-
     def change_direction(self, direction: int):
         if not self.direction_from_previous:
             raise Exception("First node in chain!")

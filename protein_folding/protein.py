@@ -22,14 +22,15 @@ class Protein:
         post:
             - protein is initialised in straight line ordering
         """
+
         # Ensure sequence only consists of valid letters
         if not all(c in _valid_protein_letters for c in sequence):
             raise InvalidSequenceError
+
         self.sequence = sequence
 
         # Create list of all the nodes
         self.nodes = [Node(self.sequence[0], 0, 0, 0, direction=None)]
-
         for c in self.sequence[1:]:
             # Initalise new node in a straight line
             self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
@@ -98,6 +99,7 @@ class Protein:
         post:
             - order is saved as image under filename
         """
+
         fig = plt.figure()
 
         prev = Vec3D(0, 0, 0)
