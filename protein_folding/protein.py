@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from protein_folding.definitions import *
 from protein_folding.node import Node
-from .vector import *
+from vector import *
 
 _valid_protein_letters = {'H', 'P', 'C'}
 
@@ -60,14 +60,16 @@ class Protein:
         return boundaries.len_sq()
 
     def calc_area(self):
-        boundaries: Vec3D = get_min_max([node.pos for node in self.nodes])
+        dim = get_min_max([node.pos for node in self.nodes])
+        box = dim[1] - dim[0]
 
-        return boundaries.area()
+        return box.area()
 
     def calc_volume(self):
-        boundaries: Vec3D = get_min_max([node.pos for node in self.nodes])
+        dim = get_min_max([node.pos for node in self.nodes])
+        box = dim[1] - dim[0]
 
-        return boundaries.volume()
+        return box.volume()
 
     def get_order_quality(self) -> float:
         """
@@ -97,20 +99,27 @@ class Protein:
             - order is saved as image under filename
         """
         fig = plt.figure()
-        x, y = 0, 0
-        for i, acid in enumerate(self.sequence):
-            x_new, y_new = self.acid_coords[i]
-            # place character
-            plt.text(x_new, y_new, acid, size='10')
-            # place line
-            plt.plot([x, x_new], [y, y_new], '--', color='black', linewidth=1)
-            x, y = x_new, y_new
 
-        # plot settings
-        plt.xlim(-len(self.sequence), len(self.sequence))
-        plt.ylim(-len(self.sequence), len(self.sequence))
+        prev = Vec3D(0, 0, 0)
+
+        for n in self.nodes:
+            # Put node letter at node's position
+            plt.text(n.x, n.y, n.letter, size='10')
+
+            # Draw protein line segment from previous node
+            plt.plot([prev.x, n.x], [prev.y, n.y], '--', color='black', linewidth=1)
+
+            # Save position as previous
+            prev = n.pos
+
+        # Get full dimensions of protein
+        dim = get_min_max(self.nodes)
+
+        plt.xlim(dim[0].x - 1, dim[1].x + 1)
+        plt.ylim(dim[0].y - 1, dim[1].y + 1)
         plt.axis('off')
-        # save image
+
+        # Save image
         plt.savefig(filename)
 
 
