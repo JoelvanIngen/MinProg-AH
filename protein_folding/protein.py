@@ -53,10 +53,11 @@ class Protein:
         for node, direction in zip(self.nodes[1:], order):
             node.change_direction(direction)
 
-    def calc_size_score(self, area_only=False):
-        boundaries: Vec3D = get_min_max([node.pos for node in self.nodes])
+    def calc_size_score(self):
+        dim = get_min_max([node.pos for node in self.nodes])
+        box = dim[1] - dim[0]
 
-        return boundaries.len_sq()
+        return box.len_sq()
 
     def calc_area(self):
         dim = get_min_max([node.pos for node in self.nodes])
