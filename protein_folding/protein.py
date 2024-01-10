@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from protein_folding.definitions import *
 from protein_folding.node import Node
+from .vector import *
 
 _valid_protein_letters = {'H', 'P', 'C'}
 
@@ -53,8 +54,13 @@ class Protein:
         for node, direction in zip(self.nodes[1:], order):
             node.change_direction(direction)
 
+    def calc_size_score(self, area_only=False):
+        boundaries: Vec3D = get_min_max([node.pos for node in self.nodes])
+
+        return boundaries.len_sq()
+
     def calc_volume(self, area_only=False):
-        coords = [(node.x, node.y, node.z) for node in self.nodes]
+        coords = [node.pos for node in self.nodes]
 
         x = [coord[0] for coord in coords]
         y = [coord[1] for coord in coords]
