@@ -1,3 +1,6 @@
+from math import sqrt
+
+
 class Vec3D:
     def __init__(self, x: int, y: int, z: int):
         self.x = x
@@ -25,6 +28,9 @@ class Vec3D:
 
     def __iter__(self) -> iter:
         return iter((self.x, self.y, self.z))
+
+    def __len__(self):
+        return sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
     def __sub__(self, other: 'Vec3D') -> 'Vec3D':
         return Vec3D(
