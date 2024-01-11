@@ -26,8 +26,6 @@ def main():
     # Visualisation??
     protein.plot()
 
-    # TODO: omg vet cool
-
 
 if __name__ == '__main__':
     main()
