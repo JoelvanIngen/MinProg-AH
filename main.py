@@ -1,5 +1,5 @@
 import sys
-from .protein import Protein
+from protein_folding.protein import Protein
 
 
 def get_sequence() -> str:
