@@ -70,7 +70,7 @@ class Node:
 
     def touch_direction(self, other: 'Node'):
         if not self.is_neightbour(other):
-            raise NotNeighbourError
+            raise NotNeighbourError(f"Nodes {str(self)} and {str(other)} are not neighbours")
 
         delta = Vec3D.abs_diff(self.pos, other.pos)
 
