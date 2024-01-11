@@ -25,7 +25,7 @@ class Protein:
 
         # Ensure sequence only consists of valid letters
         if not all(c in _valid_protein_letters for c in sequence):
-            raise InvalidSequenceError
+            raise InvalidSequenceError(f"Not all letters in sequence {sequence} are valid")
 
         self.sequence = sequence
 
