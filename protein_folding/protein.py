@@ -99,12 +99,23 @@ class Protein:
         """
 
         quality = 0
+
+        neighbours = self.get_all_neighbours()
+        for pairing in neighbours:
+            node1, node2 = pairing
+            quality += node1.bond_value(node2)
+
+        return quality
+
+    def get_all_neighbours(self) -> list[tuple[Node, Node]]:
+        neighbours: list[tuple[Node, Node]] = []
         for i, node1 in enumerate(self.nodes[:-1]):
             for node2 in self.nodes[i + 1:]:
                 if node1.is_neightbour(node2):
-                    quality += node1.bond_value(node2)
+                    neighbours.append((node1, node2))
 
-        return quality
+        return neighbours
+
 
     def plot(self, filename="./unnamed_protein.png") -> None:
         """
