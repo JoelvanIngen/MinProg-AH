@@ -117,6 +117,19 @@ class Protein:
         return neighbours
 
 
+    def filter_neighbours_by_nonzero_score(self, neighbours: list[tuple[Node, Node]]):
+        """
+        Finds and removes neighbours whose bond score is zero from the
+            list of neighbours.
+        """
+
+        filtered_neighbours: list[tuple[Node, Node]] = []
+        for (node1, node2) in neighbours:
+            if node1.bond_value(node2):
+                filtered_neighbours.append((node1, node2))
+
+        return filtered_neighbours
+
     def plot(self, filename="./unnamed_protein.png") -> None:
         """
         save current protein configuration as image.
@@ -140,6 +153,13 @@ class Protein:
 
             # Save position as previous
             prev = n.pos
+
+        # Add lines between all pairings
+        neighbours = self.get_all_neighbours()
+        neighbours_filtered = self.filter_neighbours_by_nonzero_score(neighbours)
+        for pairing in neighbours_filtered:
+            node1, node2 = pairing
+            plt.plot([node1.x, node2.x], [node1.y, node2.y], '-', color='red', linewidth=1)
 
         # Get full dimensions of protein
         dim = get_min_max(self.nodes)
