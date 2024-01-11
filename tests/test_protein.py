@@ -20,7 +20,7 @@ def test_protein_quality_straight_line():
     protein = Protein(seq)
     order = [LEFT, LEFT, LEFT]
     protein.set_order(order)
-    assert protein.get_order_quality() == 0
+    assert protein.get_bond_score() == 0
 
 
 def test_protein_quality_square():
@@ -28,4 +28,4 @@ def test_protein_quality_square():
     protein = Protein(seq)
     order = [LEFT, UP, RIGHT]
     protein.set_order(order)
-    assert protein.get_order_quality() == -5
+    assert protein.get_bond_score() == -5

@@ -55,31 +55,47 @@ class Protein:
             node.change_direction(direction)
 
     def calc_size_score(self):
+        """
+        Computes a score based on the physical dimensions of the protein. This
+            value can be used as a penalty for a specific configuration.
+        """
         dim = get_min_max([node.pos for node in self.nodes])
         box = dim[1] - dim[0]
 
         return box.len_sq()
 
     def calc_area(self):
+        """
+        Computes the area of the grid, only taking into account x- and
+            y-coordinates.
+
+        post: an integer is returned representing the area occupied by the protein
+        """
         dim = get_min_max([node.pos for node in self.nodes])
         box = dim[1] - dim[0]
 
         return box.area()
 
     def calc_volume(self):
+        """
+        Computes the physical volume of the protein, taking into account
+            three dimensions.
+
+        post: an integer is returned representing the volume occupied by the protein
+        """
         dim = get_min_max([node.pos for node in self.nodes])
         box = dim[1] - dim[0]
 
         return box.volume()
 
-    def get_order_quality(self) -> float:
+    def get_bond_score(self) -> float:
         """
-        quantifies the quality of the current fold, or order. Depends on bonds
-        and compactness (?)
+        Computes the quality of the current fold purely based on the amount
+            of desirable bonds and their values
 
         pre:
         post:
-            - a float is returned representing the fold quality
+            - a float is returned representing the bond score
         """
 
         quality = 0
@@ -130,5 +146,5 @@ if __name__ == "__main__":
     order = [2, -1, 2, 1, 1, -2, -2]
     protein = Protein(seq)
     protein.set_order(order)
-    print(f"Order quality: {protein.get_order_quality()}")  # should be -2.0
+    print(f"Order quality: {protein.get_bond_score()}")  # should be -2.0
     protein.plot()
