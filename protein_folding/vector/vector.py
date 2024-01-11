@@ -24,7 +24,7 @@ class Vec3D:
     def __eq__(self, other: 'Vec3D') -> bool:
         return self.x == other.x and self.y == other.y and self.z == other.z
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(repr(self))
 
     def __iadd__(self, other: 'Vec3D') -> 'Vec3D':
@@ -39,7 +39,7 @@ class Vec3D:
     def __len__(self) -> float:
         return sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Vec3D({self.x}, {self.y}, {self.z})"
 
     def __sub__(self, other: 'Vec3D') -> 'Vec3D':
