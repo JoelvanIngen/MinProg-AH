@@ -47,3 +47,21 @@ class PureRandom(Algorithm):
         score = self.protein.get_bond_score()
 
         return score
+
+
+class IterativeRandom(Algorithm):
+    """
+    A random algorithm that applies a random direction for each individual
+        node, starting from the first node after the root node. It determines
+        for each node what the available directions are and which directions
+        are already occupied. If there are no directions left i.e., it worked
+        itself into a corner, it will restart from scratch.
+    """
+
+    def __init__(self, protein: 'Protein', dimensions: int):
+        super().__init__(protein, dimensions)
+
+        raise NotImplementedError  # Remove when implemented
+
+    def run(self) -> float:
+        pass

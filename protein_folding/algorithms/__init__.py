@@ -1,2 +1,2 @@
 from .algorithm import Algorithm
-from .random import PureRandom
+from .random import PureRandom, IterativeRandom
