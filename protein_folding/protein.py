@@ -119,6 +119,24 @@ class Protein:
 
         return neighbours
 
+    def has_valid_order(self) -> bool:
+        """
+        Determines if every node has a unique position.
+
+        post:
+            - Returns True if every node has a unique position
+            - Returns False if two nodes overlap
+        """
+
+        taken_positions = set()
+
+        for node in self.nodes:
+            if node.pos in taken_positions:
+                return False
+
+            taken_positions.add(node.pos)
+
+        return True
 
     def filter_neighbours_by_nonzero_score(self, neighbours: list[tuple[Node, Node]]):
         """
