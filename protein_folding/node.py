@@ -10,6 +10,15 @@ _bond_values = {
     frozenset({'C', 'H'}): -1,
 }
 
+_delta_pos_from_direction = {
+    definitions.UP: Vec3D(0, 1, 0),
+    definitions.DOWN: Vec3D(0, -1, 0),
+    definitions.LEFT: Vec3D(-1, 0, 0),
+    definitions.RIGHT: Vec3D(1, 0, 0),
+    definitions.FORWARD: Vec3D(0, 0, 1),
+    definitions.BACKWARD: Vec3D(0, 0, -1),
+}
+
 
 class NotNeighbourError(Exception):
     pass
@@ -101,20 +110,7 @@ class Node:
 
 
 def calc_position_from_direction(direction: int, prev: Node):
-    match direction:
-        case definitions.UP:
-            delta = Vec3D(0, 1, 0)
-        case definitions.DOWN:
-            delta = Vec3D(0, -1, 0)
-        case definitions.LEFT:
-            delta = Vec3D(-1, 0, 0)
-        case definitions.RIGHT:
-            delta = Vec3D(1, 0, 0)
-        case definitions.FORWARD:
-            delta = Vec3D(0, 0, 1)
-        case definitions.BACKWARD:
-            delta = Vec3D(0, 0, -1)
-        case _:
-            raise Exception(f"Invalid direction of {direction}")
+    if direction not in _delta_pos_from_direction:
+        raise Exception(f"Invalid direction of {direction}")
 
-    return prev.pos + delta
+    return prev.pos + _delta_pos_from_direction[direction]
