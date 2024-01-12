@@ -191,12 +191,3 @@ class Protein:
 
         # Save image
         plt.savefig(filename)
-
-
-if __name__ == "__main__":
-    seq = "PHPPHPHH"
-    order = [2, -1, 2, 1, 1, -2, -2]
-    protein = Protein(seq)
-    protein.set_order(order)
-    print(f"Order quality: {protein.get_bond_score()}")  # should be -2.0
-    protein.plot()
