@@ -35,6 +35,9 @@ class Protein:
             # Initialise new node in a straight line
             self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
 
+        # Set to keep track of Node positions
+        self.node_positions: set[Vec3D] = {node.pos for node in self.nodes}
+
     def set_order(self, order: list) -> None:
         """
         sets order (shape) of protein to provided order, and recalculates
