@@ -39,7 +39,7 @@ class Node:
 
         self.direction_from_previous = direction
 
-        self._neighbours: list[Node]
+        self.ghost: bool = False
 
     def __eq__(self, other):
         return self.id == other.id
@@ -88,25 +88,55 @@ class Node:
     def bond_value(self, other: 'Node'):
         return _bond_values.get(frozenset({self.letter, other.letter}), 0)
 
-    def change_direction(self, direction: int):
+    def change_direction(self, pos_set: set[Vec3D], direction: int):
         if not self.direction_from_previous:
             raise Exception("First node in chain!")
 
         new_pos = calc_position_from_direction(direction, self.prev)
         delta_pos = new_pos - self.pos
 
+        # Remove old position from the positions set
+        pos_set.remove(self.pos)
+
         self.pos = new_pos
 
         self.direction_from_previous = direction
 
         if self.next:
-            self.next.cascade_position(delta_pos)
+            self.next.cascade_position(pos_set, delta_pos)
 
-    def cascade_position(self, delta_pos: Vec3D):
+        # Add new position to the positions set
+        pos_set.add(self.pos)
+
+        # Set node to not-ghost
+        self.ghost = False
+
+    def cascade_position(self, pos_set: set[Vec3D], delta_pos: Vec3D):
+        """
+        Updates the position of current node because the previous node's
+            position was updated. Calls the next node and repeates the
+            process. Also removes itself from the protein's positions set
+            if necessary to prevent position conflicts
+
+        pre:
+            - pos_set is a set of 3D vectors representing all not-ghosted
+                nodes' positions
+            - delta_pos is a 3D vector representing the change in position
+                compared to the node's current position
+
+        post:
+            - the node is ghosted if it wasn't ghosted yet
+            - the node's position is updated
+        """
+        # If node wasn't ghosted, delete its position from the protein class'
+        # positions set to prevent overwriting values
+        if not self.ghost:
+            pos_set.remove(self.pos)
+
         self.pos += delta_pos
 
         if self.next is not None:
-            self.next.cascade_position(delta_pos)
+            self.next.cascade_position(pos_set, delta_pos)
 
 
 def calc_position_from_direction(direction: int, prev: Node):
