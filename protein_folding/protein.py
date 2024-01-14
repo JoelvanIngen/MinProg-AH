@@ -114,7 +114,7 @@ class Protein:
         neighbours: list[tuple[Node, Node]] = []
         for i, node1 in enumerate(self.nodes[:-1]):
             for node2 in self.nodes[i + 1:]:
-                if node1.is_neightbour(node2):
+                if node1.is_neighbour(node2):
                     neighbours.append((node1, node2))
 
         return neighbours

@@ -69,7 +69,7 @@ class Node:
     def z(self):
         return self.pos.z
 
-    def is_neightbour(self, other: 'Node') -> bool:
+    def is_neighbour(self, other: 'Node') -> bool:
         if abs(self.id - other.id) == 1:
             return False
 
@@ -78,7 +78,7 @@ class Node:
         return delta.sum_components() == 1
 
     def touch_direction(self, other: 'Node'):
-        if not self.is_neightbour(other):
+        if not self.is_neighbour(other):
             raise NotNeighbourError(f"Nodes {str(self)} and {str(other)} are not neighbours")
 
         delta = Vec3D.abs_diff(self.pos, other.pos)
