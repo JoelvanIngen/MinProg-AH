@@ -194,7 +194,19 @@ class Protein:
         neighbours_filtered = self.filter_neighbours_by_nonzero_score(neighbours)
         for pairing in neighbours_filtered:
             node1, node2 = pairing
-            plt.plot([node1.x, node2.x], [node1.y, node2.y], '--', color='red', linewidth=1)
+
+            if node1.letter == 'H' and node2.letter == 'H':
+                line_colour = 'green'
+            elif (node1.letter == 'H' and node2.letter == 'C'
+                  or node1.letter == 'C' and node2.letter == 'H'):
+                line_colour = 'orange'
+            elif node1.letter == 'C' and node2.letter == 'C':
+                line_colour = 'red'
+            else:
+                # Should never trigger, for now this mostly shows nothing gets through the if-statements
+                raise Exception(f"Letters {node1.letter} and {node2.letter} should not be neighbours")
+
+            plt.plot([node1.x, node2.x], [node1.y, node2.y], '--', color=line_colour, linewidth=1)
 
         # Get full dimensions of protein
         dim = get_min_max(self.nodes)
