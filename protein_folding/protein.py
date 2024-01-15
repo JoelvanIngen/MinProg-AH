@@ -36,7 +36,8 @@ class Protein:
             self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
 
         # Set to keep track of Node positions
-        self.node_positions: set[Vec3D] = {node.pos for node in self.nodes}
+        self.node_positions: set[Vec3D] | None = None
+        self.collect_node_positions()
 
     def __len__(self) -> int:
         return len(self.nodes)
@@ -58,7 +59,9 @@ class Protein:
             f"Wrong order size, got {len(order)} but expected {(len(self.nodes) - 1)}"
 
         for node, direction in zip(self.nodes[1:], order):
-            node.change_direction(self.node_positions, direction)
+            node.change_direction(self.node_positions, direction, ignore_pos_set=True)
+
+        self.collect_node_positions()
 
     def calc_size_score(self):
         """
@@ -93,6 +96,9 @@ class Protein:
         box = dim[1] - dim[0]
 
         return box.volume()
+
+    def collect_node_positions(self):
+        self.node_positions: set[Vec3D] = {node.pos for node in self.nodes}
 
     def get_bond_score(self) -> float:
         """

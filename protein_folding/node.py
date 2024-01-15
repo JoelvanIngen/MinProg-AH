@@ -48,6 +48,10 @@ class Node:
 
         self.direction_from_previous = direction
 
+        # Indicates whether the node is ghosted and thus allowed to cross
+        # other nodes. If the node is ghosted, it is not saved in the protein's
+        # positions set. If it is not ghosted, its position will have been
+        # saved.
         self.ghost: bool = False
 
     def __eq__(self, other):
@@ -124,15 +128,16 @@ class Node:
     def bond_value(self, other: 'Node'):
         return _bond_values.get(frozenset({self.letter, other.letter}), 0)
 
-    def change_direction(self, pos_set: set[Vec3D], direction: int):
+    def change_direction(self, pos_set: set[Vec3D], direction: int, ignore_pos_set: bool = False):
         if not self.direction_from_previous:
             raise Exception("First node in chain!")
 
         new_pos = calc_position_from_direction(direction, self.prev)
         delta_pos = new_pos - self.pos
 
-        # Remove old position from the positions set
-        pos_set.remove(self.pos)
+        # Remove old position from the positions set if node was not ghosted
+        if not self.ghost and not ignore_pos_set:
+            pos_set.remove(self.pos)
 
         self.pos = new_pos
 
@@ -142,7 +147,9 @@ class Node:
             self.next.cascade_position(pos_set, delta_pos)
 
         # Add new position to the positions set
-        pos_set.add(self.pos)
+        if not ignore_pos_set:
+            assert self.pos not in pos_set
+            pos_set.add(self.pos)
 
         # Set node to not-ghost
         self.ghost = False
@@ -168,6 +175,9 @@ class Node:
         # positions set to prevent overwriting values
         if not self.ghost:
             pos_set.remove(self.pos)
+
+        # Ghost node in case it moves through other nodes
+        self.ghost = True
 
         self.pos += delta_pos
 
