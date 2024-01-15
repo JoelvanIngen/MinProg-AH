@@ -13,6 +13,10 @@ class PureRandom(Algorithm):
         whether the configuration is valid, applies the configuration and
         evaluates the score of the configuration. If the order wasn't valid,
         it just comes up with a new random one and applies that.
+
+    This algorithm should be quick when constructing a protein, but might
+        need a lot of attempts before getting a valid protein, decreasing
+        performance when working with large structures
     """
 
     def __init__(self, protein: 'Protein', dimensions):
@@ -56,6 +60,9 @@ class IterativeRandom(Algorithm):
         for each node what the available directions are and which directions
         are already occupied. If there are no directions left i.e., it worked
         itself into a corner, it will restart from scratch.
+
+    I expect this algorithm to be slower to construct a protein, but to have a
+        higher success rate (not overlapping) when working with large proteins.
     """
 
     def __init__(self, protein: 'Protein', dimensions: int):
