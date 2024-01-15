@@ -23,9 +23,8 @@ class Protein:
             - protein is initialised in straight line ordering
         """
 
-        # Ensure sequence only consists of valid letters
-        if not all(c in _valid_protein_letters for c in sequence):
-            raise InvalidSequenceError(f"Not all letters in sequence {sequence} are valid")
+        # Ensure valid-ness of sequence
+        _validate_protein_letters(sequence)
 
         self.sequence = sequence
 
@@ -206,3 +205,19 @@ class Protein:
 
         # Save image
         plt.savefig(filename)
+
+
+def _validate_protein_letters(seq: str) -> None:
+    """
+    Checks whether a sequence is valid
+
+    pre:
+        - seq is a str of protein letters
+
+    post:
+        - InvalidSequenceError is raised if any letter in the sequence is
+        invalid
+    """
+    for c in seq:
+        if c not in _valid_protein_letters:
+            raise InvalidSequenceError(f"Letter {c} in sequence {seq} is not valid")
