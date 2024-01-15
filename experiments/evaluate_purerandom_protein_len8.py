@@ -9,7 +9,7 @@ def main():
     sequence = 'HHHHHHHH'
     protein = Protein(sequence)
 
-    algorithm = PureRandom(protein, dimensions=2)
+    algorithm = PureRandom(protein, dimensions=2, debug=True)
     score = algorithm.run()
 
     protein.plot('./output/evaluate_purerandom_protein_len8.png')

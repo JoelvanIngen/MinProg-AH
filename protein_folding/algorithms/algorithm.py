@@ -11,9 +11,11 @@ _dimensions_to_directions_mapping = {
 
 
 class Algorithm:
-    def __init__(self, protein: 'Protein', dimensions: int):
+    def __init__(self, protein: 'Protein', dimensions: int, debug=False):
         self.protein = protein
         self.directions = _dimensions_to_directions_mapping[dimensions]
+
+        self._debug = debug
 
     def run(self) -> float:
         """

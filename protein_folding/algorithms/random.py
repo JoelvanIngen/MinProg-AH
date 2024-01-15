@@ -19,8 +19,8 @@ class PureRandom(Algorithm):
         performance when working with large structures
     """
 
-    def __init__(self, protein: 'Protein', dimensions):
-        super().__init__(protein, dimensions)
+    def __init__(self, protein: 'Protein', dimensions, **kwargs):
+        super().__init__(protein, dimensions, **kwargs)
 
     def _get_new_direction(self, previous_direction) -> int:
         while True:
@@ -41,12 +41,18 @@ class PureRandom(Algorithm):
         return order
 
     def run(self) -> float:
+        failed_attempts = 0
         while True:
             random_order = self._create_order_list()
             self.protein.set_order(random_order)
 
             if self.protein.has_valid_order():
                 break
+
+            failed_attempts += 1
+
+        if self._debug:
+            print(f"Failed attempts: {failed_attempts}")
 
         score = self.protein.get_bond_score()
 
@@ -65,8 +71,8 @@ class IterativeRandom(Algorithm):
         higher success rate (not overlapping) when working with large proteins.
     """
 
-    def __init__(self, protein: 'Protein', dimensions: int):
-        super().__init__(protein, dimensions)
+    def __init__(self, protein: 'Protein', dimensions: int, **kwargs):
+        super().__init__(protein, dimensions, **kwargs)
 
     def _attempt_construct_order(self):
         # Order protein in straight line
@@ -85,9 +91,15 @@ class IterativeRandom(Algorithm):
         return True
 
     def run(self) -> float:
+        failed_attempts = 0
         while True:
             if self._attempt_construct_order():
                 break
+
+            failed_attempts += 1
+
+        if self._debug:
+            print(f"Failed attempts: {failed_attempts}")
 
         # If the following fails, self._attempt_construct_order actually
         # failed and should not have returned
