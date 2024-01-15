@@ -1,4 +1,7 @@
+import sys
 import os
+
+sys.path.append('..')
 
 
 def create_experiment_folders():
