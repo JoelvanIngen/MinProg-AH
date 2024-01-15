@@ -19,6 +19,15 @@ _delta_pos_from_direction = {
     definitions.BACKWARD: Vec3D(0, 0, -1),
 }
 
+_direction_from_delta_pos = {
+    Vec3D(0, 1, 0): definitions.UP,
+    Vec3D(0, -1, 0): definitions.DOWN,
+    Vec3D(-1, 0, 0): definitions.LEFT,
+    Vec3D(1, 0, 0): definitions.RIGHT,
+    Vec3D(0, 0, 1): definitions.FORWARD,
+    Vec3D(0, 0, -1): definitions.BACKWARD,
+}
+
 
 class NotNeighbourError(Exception):
     pass
@@ -68,6 +77,33 @@ class Node:
     @property
     def z(self):
         return self.pos.z
+
+    def get_free_directions(self, pos_set: set[Vec3D], try_directions: list[int]) -> list[int]:
+        """
+        Determines and returns the directions the node could go in from
+            perspective of the previous node
+        """
+
+        # First node in chain cannot have a direction and our code should
+        # avoid trying to assign one to it.
+        if not self.prev:
+            raise Exception("First node in chain!")
+
+        # Convert all directions to try to delta vectors for easy maths
+        delta_vec_list = [_delta_pos_from_direction[direction] for direction in try_directions]
+
+        # See which directions are free and which are occupied
+        # First check if no other nodes occupy that position
+        # If one does, check if it is us. In that case, it's still a valid
+        # direction, since not moving would not change the protein
+        free_deltas = [
+            delta for delta in delta_vec_list
+            if self.prev.pos + delta not in pos_set
+            or self.prev.pos + delta == self.pos
+        ]
+
+        # Convert back to direction integer and return list of free directions
+        return [_direction_from_delta_pos[delta] for delta in free_deltas]
 
     def is_neightbour(self, other: 'Node') -> bool:
         if abs(self.id - other.id) == 1:
