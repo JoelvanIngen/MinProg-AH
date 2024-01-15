@@ -184,7 +184,7 @@ class Protein:
             plt.text(n.x, n.y, n.letter, size='10')
 
             # Draw protein line segment from previous node
-            plt.plot([prev.x, n.x], [prev.y, n.y], '--', color='black', linewidth=1)
+            plt.plot([prev.x, n.x], [prev.y, n.y], '-', color='black', linewidth=2)
 
             # Save position as previous
             prev = n.pos
@@ -194,7 +194,7 @@ class Protein:
         neighbours_filtered = self.filter_neighbours_by_nonzero_score(neighbours)
         for pairing in neighbours_filtered:
             node1, node2 = pairing
-            plt.plot([node1.x, node2.x], [node1.y, node2.y], '-', color='red', linewidth=1)
+            plt.plot([node1.x, node2.x], [node1.y, node2.y], '--', color='red', linewidth=1)
 
         # Get full dimensions of protein
         dim = get_min_max(self.nodes)
