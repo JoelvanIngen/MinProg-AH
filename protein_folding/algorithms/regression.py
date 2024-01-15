@@ -6,7 +6,6 @@ from protein_folding.protein import Protein
 from . import Algorithm
 
 
-
 class Regression(Algorithm):
     """
     A simple regression algorithm that compares the current protein ordering
@@ -21,6 +20,7 @@ class Regression(Algorithm):
 
     def get_permutated_directions(self, node_idx: int):
         """
+        TODO: should be implemented within protein
         A function to obtain a set of directions that differs from the current
         protein ordering starting from a direction change at node [node_idx].
         The returned directions are an ordering of the same sequence as
@@ -71,4 +71,3 @@ class Regression(Algorithm):
                 score = comparison_score
 
         return score
-
