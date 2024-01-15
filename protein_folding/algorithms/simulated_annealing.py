@@ -8,9 +8,11 @@ from . import Algorithm
 
 class SimulatedAnnealing(Algorithm):
     """
-    A simple regression algorithm that compares the current protein ordering
+    A simulated annealing algorithm that compares the current protein ordering
     against a randomly permutated but legal state and sets the current state to
-    said permutation if the bond score of that state is lower.
+    said permutation if the bond score of that state is lower, and if a
+    randomly chosen float is above a perpetually lowering threshold, inspired
+    by the way metals anneal.
     """
     
     def __init__(self, protein: 'Protein', dimensions, **kwargs):
@@ -18,6 +20,7 @@ class SimulatedAnnealing(Algorithm):
         # decrease of threshold value per iteration
         self.decrease = .999
         # number of random mutations to allow
+        # TODO: decide how to determine when to stop algorithm
         self.n_permutations = 5000
 
     def get_permutated_directions(self, node_idx: int):
@@ -49,7 +52,7 @@ class SimulatedAnnealing(Algorithm):
                 
     def run(self) -> float:
         """
-        Runs a simple regression algorithm for n_permutations iterations.
+        Runs a simulated annealing algorithm for n_permutations iterations.
         
         Post:
             - self.protein is ordered in the way that the algorithm found to
