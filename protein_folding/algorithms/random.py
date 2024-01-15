@@ -68,7 +68,32 @@ class IterativeRandom(Algorithm):
     def __init__(self, protein: 'Protein', dimensions: int):
         super().__init__(protein, dimensions)
 
-        raise NotImplementedError  # Remove when implemented
+    def _attempt_construct_order(self):
+        # Order protein in straight line
+        self.protein.straighten()
+
+        # Iterate through nodes, check their available directions,
+        # choose a random one and apply it
+        for node in self.protein.nodes[1:]:
+            free_directions = node.get_free_directions(self.protein.node_positions, self.directions)
+            if not free_directions:
+                return False
+
+            direction = random.choice(free_directions)
+            node.change_direction(self.protein.node_positions, direction)
+
+        return True
 
     def run(self) -> float:
-        pass
+        while True:
+            if self._attempt_construct_order():
+                break
+
+        # If the following fails, self._attempt_construct_order actually
+        # failed and should not have returned
+        assert self.protein.has_valid_order()
+
+        # Compute and return score
+        score = self.protein.get_bond_score()
+
+        return score

@@ -38,6 +38,9 @@ class Protein:
         # Set to keep track of Node positions
         self.node_positions: set[Vec3D] = {node.pos for node in self.nodes}
 
+    def __len__(self) -> int:
+        return len(self.nodes)
+
     def set_order(self, order: list) -> None:
         """
         sets order (shape) of protein to provided order, and recalculates
@@ -55,7 +58,7 @@ class Protein:
             f"Wrong order size, got {len(order)} but expected {(len(self.nodes) - 1)}"
 
         for node, direction in zip(self.nodes[1:], order):
-            node.change_direction(direction)
+            node.change_direction(self.node_positions, direction)
 
     def calc_size_score(self):
         """
@@ -150,6 +153,12 @@ class Protein:
                 filtered_neighbours.append((node1, node2))
 
         return filtered_neighbours
+
+    def straighten(self):
+        """
+        Sets protein order to be a straight line from left to right
+        """
+        self.set_order([RIGHT] * (len(self) - 1))
 
     def plot(self, filename="./unnamed_protein.png") -> None:
         """
