@@ -1,3 +1,6 @@
+import numpy as np
+
+
 # Map directions to coordinate deltas by getting direction integers and add
 # 3 to each index so the list starts at index 0
 # Should have fast lookup times thanks to this method
@@ -97,3 +100,38 @@ def fast_compute_bond_score(seq: str, order: list[int]) -> int:
 			score += _get_bond_score(letter, neighbour_letter)
 
 	return score
+
+
+def fast_validate_protein(order: list[int]):
+	"""
+	Computes whether a specified order would result in a valid protein.
+	To do this, it uses an alternative representation for the positions of each
+	molecule, where we multiply each coordinate by a factor depending on the
+	length of the order list, such that we can add each component multiplied to
+	this factor and put it in an array, such that each coordinate that can
+	theoretically be reached by this order list has its own space, while
+	keeping the length of the list at N^3.
+	"""
+
+	y_mult = len(order) + 1
+	x_mult = y_mult * y_mult + 1
+
+	taken_positions = np.zeros(y_mult ** 3)
+
+	x = y = z = 0
+	taken_positions[x * x_mult + y * y_mult + z] = 1
+
+	for direction in order:
+		new_node_delta = _direction_to_delta[direction + 3]
+		x += new_node_delta[0]
+		y += new_node_delta[1]
+		z += new_node_delta[2]
+
+		idx = x * x_mult + y * y_mult + z
+		# Check if new position is already taken
+		if taken_positions[idx] == 1:
+			return False
+
+		taken_positions[idx] = 1
+
+	return True
