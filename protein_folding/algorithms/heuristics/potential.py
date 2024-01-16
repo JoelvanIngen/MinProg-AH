@@ -30,7 +30,10 @@ class Potential(Heuristic):
                 delta_pos = source.pos - receiver.pos
                 r_sq = delta_pos.len_sq()
 
-                score += 1 / r_sq
+                if r_sq:
+                    score += 1 / r_sq
+                else:
+                    score += 0
 
         return score
 
