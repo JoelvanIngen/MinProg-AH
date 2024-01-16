@@ -1,10 +1,6 @@
-import random
 from math import floor
-from protein_folding.definitions import *
 from collections import deque
-
 from . import Algorithm
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -23,7 +19,6 @@ class Spiral(Algorithm):
             i += 1
         if sum(repetitions) > num_of_nodes:
             repetitions[-1] = num_of_nodes - sum(repetitions[:-1])
-        print(repetitions)
         return repetitions
 
     def generate_order(self) -> list:
@@ -34,13 +29,11 @@ class Spiral(Algorithm):
                 if rep:
                     repetition = rep.popleft()
                     order += (repetition * [self.directions[index]])
-        print(order)
         return order
 
     def run(self):
         order = self.generate_order()
         self.protein.set_order(order)
-
         score = self.protein.get_bond_score()
 
         return score

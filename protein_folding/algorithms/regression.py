@@ -12,7 +12,7 @@ class Regression(Algorithm):
     against a randomly permutated but legal state and sets the current state to
     said permutation if the bond score of that state is lower.
     """
-    
+
     def __init__(self, protein: 'Protein', dimensions, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         # number of random mutations to allow
@@ -33,18 +33,18 @@ class Regression(Algorithm):
         """
         dirs_total = [
             node.direction_from_previous for node in self.protein.nodes
-            ]
+        ]
         node = self.protein.nodes[node_idx]
         free_directions = node.get_free_directions(self.protein.node_positions, self.directions)
 
         if free_directions:
             direction = random.choice(free_directions)
-            dirs_total[node_idx] = direction 
-        
+            dirs_total[node_idx] = direction
+
         dirs_total = dirs_total[1:]
 
         return dirs_total
-                
+
     def run(self) -> float:
         """
         Runs a simple regression algorithm for n_permutations iterations.
@@ -66,7 +66,7 @@ class Regression(Algorithm):
 
             # update score and self.protein
             if (comparison_protein.has_valid_order() and
-                comparison_score <= self.protein.get_bond_score()):
+                    comparison_score <= self.protein.get_bond_score()):
                 self.protein.set_order(dirs_total)
                 score = comparison_score
 
