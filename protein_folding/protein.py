@@ -38,12 +38,14 @@ class Protein:
         self.node_positions: set[Vec3D] | None = None
         self.collect_node_positions()
 
+        # set order attribute for fast access
+        self.order = [RIGHT] * (len(sequence) - 1)
+
     def __len__(self) -> int:
         return len(self.nodes)
 
     def get_order(self):
-        order = [node.direction_from_previous for node in self.nodes[1:]]
-        return order
+        return self.order
 
     def set_order(self, order: list) -> None:
         """
@@ -57,7 +59,7 @@ class Protein:
         post:
             - attributes for acid coordinates and order are updated
         """
-
+        self.order = order
         assert len(self.nodes) == len(order) + 1, \
             f"Wrong order size, got {len(order)} but expected {(len(self.nodes) - 1)}"
 
