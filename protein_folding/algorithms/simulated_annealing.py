@@ -72,7 +72,7 @@ class SimulatedAnnealing(Algorithm):
 
                 comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
                 decision_float = random.random()
-                if comparison_score <= score or threshold > decision_float:
+                if comparison_score < score or threshold => decision_float:
                     self.protein.set_order(dirs_total)
                     score = comparison_score
 
