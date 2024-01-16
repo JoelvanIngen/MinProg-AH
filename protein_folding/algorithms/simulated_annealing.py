@@ -1,6 +1,7 @@
 import random
 import pdb
 from typing import TYPE_CHECKING
+from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 from protein_folding.protein import Protein
 
 from . import Algorithm
@@ -21,7 +22,7 @@ class SimulatedAnnealing(Algorithm):
         self.decrease = .999
         # number of random mutations to allow
         # TODO: decide how to determine when to stop algorithm
-        self.n_permutations = 5000
+        self.n_permutations = 500000
 
     def get_permutated_directions(self, node_idx: int):
         """
@@ -65,18 +66,14 @@ class SimulatedAnnealing(Algorithm):
             node_idx = random.randint(1, len(self.protein.sequence) - 1)
             dirs_total = self.get_permutated_directions(node_idx)
 
-            # generate comparison protein to validate score TODO: ugly solution
-            comparison_protein = Protein(self.protein.sequence)
-            comparison_protein.set_order(dirs_total)
-            comparison_score = comparison_protein.get_bond_score()
+            # Prevent computing score if order is not valid
+            if fast_validate_protein(dirs_total):
 
-            # update score and self.protein
-            decision_float = random.random()
-            if (comparison_protein.has_valid_order() and
-                (comparison_score < self.protein.get_bond_score() or 
-                threshold > decision_float)):
-                self.protein.set_order(dirs_total)
-                score = comparison_score
+                comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
+                decision_float = random.random()
+                if comparison_score <= score or threshold > decision_float:
+                    self.protein.set_order(dirs_total)
+                    score = comparison_score
 
             threshold *= self.decrease
             
