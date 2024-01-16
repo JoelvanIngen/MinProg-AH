@@ -41,6 +41,10 @@ class Protein:
     def __len__(self) -> int:
         return len(self.nodes)
 
+    def get_order(self):
+        order = [node.direction_from_previous for node in self.nodes[1:]]
+        return order
+
     def set_order(self, order: list) -> None:
         """
         sets order (shape) of protein to provided order, and recalculates
