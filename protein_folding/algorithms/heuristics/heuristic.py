@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 
 class Heuristic:
-    def __init__(self, protein: Protein, weight: float = 1.):
+    def __init__(self, protein: Protein):
         """
         Initialises the heuristic
 
@@ -16,7 +16,6 @@ class Heuristic:
             final output
         """
         self.protein = protein
-        self.weight = weight
 
     def run(self, node: Node, directions: list[int]) -> list[float]:
         """
