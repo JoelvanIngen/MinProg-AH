@@ -131,6 +131,13 @@ class Protein:
 
         return neighbours
 
+    def get_node_id(self, node: Node):
+        for i in range(len(self.nodes)):
+            if node == self.nodes[i]:
+                return i
+
+        raise KeyError
+
     def has_valid_order(self) -> bool:
         """
         Determines if every node has a unique position.
