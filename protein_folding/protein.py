@@ -41,6 +41,10 @@ class Protein:
     def __len__(self) -> int:
         return len(self.nodes)
 
+    def get_order(self):
+        order = [node.direction_from_previous for node in self.nodes[1:]]
+        return order
+
     def set_order(self, order: list) -> None:
         """
         sets order (shape) of protein to provided order, and recalculates
@@ -126,6 +130,13 @@ class Protein:
                     neighbours.append((node1, node2))
 
         return neighbours
+
+    def get_node_id(self, node: Node):
+        for i in range(len(self.nodes)):
+            if node == self.nodes[i]:
+                return i
+
+        raise KeyError
 
     def has_valid_order(self) -> bool:
         """

@@ -1,6 +1,7 @@
 import random
 import pdb
 from typing import TYPE_CHECKING
+from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 from protein_folding.protein import Protein
 
 from . import Algorithm
@@ -58,6 +59,7 @@ class SimulatedAnnealing(Algorithm):
             - self.protein is ordered in the way that the algorithm found to
             maximise the bond score.
         """
+        best_order = []
         score = 0
         threshold = 1
         for _ in range(self.n_permutations):
@@ -65,19 +67,21 @@ class SimulatedAnnealing(Algorithm):
             node_idx = random.randint(1, len(self.protein.sequence) - 1)
             dirs_total = self.get_permutated_directions(node_idx)
 
-            # generate comparison protein to validate score TODO: ugly solution
-            comparison_protein = Protein(self.protein.sequence)
-            comparison_protein.set_order(dirs_total)
-            comparison_score = comparison_protein.get_bond_score()
+            # Prevent computing score if order is not valid
+            if fast_validate_protein(dirs_total):
 
-            # update score and self.protein
-            decision_float = random.random()
-            if (comparison_protein.has_valid_order() and
-                (comparison_score < self.protein.get_bond_score() or 
-                threshold > decision_float)):
-                self.protein.set_order(dirs_total)
-                score = comparison_score
+                comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
+                decision_float = random.random()
+                if comparison_score <= score or threshold > decision_float:
+                    self.protein.set_order(dirs_total)
+                    score = comparison_score
+
+                if comparison_score <= score:
+                    best_order = dirs_total
 
             threshold *= self.decrease
+
+        self.protein.set_order(best_order)
+        score = self.protein.get_bond_score()
             
         return score
