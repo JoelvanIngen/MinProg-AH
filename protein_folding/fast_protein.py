@@ -111,6 +111,9 @@ def fast_validate_protein(order: list[int]):
 	this factor and put it in an array, such that each coordinate that can
 	theoretically be reached by this order list has its own space, while
 	keeping the length of the list at N^3.
+
+	TODO: Maybe use a dictionary anyway, because for large proteins this array
+		gets too large
 	"""
 
 	y_mult = len(order) + 1
