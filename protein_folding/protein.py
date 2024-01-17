@@ -3,6 +3,7 @@ from .definitions import *
 from .node import Node, _delta_pos_from_direction
 from .stack import Stack
 from .vector import *
+import random 
 
 _valid_protein_letters = {'H', 'P', 'C'}
 
