@@ -1,5 +1,4 @@
 import random
-
 from . import Algorithm
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 
@@ -8,10 +7,10 @@ if TYPE_CHECKING:
     from protein_folding.protein import Protein
 
 class PureRandomHillClimb(Algorithm):
-    def __init__(self, protein: 'Protein', dimensions, max_iterations=1000, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions, max_iterations=100, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         self.max_iterations = max_iterations
-        
+
     def _create_order_list(self) -> list[int]:
         order_length = len(self.protein.sequence) - 1
         order = [random.choice(self.directions) for _ in range(order_length)]
@@ -32,13 +31,14 @@ class PureRandomHillClimb(Algorithm):
 
         for _ in range(self.max_iterations):
             new_order = self._modify_order(order.copy())
-            if fast_validate_protein(new_order):
+            print(f"{new_order}")
+            if fast_compute_bond_score(self.protein.sequence, new_order):
                 new_score = fast_compute_bond_score(self.protein.sequence, new_order)
-                if new_score > best_score:
+                print(f"{new_score}")
+                if new_score < best_score:
                     best_score = new_score
                     order = new_order
                     self.protein.set_order(order)
-
         return best_score
 
 
