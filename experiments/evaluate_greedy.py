@@ -12,9 +12,9 @@ def main():
     l = list(sequence)
     shuffle(l)
     sequence = ''.join(l)
-    sequence = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
+    sequence = "HHPHHHPHPHHHPH"
     score = 0
-    dim = 3
+    dim = 2
     protein = Protein(sequence)
 
     algorithm = Greedy(protein, dimensions=dim, debug=True)
