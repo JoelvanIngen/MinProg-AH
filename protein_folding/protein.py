@@ -211,7 +211,7 @@ class Protein:
             plt.text(n.x, n.y, n.letter, size='10')
 
             # Draw protein line segment from previous node
-            plt.plot([prev.x, n.x], [prev.y, n.y], '-', color='black', linewidth=2)
+            plt.plot([prev.x, n.x], [prev.y, n.y], '-', color='black', linewidth=1.5)
 
             # Save position as previous
             prev = n.pos
@@ -238,8 +238,8 @@ class Protein:
         # Get full dimensions of protein
         dim = get_min_max(self.nodes)
 
-        plt.xlim(dim[0].x - 1, dim[1].x + 1)
-        plt.ylim(dim[0].y - 1, dim[1].y + 1)
+        plt.xlim(dim[0].x - 0.5, dim[1].x + 0.5)
+        plt.ylim(dim[0].y - 0.5, dim[1].y + 0.5)
         plt.axis('off')
 
         # Save image
