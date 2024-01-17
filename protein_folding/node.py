@@ -145,6 +145,9 @@ class Node:
 
         self.direction_from_previous = direction
 
+        # Tell proteinn our direction changed
+        self.protein.order[self.id] = direction
+
         if self.next:
             self.next.cascade_position(delta_pos)
 
