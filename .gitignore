@@ -161,3 +161,4 @@ cython_debug/
 
 # Joël: Avoid tracking files in output folders
 output/
+bf_output/
