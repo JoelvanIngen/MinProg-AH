@@ -134,6 +134,9 @@ class Node:
         if not self.direction_from_previous:
             raise Exception("First node in chain!")
 
+        # Save current state
+        self.protein.preserve()
+
         new_pos = calc_position_from_direction(direction, self.prev)
         delta_pos = new_pos - self.pos
 
