@@ -89,12 +89,13 @@ class Node:
             # No nodes occupy position
             return True
 
-        if position == self.pos:
+        # Position is occupied
+        if self.protein.pos_to_node[position] == self:
             # We occupy the position, thus it is available by default
             return True
-        else:
-            # Other node occupies position
-            return False
+
+        # Other node occupies position
+        return False
 
     def make_ghost(self):
         assert not self.ghost
@@ -104,14 +105,6 @@ class Node:
 
         # Set self to ghosted
         self.ghost = True
-
-    def unghost(self):
-        assert self.ghost
-
-        # Add position from position -> Node mapping
-        self.protein.pos_to_node[self.pos] = self
-
-        self.ghost = False
 
     def get_free_directions(self, try_directions: list[int]) -> list[int]:
         """
@@ -158,23 +151,28 @@ class Node:
         return _bond_values.get(frozenset({self.letter, other.letter}), 0)
 
     def change_direction(self, direction: int, ignore_pos_set: bool = False):
+        # Make sure we're not trying to change the root node's direction
         if not self.direction_from_previous:
             raise Exception("First node in chain!")
 
+        # Get new position vector from direction
         new_pos = calc_position_from_direction(direction, self.prev)
+
+        # Compute the difference between the new and old position
         delta_pos = new_pos - self.pos
 
-        # Remove old position from the positions set if node was not ghosted
+        # Remove old position from the positions dict if node was not ghosted
         if not self.ghost and not ignore_pos_set:
             self.protein.pos_to_node.pop(self.pos)
 
+        # Set new position
         self.pos = new_pos
 
+        # Save new direction to self and to protein
         self.direction_from_previous = direction
-
-        # Tell protein our direction changed
         self.protein.order[self.id] = direction
 
+        # If there is a next node, make them change position too
         if self.next:
             self.next.cascade_position(delta_pos)
 
@@ -184,8 +182,7 @@ class Node:
             self.protein.pos_to_node[self.pos] = self
 
         # Set node to not-ghost
-        if self.ghost:
-            self.unghost()
+        self.ghost = False
 
     def cascade_position(self, delta_pos: Vec3D):
         """
