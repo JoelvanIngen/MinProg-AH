@@ -34,11 +34,9 @@ class NotNeighbourError(Exception):
 
 
 class Node:
-    counter = 0
-
-    def __init__(self, letter, x, y, z, direction: int | None, prev_node: Optional['Node'] = None):
-        self.id = Node.counter
-        Node.counter += 1
+    def __init__(self, _id: int, letter: str, x: int, y: int, z: int, direction: int | None,
+                 prev_node: Optional['Node'] = None):
+        self.id = _id
 
         self.letter = letter
         self.pos = Vec3D(x, y, z)
@@ -65,10 +63,10 @@ class Node:
                 f'direction={self.direction_from_previous})')
 
     @classmethod
-    def from_previous(cls, c, direction: int, prev: 'Node'):
+    def from_previous(cls, _id, c, direction: int, prev: 'Node'):
         x, y, z = calc_position_from_direction(direction, prev)
 
-        return cls(c, x, y, z, direction, prev_node=prev)
+        return cls(_id, c, x, y, z, direction, prev_node=prev)
 
     @property
     def x(self):

@@ -29,10 +29,10 @@ class Protein:
         self.sequence = sequence
 
         # Create list of all the nodes
-        self.nodes = [Node(self.sequence[0], 0, 0, 0, direction=None)]
-        for c in self.sequence[1:]:
+        self.nodes = [Node(0, self.sequence[0], 0, 0, 0, direction=None)]
+        for node_id, c in enumerate(self.sequence[1:]):
             # Initialise new node in a straight line
-            self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
+            self.nodes.append(Node.from_previous(node_id + 1, c, RIGHT, self.nodes[-1]))
 
         # Set to keep track of Node positions
         self.node_positions: set[Vec3D] | None = None
