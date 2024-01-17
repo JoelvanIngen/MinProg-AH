@@ -1,7 +1,9 @@
 import protein_folding.definitions as definitions
 from .vector import Vec3D
 
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+if TYPE_CHECKING:
+    from .protein import Protein
 
 
 _bond_values = {
@@ -34,11 +36,11 @@ class NotNeighbourError(Exception):
 
 
 class Node:
-    counter = 0
+    def __init__(self, protein: 'Protein', _id: int, letter: str, x: int, y: int, z: int,
+                 direction: int | None, prev_node: Optional['Node'] = None):
 
-    def __init__(self, letter, x, y, z, direction: int | None, prev_node: Optional['Node'] = None):
-        self.id = Node.counter
-        Node.counter += 1
+        self.protein = protein
+        self.id = _id
 
         self.letter = letter
         self.pos = Vec3D(x, y, z)
@@ -65,10 +67,10 @@ class Node:
                 f'direction={self.direction_from_previous})')
 
     @classmethod
-    def from_previous(cls, c, direction: int, prev: 'Node'):
+    def from_previous(cls, protein: 'Protein', _id: int, c: str, direction: int, prev: 'Node'):
         x, y, z = calc_position_from_direction(direction, prev)
 
-        return cls(c, x, y, z, direction, prev_node=prev)
+        return cls(protein, _id, c, x, y, z, direction, prev_node=prev)
 
     @property
     def x(self):
@@ -82,7 +84,7 @@ class Node:
     def z(self):
         return self.pos.z
 
-    def get_free_directions(self, pos_set: set[Vec3D], try_directions: list[int]) -> list[int]:
+    def get_free_directions(self, try_directions: list[int]) -> list[int]:
         """
         Determines and returns the directions the node could go in from
             perspective of the previous node
@@ -102,7 +104,7 @@ class Node:
         # direction, since not moving would not change the protein
         free_deltas = [
             delta for delta in delta_vec_list
-            if self.prev.pos + delta not in pos_set
+            if self.prev.pos + delta not in self.protein.pos_to_node
             or self.prev.pos + delta == self.pos
         ]
 
@@ -128,7 +130,7 @@ class Node:
     def bond_value(self, other: 'Node'):
         return _bond_values.get(frozenset({self.letter, other.letter}), 0)
 
-    def change_direction(self, pos_set: set[Vec3D], direction: int, ignore_pos_set: bool = False):
+    def change_direction(self, direction: int, ignore_pos_set: bool = False):
         if not self.direction_from_previous:
             raise Exception("First node in chain!")
 
@@ -137,24 +139,24 @@ class Node:
 
         # Remove old position from the positions set if node was not ghosted
         if not self.ghost and not ignore_pos_set:
-            pos_set.remove(self.pos)
+            self.protein.pos_to_node.pop(self.pos)
 
         self.pos = new_pos
 
         self.direction_from_previous = direction
 
         if self.next:
-            self.next.cascade_position(pos_set, delta_pos)
+            self.next.cascade_position(delta_pos)
 
         # Add new position to the positions set
         if not ignore_pos_set:
-            assert self.pos not in pos_set
-            pos_set.add(self.pos)
+            assert self.pos not in self.protein.pos_to_node
+            self.protein.pos_to_node[self.pos] = self
 
         # Set node to not-ghost
         self.ghost = False
 
-    def cascade_position(self, pos_set: set[Vec3D], delta_pos: Vec3D):
+    def cascade_position(self, delta_pos: Vec3D):
         """
         Updates the position of current node because the previous node's
             position was updated. Calls the next node and repeates the
@@ -174,7 +176,7 @@ class Node:
         # If node wasn't ghosted, delete its position from the protein class'
         # positions set to prevent overwriting values
         if not self.ghost:
-            pos_set.remove(self.pos)
+            self.protein.pos_to_node.pop(self.pos)
 
         # Ghost node in case it moves through other nodes
         self.ghost = True
@@ -182,7 +184,7 @@ class Node:
         self.pos += delta_pos
 
         if self.next is not None:
-            self.next.cascade_position(pos_set, delta_pos)
+            self.next.cascade_position(delta_pos)
 
 
 def calc_position_from_direction(direction: int, prev: Node):
