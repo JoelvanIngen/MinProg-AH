@@ -29,13 +29,15 @@ class Protein:
         self.sequence = sequence
 
         # Create list of all the nodes
-        self.nodes = [Node(0, self.sequence[0], 0, 0, 0, direction=None)]
-        for node_id, c in enumerate(self.sequence[1:]):
+        start_node = Node(self, 0, self.sequence[0], 0, 0, 0, direction=None)
+        self.nodes = [start_node]
+        for node_id, c in enumerate(self.sequence[1:], start=1):
             # Initialise new node in a straight line
-            self.nodes.append(Node.from_previous(node_id + 1, c, RIGHT, self.nodes[-1]))
+            new_node = Node.from_previous(self, node_id, c, RIGHT, self.nodes[-1])
+            self.nodes.append(new_node)
 
-        # Set to keep track of Node positions
-        self.node_positions: set[Vec3D] | None = None
+        # Dict to keep track of Node positions
+        self.pos_to_node = {}
         self.collect_node_positions()
 
         # set order attribute for fast access
@@ -64,7 +66,7 @@ class Protein:
             f"Wrong order size, got {len(order)} but expected {(len(self.nodes) - 1)}"
 
         for node, direction in zip(self.nodes[1:], order):
-            node.change_direction(self.node_positions, direction, ignore_pos_set=True)
+            node.change_direction(direction, ignore_pos_set=True)
 
         self.collect_node_positions()
 
@@ -103,7 +105,9 @@ class Protein:
         return box.volume()
 
     def collect_node_positions(self):
-        self.node_positions: set[Vec3D] = {node.pos for node in self.nodes}
+        self.pos_to_node = {}
+        for node in self.nodes:
+            self.pos_to_node[node.pos] = node
 
     def get_bond_score(self) -> float:
         """

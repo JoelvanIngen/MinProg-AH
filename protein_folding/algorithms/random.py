@@ -82,12 +82,12 @@ class IterativeRandom(Algorithm):
         # Iterate through nodes, check their available directions,
         # choose a random one and apply it
         for node in self.protein.nodes[1:]:
-            free_directions = node.get_free_directions(self.protein.node_positions, self.directions)
+            free_directions = node.get_free_directions(self.directions)
             if not free_directions:
                 return False
 
             direction = random.choice(free_directions)
-            node.change_direction(self.protein.node_positions, direction)
+            node.change_direction(direction)
 
         return True
 

@@ -39,7 +39,7 @@ class SimulatedAnnealing(Algorithm):
         """
         dirs_total = [None] + self.protein.get_order()
         node = self.protein.nodes[node_idx]
-        free_directions = node.get_free_directions(self.protein.node_positions, self.directions)
+        free_directions = node.get_free_directions(self.directions)
 
         if free_directions:
             direction = random.choice(free_directions)
