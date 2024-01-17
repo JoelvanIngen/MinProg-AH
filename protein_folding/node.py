@@ -215,10 +215,10 @@ class Node:
             self.next.cascade_position(delta_pos)
 
     def get_neighbouring_positions(self):
-        l = []
+        neighbour_list = []
         for delta in _delta_pos_from_direction.values():
-            l.append(self.pos + delta)
-        return l
+            neighbour_list.append(self.pos + delta)
+        return neighbour_list
 
 def calc_position_from_direction(direction: int, prev: Node):
     if direction not in _delta_pos_from_direction:
