@@ -26,7 +26,6 @@ class Protein:
 
         # Ensure valid-ness of sequence
         _validate_protein_letters(sequence)
-
         self.sequence = sequence
 
         # Create list of all the nodes
