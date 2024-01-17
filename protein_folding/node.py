@@ -84,6 +84,18 @@ class Node:
     def z(self):
         return self.pos.z
 
+    def check_position_availability(self, position: Vec3D) -> bool:
+        if position not in self.protein.pos_to_node:
+            # No nodes occupy position
+            return True
+
+        if position == self.pos:
+            # We occupy the position, thus it is available by default
+            return True
+        else:
+            # Other node occupies position
+            return False
+
     def make_ghost(self):
         assert not self.ghost
 
@@ -100,7 +112,6 @@ class Node:
         self.protein.pos_to_node[self.pos] = self
 
         self.ghost = False
-
 
     def get_free_directions(self, try_directions: list[int]) -> list[int]:
         """
@@ -121,9 +132,7 @@ class Node:
         # If one does, check if it is us. In that case, it's still a valid
         # direction, since not moving would not change the protein
         free_deltas = [
-            delta for delta in delta_vec_list
-            if self.prev.pos + delta not in self.protein.pos_to_node
-            or self.prev.pos + delta == self.pos
+            delta for delta in delta_vec_list if self.check_position_availability(self.prev.pos + delta)
         ]
 
         # Convert back to direction integer and return list of free directions
