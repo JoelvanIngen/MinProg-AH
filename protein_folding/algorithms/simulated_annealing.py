@@ -1,5 +1,6 @@
 import random
 import pdb
+from tqdm import tqdm
 from typing import TYPE_CHECKING
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 from protein_folding.protein import Protein
@@ -19,10 +20,10 @@ class SimulatedAnnealing(Algorithm):
     def __init__(self, protein: 'Protein', dimensions, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         # decrease of threshold value per iteration
-        self.decrease = .999
+        self.decrease = .9997
         # number of random mutations to allow
         # TODO: decide how to determine when to stop algorithm
-        self.n_permutations = 5000
+        self.n_permutations = 20000
 
     def get_permutated_directions(self, node_idx: int):
         """
@@ -60,7 +61,7 @@ class SimulatedAnnealing(Algorithm):
         best_order = []
         score = 0
         threshold = 1
-        for _ in range(self.n_permutations):
+        for _ in tqdm(range(self.n_permutations)):
             # get random node idx to permutate from and new directions
             node_idx = random.randint(1, len(self.protein.sequence) - 1)
             dirs_total = self.get_permutated_directions(node_idx)
