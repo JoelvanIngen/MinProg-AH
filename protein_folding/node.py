@@ -64,7 +64,7 @@ class Node:
 
     def __repr__(self):
         return (f'Node(id={self.id}, letter="{self.letter}", (x,y,z)=({self.x}, {self.y}, {self.z}), '
-                f'direction={self.direction_from_previous})')
+                f'direction={self.direction_from_previous}), ghost={self.ghost}')
 
     @classmethod
     def from_previous(cls, protein: 'Protein', _id: int, c: str, direction: int, prev: 'Node'):
@@ -83,6 +83,26 @@ class Node:
     @property
     def z(self):
         return self.pos.z
+
+    def make_ghost(self):
+        assert not self.ghost
+
+        # Remove position from position -> Node mapping
+        from pprint import pprint
+        pprint(self.protein.pos_to_node)
+        self.protein.pos_to_node.pop(self.pos)
+
+        # Set self to ghosted
+        self.ghost = True
+
+    def unghost(self):
+        assert self.ghost
+
+        # Add position from position -> Node mapping
+        self.protein.pos_to_node[self.pos] = self
+
+        self.ghost = False
+
 
     def get_free_directions(self, try_directions: list[int]) -> list[int]:
         """
@@ -148,7 +168,7 @@ class Node:
 
         self.direction_from_previous = direction
 
-        # Tell proteinn our direction changed
+        # Tell protein our direction changed
         self.protein.order[self.id] = direction
 
         if self.next:
@@ -157,10 +177,12 @@ class Node:
         # Add new position to the positions set
         if not ignore_pos_set:
             assert self.pos not in self.protein.pos_to_node
+            print('wtf maat')
             self.protein.pos_to_node[self.pos] = self
 
         # Set node to not-ghost
-        self.ghost = False
+        if self.ghost:
+            self.unghost()
 
     def cascade_position(self, delta_pos: Vec3D):
         """
@@ -182,10 +204,7 @@ class Node:
         # If node wasn't ghosted, delete its position from the protein class'
         # positions set to prevent overwriting values
         if not self.ghost:
-            self.protein.pos_to_node.pop(self.pos)
-
-        # Ghost node in case it moves through other nodes
-        self.ghost = True
+            self.make_ghost()
 
         self.pos += delta_pos
 
