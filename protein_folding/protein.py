@@ -39,7 +39,7 @@ class Protein:
         self.link_nodes()
 
         # List to keep track of Node directions
-        self.order: list[int | None] = [None] + self.get_order()
+        self.order: list[int | None] = [None] + [RIGHT] * (len(sequence) - 1)
 
         # Dict to keep track of Node positions
         self.pos_to_node: dict[Vec3D, Node] = {}
@@ -51,8 +51,7 @@ class Protein:
         return len(self.nodes)
 
     def get_order(self):
-        order = [node.direction_from_previous for node in self.nodes[1:]]
-        return order
+        return self.order[1:]
 
     def set_order(self, order: list) -> None:
         """
