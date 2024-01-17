@@ -12,7 +12,7 @@ def main():
     l = list(sequence)
     shuffle(l)
     sequence = ''.join(l)
-    # sequence = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
+    sequence = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
     score = 0
     dim = 3
     protein = Protein(sequence)
@@ -24,7 +24,7 @@ def main():
     if dim == 2:
         protein.plot(f'./output/evaluate_greedy_protein_len{len(sequence)}_dim{dim}.png')
     elif dim == 3:
-        protein._plot_3d(f'./output/evaluate_greedy_protein_len{len(sequence)}_dim{dim}.png')
+        protein.plot_3d(f'./output/evaluate_greedy_protein_len{len(sequence)}_dim{dim}.png')
 
 
 if __name__ == '__main__':
