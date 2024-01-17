@@ -3,8 +3,10 @@ import pstats
 
 from experiments_helper import create_bruteforce_folders
 from protein_folding.protein import Protein
+from random import shuffle
 import itertools
 
+MAX_ITERATIONS = 1000000
 
 class ScoreTracker:
     def __init__(self):
@@ -46,20 +48,19 @@ def run():
     # Create necessary folders
     create_bruteforce_folders()
 
-    seq = "HHPHHHPHPHHH"
+    seq = "HHPHHHPHPHHHPH"
 
     n = len(seq) - 1
     order_list = generate_combinations(n)
-    configs = len(order_list)
-    print(f"Amount of configs: {configs}\n"
-          f"Estimated amount of sec: {(configs / 7500) % 60:.0f}"
-          f" minutes: {(configs / (7500 * 60)) % 60:.0f}\n"
-          f" hours: {(configs / (7500 * 60 * 24)) % 24:.0f}")
+    configs = min(len(order_list), MAX_ITERATIONS)
+    shuffle(order_list)
+    print(f"Amount of configs: {configs}")
 
-    return
     score_tracker = ScoreTracker()
 
     for i, order in enumerate(order_list):
+        if i > MAX_ITERATIONS:
+            break
         print(f"Checking config {i}/{configs} ({i / configs * 100:.0f}%)")
         protein = Protein(seq)
         protein.set_order(order)
