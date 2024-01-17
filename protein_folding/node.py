@@ -135,6 +135,9 @@ class Node:
         if abs(self.id - other.id) == 1:
             return False
 
+        if other.ghost:
+            return False
+
         delta = Vec3D.abs_diff(self.pos, other.pos)
 
         return delta.sum_components() == 1
