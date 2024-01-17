@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from protein_folding.protein import Protein
     from protein_folding.node import Node
 
-direction_dict = {1: "Left", -1: "Right", 2: "Up", -2: "Down"}
+direction_dict = {1: "Left", -1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
 
 
 class Greedy(Algorithm):
@@ -30,28 +30,32 @@ class Greedy(Algorithm):
         # Iterate through nodes, check their available directions,
         # choose a random one and apply it
         for node in self.protein.nodes[1:]:
-            current_direction = node.direction_from_previous
+            print(f"Placing Node {node.id}/{len(self.protein.nodes[1:])}")
             direction_scores = {}
             free_directions = node.get_free_directions(self.directions)
+
             if not free_directions:
-                print("No free directions found")
+                print("No free directions found, trying again.")
                 return False
+
+            print(f"Free Directions: {free_directions}")
 
             for direction in free_directions:
                 self.protein.preserve()
                 node.change_direction(direction)
-                if self.protein.has_valid_order():
-                    direction_scores[direction] = self.protein.get_bond_score()
+                direction_scores[direction] = self.protein.get_bond_score()
                 # print(f"Direction checked: {direction_dict[direction]}")
                 self.protein.revert()
 
-            print(f"Direction_scores: {direction_scores}")
+            results = {}
+            for k, v in direction_scores.items():
+                results[direction_dict[k]] = v
+            print(results)
             min_value = min(direction_scores.values())
             best_directions = [k for k, v in direction_scores.items() if v == min_value]
-            print(f"Best directions: {best_directions}")
-            direction = random.choice(best_directions)
-            print(f"Direction selected: {direction_dict[direction]}")
-            node.change_direction(direction)
+            chosen_direction = random.choice(best_directions)
+            print(f"Selected {direction_dict[chosen_direction]}")
+            node.change_direction(chosen_direction)
         return True
 
     def run(self) -> float:

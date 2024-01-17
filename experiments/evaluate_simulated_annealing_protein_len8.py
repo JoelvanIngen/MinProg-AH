@@ -4,6 +4,7 @@ from protein_folding.algorithms import SimulatedAnnealing
 
 
 def main():
+	# test
 	create_experiment_folders()
 	sequence = 'HHPHHHPH'
 	protein = Protein(sequence)
