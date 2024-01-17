@@ -246,6 +246,18 @@ class Protein:
         # Save image
         plt.savefig(filename)
 
+    def plot_3d(self):
+        ax = plt.figure().add_subplot(projection='3d')
+        x = list()
+        y = list()
+        z = list()
+        for n in self.nodes:
+            x.append(n.x)
+            y.append(n.y)
+            z.append(n.z)
+        ax.plot(x, y, z)
+        plt.savefig("./test.png")
+
     def preserve(self):
         ghosts = [node.ghost for node in self.nodes]
 
