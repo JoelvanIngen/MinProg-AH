@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from protein_folding.protein import Protein
     from protein_folding.node import Node
 
-direction_dict = {1: "Left", -1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
+direction_dict = {-1: "Left", 1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
 
 
 class Greedy(Algorithm):
@@ -30,7 +30,7 @@ class Greedy(Algorithm):
         # Iterate through nodes, check their available directions,
         # choose a random one and apply it
         for node in self.protein.nodes[1:]:
-            print(f"Placing Node {node.id}/{len(self.protein.nodes[1:])}")
+            print(f"Placing Node {node.id}/{len(self.protein.nodes[1:])} now at {node.pos}")
             direction_scores = {}
             free_directions = node.get_free_directions(self.directions)
 
@@ -43,14 +43,23 @@ class Greedy(Algorithm):
             for direction in free_directions:
                 self.protein.preserve()
                 node.change_direction(direction)
-                direction_scores[direction] = self.protein.get_bond_score()
+
+                neighbours = []
+                for pos in node.get_neighbouring_positions():
+                    other_node = self.protein.pos_to_node.get(pos)
+                    if other_node:
+                        neighbours.append(node.bond_value(other_node))
+
+                direction_scores[direction] = sum(neighbours)
+                # direction_scores[direction] = self.protein.get_bond_score()
                 # print(f"Direction checked: {direction_dict[direction]}")
                 self.protein.revert()
 
-            results = {}
-            for k, v in direction_scores.items():
-                results[direction_dict[k]] = v
-            print(results)
+            # results = {}
+            # for k, v in direction_scores.items():
+            #     results[direction_dict[k]] = v
+            # print(results)
+
             min_value = min(direction_scores.values())
             best_directions = [k for k, v in direction_scores.items() if v == min_value]
             chosen_direction = random.choice(best_directions)

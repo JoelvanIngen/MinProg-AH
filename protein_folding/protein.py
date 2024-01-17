@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+
 from .definitions import *
 from .node import Node, _delta_pos_from_direction
 from .stack import Stack
@@ -256,7 +257,7 @@ class Protein:
             z.append(n.z)
         ax.plot(x, y, z, color='black')
         plt.show()
-        plt.savefig(filename)
+        # plt.savefig(filename)
 
     def plot_3d(self, filename="./unnamed_protein.png") -> None:
         ax = plt.figure().add_subplot(projection='3d')
@@ -267,11 +268,10 @@ class Protein:
             x.append(float(n.x))
             y.append(float(n.y))
             z.append(float(n.z))
-        mlab.points3d(x, y, z, scale_factor=0.1, color=(0,0,0))
-        mlab.plot3d(x, y, z, color=(0,0,0))
+        mlab.points3d(x, y, z, scale_factor=0.1, color=(0, 0, 0))
+        mlab.plot3d(x, y, z, color=(0, 0, 0))
         mlab.show()
-        #plt.savefig(filename)
-
+        # plt.savefig(filename)
 
     def preserve(self):
         ghosts = [node.ghost for node in self.nodes]
@@ -281,7 +281,6 @@ class Protein:
             ghosts,
             self.pos_to_node
         )
-
 
     def revert(self):
         prev = self.history.pull()
