@@ -6,7 +6,7 @@ from protein_folding.algorithms import PureRandom
 def main():
     create_experiment_folders()
 
-    sequence = 'H' * 30
+    sequence = sequence = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
     protein = Protein(sequence)
 
     algorithm = PureRandom(protein, dimensions=2, debug=True)
