@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from protein_folding.protein import Protein
 
 class PureRandomHillClimb(Algorithm):
-    def __init__(self, protein: 'Protein', dimensions, max_iterations=100, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions, max_iterations=1500, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         self.max_iterations = max_iterations
 
@@ -31,55 +31,11 @@ class PureRandomHillClimb(Algorithm):
 
         for _ in range(self.max_iterations):
             new_order = self._modify_order(order.copy())
-            print(f"{new_order}")
             if fast_compute_bond_score(self.protein.sequence, new_order):
                 new_score = fast_compute_bond_score(self.protein.sequence, new_order)
-                print(f"{new_score}")
                 if new_score < best_score:
                     best_score = new_score
                     order = new_order
                     self.protein.set_order(order)
         return best_score
 
-
-class IterativeRandomHillClimb(Algorithm):
-    def __init__(self, protein: 'Protein', dimensions, max_iterations=1000, **kwargs):
-        super().__init__(protein, dimensions, **kwargs)
-        self.max_iterations = max_iterations
-
-    def _try_improve_node(self, node):
-        original_direction = node.direction
-        best_direction = original_direction
-        best_score = self.protein.get_bond_score()
-
-        for direction in self.directions:
-            if direction != original_direction:
-                node.direction = direction
-                self.protein.collect_node_positions()  # Update positions after direction change
-                new_score = self.protein.get_bond_score()
-                if new_score > best_score:
-                    best_score = new_score
-                    best_direction = direction
-
-        # Revert to original direction if no improvement found
-        if best_direction == original_direction:
-            return False
-        else:
-            node.direction = best_direction
-            self.protein.collect_node_positions()  # Update positions for new best direction
-            return True
-
-    def run(self) -> float:
-        self.protein.straighten()
-        best_score = self.protein.get_bond_score()
-
-        for _ in range(self.max_iterations):
-            improvement = False
-            for node in self.protein.nodes[1:]:
-                if self._try_improve_node(node):
-                    improvement = True
-
-            if not improvement:
-                break  # Terminate if no improvements can be made
-
-        return best_score
