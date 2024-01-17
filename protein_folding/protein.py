@@ -1,4 +1,9 @@
 import matplotlib.pyplot as plt
+try:
+    from mayavi import mlab
+except:
+    pass
+
 from .definitions import *
 from .node import Node, _delta_pos_from_direction
 from .stack import Stack
@@ -245,7 +250,10 @@ class Protein:
         # Save image
         plt.savefig(filename)
 
-    def _plot_3d(self, filename="./unnamed_protein.png") -> None:
+    def plot_3d_matplotlib(self, filename="./unnamed_protein.png", show=False) -> None:
+        """
+        displays 3d structure using matplotlib (backup)
+        """
         ax = plt.figure().add_subplot(projection='3d')
         x = list()
         y = list()
@@ -255,11 +263,16 @@ class Protein:
             y.append(n.y)
             z.append(n.z)
         ax.plot(x, y, z, color='black')
-        plt.show()
         plt.savefig(filename)
+        if show:
+            plt.show()
 
     def plot_3d(self, filename="./unnamed_protein.png", show=False) -> None:
-        ax = plt.figure().add_subplot(projection='3d')
+        """
+        displays structure in 3D using mayavi.
+        To use install mayavi and PyQt5
+        """
+        # obtain coordinates
         x = list()
         y = list()
         z = list()
@@ -267,12 +280,18 @@ class Protein:
             x.append(float(n.x))
             y.append(float(n.y))
             z.append(float(n.z))
+
+        # plot 1: main structure as dots
         mlab.points3d(x, y, z, scale_factor=0.1, color=(0,0,0))
-        for i, letter in enumerate(self.sequence):
-            mlab.text3d(x[i], y[i], z[i], letter, color=(0,0,0), scale=0.15)
+        
+        # plot 2: main structure as line
         mlab.plot3d(x, y, z, color=(0,0,0))
 
-        # Add lines between all pairings
+        # plot 3: letters of sequence
+        for i, letter in enumerate(self.sequence):
+            mlab.text3d(x[i], y[i], z[i], letter, color=(0,0,0), scale=0.15)
+
+        # plot 4: lines between all pairings
         neighbours = self.get_all_neighbours()
         neighbours_filtered = self.filter_neighbours_by_nonzero_score(neighbours)
         for pairing in neighbours_filtered:
@@ -285,19 +304,16 @@ class Protein:
                 line_colour = (1, .5, 0)
             elif node1.letter == 'C' and node2.letter == 'C':
                 line_colour = (1, 0, 0)
-            else:
-                # Should never trigger, for now this mostly shows nothing gets through the if-statements
-                raise Exception(f"Letters {node1.letter} and {node2.letter} should not be neighbours")
 
             mlab.plot3d([float(node1.x), float(node2.x)],
                         [float(node1.y), float(node2.y)],
                         [float(node1.z), float(node2.z)],
                         tube_radius=0.01,
                         color=line_colour)
+        
+        mlab.savefig(filename)
         if show:
-        mlab.show()
-        #plt.savefig(filename)
-
+            mlab.show()
 
     def preserve(self):
         ghosts = [node.ghost for node in self.nodes]
@@ -307,7 +323,6 @@ class Protein:
             ghosts,
             self.pos_to_node
         )
-
 
     def revert(self):
         prev = self.history.pull()
