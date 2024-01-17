@@ -7,22 +7,17 @@ from protein_folding.protein import Protein
 from . import Algorithm
 
 
-class SimulatedAnnealing(Algorithm):
+class Regression(Algorithm):
     """
-    A simulated annealing algorithm that compares the current protein ordering
+    A simple regression algorithm that compares the current protein ordering
     against a randomly permutated but legal state and sets the current state to
-    said permutation if the bond score of that state is lower, and if a
-    randomly chosen float is above a perpetually lowering threshold, inspired
-    by the way metals anneal.
+    said permutation if the bond score of that state is lower.
     """
     
     def __init__(self, protein: 'Protein', dimensions, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
-        # decrease of threshold value per iteration
-        self.decrease = .999
         # number of random mutations to allow
-        # TODO: decide how to determine when to stop algorithm
-        self.n_permutations = 5000
+        self.n_permutations = 200
 
     def get_permutated_directions(self, node_idx: int):
         """
@@ -37,7 +32,9 @@ class SimulatedAnnealing(Algorithm):
         Post:
             - returns a list of directions that can be fed to protein.set_order
         """
-        dirs_total = [None] + self.protein.get_order()
+        dirs_total = [
+            node.direction_from_previous for node in self.protein.nodes
+            ]
         node = self.protein.nodes[node_idx]
         free_directions = node.get_free_directions(self.directions)
 
@@ -51,15 +48,13 @@ class SimulatedAnnealing(Algorithm):
                 
     def run(self) -> float:
         """
-        Runs a simulated annealing algorithm for n_permutations iterations.
+        Runs a simple regression algorithm for n_permutations iterations.
         
         Post:
             - self.protein is ordered in the way that the algorithm found to
             maximise the bond score.
         """
-        best_order = []
         score = 0
-        threshold = 1
         for _ in range(self.n_permutations):
             # get random node idx to permutate from and new directions
             node_idx = random.randint(1, len(self.protein.sequence) - 1)
@@ -67,19 +62,9 @@ class SimulatedAnnealing(Algorithm):
 
             # Prevent computing score if order is not valid
             if fast_validate_protein(dirs_total):
-
                 comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
-                decision_float = random.random()
-                if comparison_score <= score or threshold > decision_float:
+                if comparison_score <= score:
                     self.protein.set_order(dirs_total)
                     score = comparison_score
 
-                if comparison_score <= score:
-                    best_order = dirs_total
-
-            threshold *= self.decrease
-
-        self.protein.set_order(best_order)
-        score = self.protein.get_bond_score()
-            
         return score

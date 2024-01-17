@@ -1,6 +1,6 @@
 from experiments_helper import create_experiment_folders
 from protein_folding.protein import Protein
-from protein_folding.algorithms import SimulatedAnnealing
+from protein_folding.algorithms import Regression
 
 
 def main():
@@ -8,11 +8,11 @@ def main():
 	sequence = 'HHPHHHPH'
 	protein = Protein(sequence)
 
-	algorithm = SimulatedAnnealing(protein, dimensions=2, debug=True)
+	algorithm = Regression(protein, dimensions=2, debug=True)
 	score = algorithm.run()
 	print(f"Score: {score}")
 
-	protein.plot('./output/evaluate_simulated_annealing_protein_len8.png')
+	protein.plot('./output/evaluate_regression_protein_len8.png')
 
 if __name__ == '__main__':
 	main()

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from .definitions import *
-from .node import Node
+from .node import Node, _delta_pos_from_direction
+from .stack import Stack
 from .vector import *
 
 _valid_protein_letters = {'H', 'P', 'C'}
@@ -29,17 +30,28 @@ class Protein:
         self.sequence = sequence
 
         # Create list of all the nodes
-        self.nodes = [Node(self.sequence[0], 0, 0, 0, direction=None)]
-        for c in self.sequence[1:]:
+        self.nodes = [Node(self, 0, self.sequence[0], 0, 0, 0, direction=None)]
+        for _id, c in enumerate(self.sequence[1:], start=1):
             # Initialise new node in a straight line
-            self.nodes.append(Node.from_previous(c, RIGHT, self.nodes[-1]))
+            self.nodes.append(Node.from_previous(self, _id, c, RIGHT, self.nodes[-1]))
 
-        # Set to keep track of Node positions
-        self.node_positions: set[Vec3D] | None = None
+        # Link nodes together to set Node.next and Node.prev
+        self.link_nodes()
+
+        # List to keep track of Node directions
+        self.order: list[int | None] = [None] + [RIGHT] * (len(sequence) - 1)
+
+        # Dict to keep track of Node positions
+        self.pos_to_node: dict[Vec3D, Node] = {}
         self.collect_node_positions()
+
+        self.history = Stack()
 
     def __len__(self) -> int:
         return len(self.nodes)
+
+    def get_order(self):
+        return self.order[1:]
 
     def set_order(self, order: list) -> None:
         """
@@ -58,7 +70,7 @@ class Protein:
             f"Wrong order size, got {len(order)} but expected {(len(self.nodes) - 1)}"
 
         for node, direction in zip(self.nodes[1:], order):
-            node.change_direction(self.node_positions, direction, ignore_pos_set=True)
+            node.change_direction(direction, ignore_pos_set=True)
 
         self.collect_node_positions()
 
@@ -97,7 +109,9 @@ class Protein:
         return box.volume()
 
     def collect_node_positions(self):
-        self.node_positions: set[Vec3D] = {node.pos for node in self.nodes}
+        self.pos_to_node = {}
+        for node in self.nodes:
+            self.pos_to_node[node.pos] = node
 
     def get_bond_score(self) -> float:
         """
@@ -126,6 +140,13 @@ class Protein:
                     neighbours.append((node1, node2))
 
         return neighbours
+
+    def get_node_id(self, node: Node):
+        for i in range(len(self.nodes)):
+            if node == self.nodes[i]:
+                return i
+
+        raise KeyError
 
     def has_valid_order(self) -> bool:
         """
@@ -159,6 +180,13 @@ class Protein:
 
         return filtered_neighbours
 
+    def link_nodes(self):
+        for i, node in enumerate(self.nodes[1:], start=1):
+            node.prev = self.nodes[i - 1]
+
+        for i, node in enumerate(self.nodes[:-1]):
+            node.next = self.nodes[i + 1]
+
     def straighten(self):
         """
         Sets protein order to be a straight line from left to right
@@ -184,7 +212,7 @@ class Protein:
             plt.text(n.x, n.y, n.letter, size='10')
 
             # Draw protein line segment from previous node
-            plt.plot([prev.x, n.x], [prev.y, n.y], '--', color='black', linewidth=1)
+            plt.plot([prev.x, n.x], [prev.y, n.y], '-', color='black', linewidth=2)
 
             # Save position as previous
             prev = n.pos
@@ -194,7 +222,19 @@ class Protein:
         neighbours_filtered = self.filter_neighbours_by_nonzero_score(neighbours)
         for pairing in neighbours_filtered:
             node1, node2 = pairing
-            plt.plot([node1.x, node2.x], [node1.y, node2.y], '-', color='red', linewidth=1)
+
+            if node1.letter == 'H' and node2.letter == 'H':
+                line_colour = 'green'
+            elif (node1.letter == 'H' and node2.letter == 'C'
+                  or node1.letter == 'C' and node2.letter == 'H'):
+                line_colour = 'orange'
+            elif node1.letter == 'C' and node2.letter == 'C':
+                line_colour = 'red'
+            else:
+                # Should never trigger, for now this mostly shows nothing gets through the if-statements
+                raise Exception(f"Letters {node1.letter} and {node2.letter} should not be neighbours")
+
+            plt.plot([node1.x, node2.x], [node1.y, node2.y], '--', color=line_colour, linewidth=1)
 
         # Get full dimensions of protein
         dim = get_min_max(self.nodes)
@@ -205,6 +245,34 @@ class Protein:
 
         # Save image
         plt.savefig(filename)
+
+    def preserve(self):
+        ghosts = [node.ghost for node in self.nodes]
+
+        self.history.push(
+            self.order,
+            ghosts,
+            self.pos_to_node
+        )
+
+
+    def revert(self):
+        prev = self.history.pull()
+        prev_order = prev[0]
+        prev_ghosts = prev[1]
+        prev_positions = prev[2]
+
+        prev_posvecs = _get_posvecs_from_order(prev_order)
+
+        for i, node in enumerate(self.nodes[1:], start=1):
+            node.direction_from_previous = prev_order[i]
+            node.ghost = prev_ghosts[i]
+            node.pos = prev_posvecs[i]
+
+        self.link_nodes()
+
+        self.order = prev_order
+        self.pos_to_node = prev_positions
 
 
 def _validate_protein_letters(seq: str) -> None:
@@ -221,3 +289,16 @@ def _validate_protein_letters(seq: str) -> None:
     for c in seq:
         if c not in _valid_protein_letters:
             raise InvalidSequenceError(f"Letter {c} in sequence {seq} is not valid")
+
+
+def _get_posvecs_from_order(order):
+    posvecs: list = []
+    pos = Vec3D(0, 0, 0)
+    posvecs.append(pos)
+
+    for direction in order[1:]:
+        delta = _delta_pos_from_direction[direction]
+        pos = pos + delta
+        posvecs.append(pos)
+
+    return posvecs

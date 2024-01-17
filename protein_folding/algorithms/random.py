@@ -1,6 +1,7 @@
 import random
 
 from . import Algorithm
+from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -44,9 +45,8 @@ class PureRandom(Algorithm):
         failed_attempts = 0
         while True:
             random_order = self._create_order_list()
-            self.protein.set_order(random_order)
 
-            if self.protein.has_valid_order():
+            if fast_validate_protein(random_order):
                 break
 
             failed_attempts += 1
@@ -54,7 +54,8 @@ class PureRandom(Algorithm):
         if self._debug:
             print(f"Failed attempts: {failed_attempts}")
 
-        score = self.protein.get_bond_score()
+        score = fast_compute_bond_score(self.protein.sequence, random_order)
+        self.protein.set_order(random_order)
 
         return score
 
@@ -81,12 +82,12 @@ class IterativeRandom(Algorithm):
         # Iterate through nodes, check their available directions,
         # choose a random one and apply it
         for node in self.protein.nodes[1:]:
-            free_directions = node.get_free_directions(self.protein.node_positions, self.directions)
+            free_directions = node.get_free_directions(self.directions)
             if not free_directions:
                 return False
 
             direction = random.choice(free_directions)
-            node.change_direction(self.protein.node_positions, direction)
+            node.change_direction(direction)
 
         return True
 
