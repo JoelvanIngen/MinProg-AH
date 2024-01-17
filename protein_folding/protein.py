@@ -1,4 +1,3 @@
-from copy import copy
 import matplotlib.pyplot as plt
 from .definitions import *
 from .node import Node, _delta_pos_from_direction
@@ -250,7 +249,6 @@ class Protein:
 
     def preserve(self):
         ghosts = [node.ghost for node in self.nodes]
-        print(ghosts)
 
         self.history.push(
             self.order,
@@ -258,13 +256,6 @@ class Protein:
             self.pos_to_node
         )
 
-        # import pprint
-        # pprint.pprint((
-        #     self.order,
-        #     ghosts,
-        #     self.pos_to_node,
-        #     [node.pos for node in self.nodes]
-        # ))
 
     def revert(self):
         prev = self.history.pull()
@@ -283,14 +274,6 @@ class Protein:
 
         self.order = prev_order
         self.pos_to_node = prev_positions
-
-        # import pprint
-        # pprint.pprint((
-        #     self.order,
-        #     [node.ghost for node in self.nodes],
-        #     self.pos_to_node,
-        #     [node.pos for node in self.nodes]
-        # ))
 
 
 def _validate_protein_letters(seq: str) -> None:

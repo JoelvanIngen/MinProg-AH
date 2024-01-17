@@ -38,6 +38,7 @@ class Greedy(Algorithm):
                 return False
 
             for direction in free_directions:
+                self.protein.preserve()
                 node.change_direction(direction)
                 if self.protein.has_valid_order():
                     direction_scores[direction] = self.protein.get_bond_score()

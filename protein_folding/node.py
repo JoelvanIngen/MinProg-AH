@@ -88,8 +88,6 @@ class Node:
         assert not self.ghost
 
         # Remove position from position -> Node mapping
-        from pprint import pprint
-        pprint(self.protein.pos_to_node)
         self.protein.pos_to_node.pop(self.pos)
 
         # Set self to ghosted
@@ -154,9 +152,6 @@ class Node:
         if not self.direction_from_previous:
             raise Exception("First node in chain!")
 
-        # Save current state
-        self.protein.preserve()
-
         new_pos = calc_position_from_direction(direction, self.prev)
         delta_pos = new_pos - self.pos
 
@@ -177,7 +172,6 @@ class Node:
         # Add new position to the positions set
         if not ignore_pos_set:
             assert self.pos not in self.protein.pos_to_node
-            print('wtf maat')
             self.protein.pos_to_node[self.pos] = self
 
         # Set node to not-ghost

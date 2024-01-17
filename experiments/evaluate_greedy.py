@@ -6,8 +6,8 @@ from random import shuffle
 
 def main():
     create_experiment_folders()
-    sequence = 'H' * 50
-    sequence += 'C' * 10
+    sequence = 'H' * 20
+    sequence += 'C' * 15
     sequence += 'P' * 10
     l = list(sequence)
     shuffle(l)
