@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 direction_dict = {1: "Left", -1: "Right", 2: "Up", -2: "Down"}
 
+
 class Greedy(Algorithm):
     """
     A greedy algorithm that applies a direction for each individual
@@ -38,15 +39,16 @@ class Greedy(Algorithm):
 
             for direction in free_directions:
                 node.change_direction(direction)
+                self.protein.preserve()
                 if self.protein.has_valid_order():
                     direction_scores[direction] = self.protein.get_bond_score()
-                print(f"Direction checked: {direction_dict[direction]}")
+                # print(f"Direction checked: {direction_dict[direction]}")
                 self.protein.revert()
 
-            # print(f"Direction_scores: {direction_scores}")
+            print(f"Direction_scores: {direction_scores}")
             min_value = min(direction_scores.values())
             best_directions = [k for k, v in direction_scores.items() if v == min_value]
-            # print(f"Best directions: {best_directions}")
+            print(f"Best directions: {best_directions}")
             direction = random.choice(best_directions)
             print(f"Direction selected: {direction_dict[direction]}")
             node.change_direction(direction)
@@ -71,4 +73,3 @@ class Greedy(Algorithm):
         score = self.protein.get_bond_score()
 
         return score
-

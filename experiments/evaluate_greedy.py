@@ -6,9 +6,9 @@ from random import shuffle
 
 def main():
     create_experiment_folders()
-    sequence = 'H' * 5
+    sequence = 'H' * 50
     sequence += 'C' * 10
-    sequence += 'P' * 1
+    sequence += 'P' * 10
     l = list(sequence)
     shuffle(l)
     sequence = ''.join(l)
