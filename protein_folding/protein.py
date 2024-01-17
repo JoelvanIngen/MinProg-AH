@@ -272,6 +272,15 @@ class Protein:
 
         self.order = prev_order
         self.pos_to_node = prev_positions
+    
+    def random_configuration(self) -> None:
+        # Here, we define the range of directions; modify as needed based on your protein folding model
+        direction_options = [1, -1, 2, -2, 3, -3] # Add or remove directions based on your model
+        random_order = [random.choice(direction_options) for _ in range(len(self.sequence))]
+
+        # Apply the random order to the protein
+        self.set_order(random_order)
+
 
 
 def _validate_protein_letters(seq: str) -> None:
