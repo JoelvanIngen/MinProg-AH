@@ -37,9 +37,7 @@ class SimulatedAnnealing(Algorithm):
         Post:
             - returns a list of directions that can be fed to protein.set_order
         """
-        dirs_total = [
-            node.direction_from_previous for node in self.protein.nodes
-            ]
+        dirs_total = [None] + self.protein.get_order()
         node = self.protein.nodes[node_idx]
         free_directions = node.get_free_directions(self.directions)
 
