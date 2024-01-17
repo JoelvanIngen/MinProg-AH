@@ -258,7 +258,7 @@ class Protein:
         plt.show()
         plt.savefig(filename)
 
-    def plot_3d(self, filename="./unnamed_protein.png") -> None:
+    def plot_3d(self, filename="./unnamed_protein.png", show=False) -> None:
         ax = plt.figure().add_subplot(projection='3d')
         x = list()
         y = list()
@@ -268,7 +268,33 @@ class Protein:
             y.append(float(n.y))
             z.append(float(n.z))
         mlab.points3d(x, y, z, scale_factor=0.1, color=(0,0,0))
+        for i, letter in enumerate(self.sequence):
+            mlab.text3d(x[i], y[i], z[i], letter, color=(0,0,0), scale=0.15)
         mlab.plot3d(x, y, z, color=(0,0,0))
+
+        # Add lines between all pairings
+        neighbours = self.get_all_neighbours()
+        neighbours_filtered = self.filter_neighbours_by_nonzero_score(neighbours)
+        for pairing in neighbours_filtered:
+            node1, node2 = pairing
+
+            if node1.letter == 'H' and node2.letter == 'H':
+                line_colour = (0,1,0)
+            elif (node1.letter == 'H' and node2.letter == 'C'
+                  or node1.letter == 'C' and node2.letter == 'H'):
+                line_colour = (1, .5, 0)
+            elif node1.letter == 'C' and node2.letter == 'C':
+                line_colour = (1, 0, 0)
+            else:
+                # Should never trigger, for now this mostly shows nothing gets through the if-statements
+                raise Exception(f"Letters {node1.letter} and {node2.letter} should not be neighbours")
+
+            mlab.plot3d([float(node1.x), float(node2.x)],
+                        [float(node1.y), float(node2.y)],
+                        [float(node1.z), float(node2.z)],
+                        tube_radius=0.01,
+                        color=line_colour)
+        if show:
         mlab.show()
         #plt.savefig(filename)
 
