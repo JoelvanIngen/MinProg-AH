@@ -6,12 +6,13 @@ from random import shuffle
 
 def main():
     create_experiment_folders()
-    sequence = 'H' * 10
-    sequence += 'C' * 50
-    sequence += 'P' * 10
-    l = list(sequence)
-    shuffle(l)
-    sequence = ''.join(l)
+    # sequence = 'H' * 10
+    # sequence += 'C' * 50
+    # sequence += 'P' * 10
+    # l = list(sequence)
+    # shuffle(l)
+    # sequence = ''.join(l)
+    sequence = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
 
     protein = Protein(sequence)
 
@@ -19,7 +20,7 @@ def main():
     score = algorithm.run()
     print(f"Score: {score}")
 
-    protein.plot('./output/evaluate_spiral_protein_len300.png')
+    protein.plot(f'./output/evaluate_spiral_protein_len{len(sequence)}.png')
 
 
 if __name__ == '__main__':
