@@ -1,13 +1,21 @@
 from experiments_helper import create_experiment_folders
 from protein_folding.protein import Protein
-from protein_folding.algorithms.hillclimb import HillClimb
+from protein_folding.algorithms.hillclimb_1 import IterativeRandomHillClimb
 
 
-# Create a Protein instance with a specific sequence or configuration
-protein_instance = Protein(sequence="HHPHHHPPH")
+def main():
+    create_experiment_folders()
 
-# Initialize the Hill Climb algorithm
-hill_climb = HillClimb(protein=protein_instance, dimensions = 2, temperature=1000.0, cooling_rate=0.001)
+    sequence = sequence = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
+    protein = Protein(sequence)
 
-# Run the algorithm
-optimized_protein = hill_climb.run()
+    algorithm = IterativeRandomHillClimb(protein, dimensions=2, debug=True)
+    score = algorithm.run()
+
+    protein.plot('./output/evaluate_purerandom_protein_len30.png')
+
+    print(f'Final score: {score}')
+
+
+if __name__ == '__main__':
+    main()
