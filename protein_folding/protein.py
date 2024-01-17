@@ -1,6 +1,8 @@
+from copy import copy
 import matplotlib.pyplot as plt
 from .definitions import *
 from .node import Node
+from .stack import Stack
 from .vector import *
 
 _valid_protein_letters = {'H', 'P', 'C'}
@@ -34,9 +36,14 @@ class Protein:
             # Initialise new node in a straight line
             self.nodes.append(Node.from_previous(self, _id, c, RIGHT, self.nodes[-1]))
 
+        # List to keep track of Node directions
+        self.order: list[int | None] = [None] + self.get_order()
+
         # Dict to keep track of Node positions
         self.pos_to_node: dict[Vec3D, Node] = {}
         self.collect_node_positions()
+
+        self.history = Stack()
 
     def __len__(self) -> int:
         return len(self.nodes)
@@ -230,6 +237,28 @@ class Protein:
 
         # Save image
         plt.savefig(filename)
+
+    def preserve(self):
+        ghosts = [node.ghost for node in self.nodes]
+
+        self.history.push(
+            self.order,
+            ghosts,
+            self.pos_to_node
+        )
+
+    def revert(self):
+        prev = self.history.pull()
+        prev_order = prev[0]
+        prev_ghosts = prev[1]
+        prev_postions = prev[2]
+
+        for i, node in enumerate(self.nodes[1:], start=1):
+            node.direction_from_previous = prev_order[i]
+            node.ghost = prev_ghosts[i]
+
+        self.order = prev_order
+        self.pos_to_node = prev_postions
 
 
 def _validate_protein_letters(seq: str) -> None:
