@@ -1,3 +1,6 @@
+from copy import copy
+
+
 class Stack:
     def __init__(self):
         self._direction_history: list[list[int]] = []
@@ -5,9 +8,9 @@ class Stack:
         self._position_dict_history: list[dict] = []
 
     def push(self, order: list[int], ghost: list[bool], pos_dict: dict) -> None:
-        self._direction_history.append(order)
-        self._ghost_history.append(ghost)
-        self._position_dict_history.append(pos_dict)
+        self._direction_history.append(copy(order))
+        self._ghost_history.append(copy(ghost))
+        self._position_dict_history.append(copy(pos_dict))
 
     def pull(self) -> tuple[list[int], list[bool], dict]:
         return (
