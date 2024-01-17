@@ -11,7 +11,12 @@ class PureRandomHillClimb(Algorithm):
     def __init__(self, protein: 'Protein', dimensions, max_iterations=1000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         self.max_iterations = max_iterations
-
+        
+    def _create_order_list(self) -> list[int]:
+        order_length = len(self.protein.sequence) - 1
+        order = [random.choice(self.directions) for _ in range(order_length)]
+        return order
+    
     def _modify_order(self, order):
         # Randomly choose an index to modify
         index_to_modify = random.randint(0, len(order) - 1)
