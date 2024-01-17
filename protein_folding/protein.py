@@ -245,7 +245,7 @@ class Protein:
         # Save image
         plt.savefig(filename)
 
-    def plot_3d(self):
+    def _plot_3d(self, filename="./unnamed_protein.png") -> None:
         ax = plt.figure().add_subplot(projection='3d')
         x = list()
         y = list()
@@ -254,8 +254,24 @@ class Protein:
             x.append(n.x)
             y.append(n.y)
             z.append(n.z)
-        ax.plot(x, y, z)
-        plt.savefig("./test.png")
+        ax.plot(x, y, z, color='black')
+        plt.show()
+        plt.savefig(filename)
+
+    def plot_3d(self, filename="./unnamed_protein.png") -> None:
+        ax = plt.figure().add_subplot(projection='3d')
+        x = list()
+        y = list()
+        z = list()
+        for n in self.nodes:
+            x.append(float(n.x))
+            y.append(float(n.y))
+            z.append(float(n.z))
+        mlab.points3d(x, y, z, scale_factor=0.1, color=(0,0,0))
+        mlab.plot3d(x, y, z, color=(0,0,0))
+        mlab.show()
+        #plt.savefig(filename)
+
 
     def preserve(self):
         ghosts = [node.ghost for node in self.nodes]
