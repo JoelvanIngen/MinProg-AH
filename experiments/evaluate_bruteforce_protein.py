@@ -5,17 +5,16 @@ from experiments_helper import create_bruteforce_folders
 from protein_folding.protein import Protein
 from protein_folding.algorithms import BruteForce
 
-MAX_ITERATIONS = 100000
 
 def run():
     # Create necessary folders
     create_bruteforce_folders()
 
-    seq = "HHPHHHPHHHHH"
-    # seq = "HHHHH"
+    seq = "HHPHHHPHPHHHPH"
+    max_iterations = 0
     dim = 2
     protein = Protein(seq)
-    algorithm = BruteForce(protein, dimensions=dim, debug=True)
+    algorithm = BruteForce(protein, dimensions=dim, max_iterations=max_iterations)
 
     results = algorithm.run()
     print(results)
@@ -34,5 +33,3 @@ if __name__ == '__main__':
     stats = pstats.Stats(profiler)
     stats.strip_dirs().sort_stats('cumulative').print_stats(10)
     profiler.dump_stats('output/protein.prof')
-
-
