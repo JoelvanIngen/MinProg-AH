@@ -1,5 +1,5 @@
 import random
-from . import Algorithm
+from protein_folding.algorithms import Algorithm
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 
 from typing import TYPE_CHECKING

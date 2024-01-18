@@ -1,18 +1,18 @@
 from experiments_helper import create_experiment_folders
 from protein_folding.protein import Protein
-from protein_folding.algorithms import IterativeRandom
+from protein_folding.algorithms import PureRandom
 
 
 def main():
     create_experiment_folders()
 
-    sequence = 'HHHHHHHH'
+    sequence = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
     protein = Protein(sequence)
 
-    algorithm = IterativeRandom(protein, dimensions=2, debug=True)
+    algorithm = PureRandom(protein, dimensions=2, debug=True)
     score = algorithm.run()
 
-    protein.plot('./output/evaluate_iterativerandom_protein_len8.png')
+    protein.plot(f'./output/{algorithm.get_name()}_protein_len{len(sequence)}.png')
 
     print(f'Final score: {score}')
 

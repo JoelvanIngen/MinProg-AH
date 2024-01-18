@@ -12,7 +12,7 @@ def main():
     algorithm = IterativeRandom(protein, dimensions=2, debug=True)
     score = algorithm.run()
 
-    protein.plot('./output/evaluate_iterativerandom_protein_len30.png')
+    protein.plot(f'./output/{algorithm.get_name()}_protein_len{len(sequence)}.png')
 
     print(f'Final score: {score}')
 
