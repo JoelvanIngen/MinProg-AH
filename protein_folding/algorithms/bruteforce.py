@@ -41,8 +41,23 @@ def generate_combinations(directions, n):
     return list(list(itertools.product(directions, repeat=n)))
 
 
+def generate_new_combination(directions, prev_combination):
+    new_combination = prev_combination
+    for i, direction in enumerate(new_combination):
+        if direction == directions[-1]:
+            new_combination[i] = directions[0]
+            continue
+        else:
+            new_combination[i] = directions[directions.index(direction) + 1]
+            if fast_validate_protein(new_combination):
+                return new_combination
+    return None
+
+
 class BruteForce(Algorithm):
-    def __init__(self, protein: 'Protein', dimensions: int, *args, max_iterations= 0, **kwargs):
+
+    # TODO Implement generate_new_combination instead of generating all combinations
+    def __init__(self, protein: 'Protein', dimensions: int, *args, max_iterations=0, **kwargs):
         super().__init__(protein, dimensions, *args, **kwargs)
         self.sequence = self.protein.sequence
         self.n = len(self.protein.sequence) - 1
@@ -61,6 +76,7 @@ class BruteForce(Algorithm):
             if fast_validate_protein(order):
                 score = fast_compute_bond_score(seq=self.sequence, order=order)
                 if score < self.score_tracker.lowest_top_score:
-                    print(f"Found score {score} on config {i + 1}/{self.configs} ({(i + 1) // self.configs * 100:.0f}%)")
+                    print(
+                        f"Found score {score} on config {i + 1}/{self.configs} ({(i + 1) // self.configs * 100:.0f}%)")
                     self.score_tracker.add_score(order, score)
         return self.score_tracker.get_scores()
