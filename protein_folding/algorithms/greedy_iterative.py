@@ -1,10 +1,11 @@
-import random
-from . import Algorithm
-from typing import TYPE_CHECKING
 from copy import deepcopy
 
-from protein_folding.protein import Protein
-from protein_folding.node import Node
+from . import Algorithm
+from .heuristics import *
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from protein_folding.protein import Protein
 
 direction_dict = {-1: "Left", 1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
 
@@ -30,6 +31,11 @@ class IterativeGreedy(Algorithm):
 
         # Test if deepcopy is actually necessary
         self.best_order_deepcopy: list[int] = []
+
+        self.heuristics = (
+            MinimiseDimensions(self.protein),
+            FoldAmount(self.protein),
+        )
 
     def _next_fold(self, depth: int):
         # Check if we've reached the end
@@ -57,7 +63,13 @@ class IterativeGreedy(Algorithm):
 
         free_directions = self.protein.nodes[depth].get_free_directions(self.directions)
 
-        for direction in free_directions:
+        if not free_directions:
+            return
+
+        direction_scores, free_directions_sorted = self._process_heurstics(
+            depth, free_directions, self.heuristics)
+
+        for direction in free_directions_sorted:
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
             self._next_fold(depth + 1)
@@ -73,4 +85,3 @@ class IterativeGreedy(Algorithm):
 
         self.protein.set_order(self.best_order[1:])
         return self.best_score
-

@@ -2,11 +2,10 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from protein_folding.protein import Protein
-    from protein_folding.node import Node
 
 
 class Heuristic:
-    def __init__(self, protein: Protein):
+    def __init__(self, protein: 'Protein'):
         """
         Initialises the heuristic
 
@@ -17,15 +16,31 @@ class Heuristic:
         """
         self.protein = protein
 
-    def run(self, node: Node, directions: list[int]) -> list[float]:
-        """
-        Runs the heuristic and computes a score for each possible option
+        self.score_per_direction = []
 
-        pre:
-            - node is a Node object to apply the heuristic on
-            - directions is a list of directions that a node can take from
-            its source (the previous node).
-        post:
-            - a float is returned representing a score for every direction.
+    def run(self):
+        """
+        Runs the heuristic and computes a score for a protein configuration
+
+        Post:
+            - a float value representing the heuristic's evaluation of the
+                current order is saved in self.score_per_direction
         """
         pass
+
+    def interpret(self) -> list[float]:
+        """
+        Reads the scores the heuristic assigned to different positions, and
+            interprets them for the algorithm. It can, for example, normalise
+            values or invert them.
+
+        In the return values, a higher score means a better position.
+        """
+        pass
+
+    def reset(self) -> None:
+        """
+        Resets the heuristic by forgetting previous values per direction
+        """
+
+        self.score_per_direction = []
