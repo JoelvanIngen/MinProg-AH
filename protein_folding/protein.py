@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-#try:
-#    from mayavi import mlab
-#except:
-#       pass
+try:
+    from mayavi import mlab
+except:
+       pass
 
 from .definitions import *
 from .node import Node, _delta_pos_from_direction
@@ -365,7 +365,7 @@ class Protein:
     def get_node_coordinates(self):
         coordinates = list()
         for node in self.nodes:
-            coordinates.append((node.x, node.y, node.z))
+            coordinates.append((float(node.x), float(node.y), float(node.z)))
         return coordinates
 
 
