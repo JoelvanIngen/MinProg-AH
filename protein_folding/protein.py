@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-try:
-    from mayavi import mlab
-except:
-    pass
+#try:
+#    from mayavi import mlab
+#except:
+#       pass
 
 from .definitions import *
 from .node import Node, _delta_pos_from_direction
@@ -361,6 +361,13 @@ class Protein:
 
         # for node in self.nodes:
         #     print(node, node.prev, node.next, node.ghost)
+    
+    def get_node_coordinates(self):
+        coordinates = list()
+        for node in self.nodes:
+            coordinates.append((node.x, node.y, node.z))
+        return coordinates
+
 
 def _validate_protein_letters(seq: str) -> None:
     """
@@ -376,6 +383,7 @@ def _validate_protein_letters(seq: str) -> None:
     for c in seq:
         if c not in _valid_protein_letters:
             raise InvalidSequenceError(f"Letter {c} in sequence {seq} is not valid")
+
 
 
 def _get_posvecs_from_order(order):
