@@ -37,7 +37,7 @@ class NotNeighbourError(Exception):
 
 class Node:
     def __init__(self, protein: 'Protein', _id: int, letter: str, x: int, y: int, z: int,
-                 direction: int | None, prev_node: Optional['Node'] = None):
+                 direction: int | None, is_ghost: bool):
 
         self.protein = protein
         self.id = _id
@@ -46,7 +46,7 @@ class Node:
         self.pos = Vec3D(x, y, z)
 
         self.next: Node | None = None
-        self.prev: Node | None = prev_node
+        self.prev: Node | None = None
 
         self.direction_from_previous = direction
 
@@ -54,7 +54,7 @@ class Node:
         # other nodes. If the node is ghosted, it is not saved in the protein's
         # positions set. If it is not ghosted, its position will have been
         # saved.
-        self.ghost: bool = False
+        self.ghost: bool = is_ghost
 
     def __eq__(self, other):
         return self.id == other.id
@@ -70,7 +70,22 @@ class Node:
     def from_previous(cls, protein: 'Protein', _id: int, c: str, direction: int, prev: 'Node'):
         x, y, z = calc_position_from_direction(direction, prev)
 
-        return cls(protein, _id, c, x, y, z, direction, prev_node=prev)
+        return cls(protein, _id, c, x, y, z, direction, is_ghost=False)
+
+    @classmethod
+    def from_dict(cls, protein: 'Protein', d: dict) -> 'Node':
+        return cls(protein, **d)
+
+    def to_dict(self) -> dict:
+        return {
+            '_id': self.id,
+            'letter': self.letter,
+            'direction': self.direction_from_previous,
+            'x': self.x,
+            'y': self.y,
+            'z': self.z,
+            'is_ghost': self.ghost,
+        }
 
     @property
     def x(self):
