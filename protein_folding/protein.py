@@ -35,7 +35,7 @@ class Protein:
         self.sequence = sequence
 
         # Create list of all the nodes
-        self.nodes = [Node(self, 0, self.sequence[0], 0, 0, 0, direction=None)]
+        self.nodes = [Node(self, 0, self.sequence[0], 0, 0, 0, direction=None, is_ghost=False)]
         for _id, c in enumerate(self.sequence[1:], start=1):
             # Initialise new node in a straight line
             self.nodes.append(Node.from_previous(self, _id, c, RIGHT, self.nodes[-1]))
@@ -317,32 +317,50 @@ class Protein:
             mlab.show()
 
     def preserve(self):
-        ghosts = [node.ghost for node in self.nodes]
+        node_dicts = [node.to_dict() for node in self.nodes]
 
         self.history.push(
             self.order,
-            ghosts,
-            self.pos_to_node
+            node_dicts,
         )
 
     def revert(self):
         prev = self.history.pull()
-        prev_order = prev[0]
-        prev_ghosts = prev[1]
-        prev_positions = prev[2]
 
-        prev_posvecs = _get_posvecs_from_order(prev_order)
+        # Restore order
+        self.order = prev[0]
 
-        for i, node in enumerate(self.nodes[1:], start=1):
-            node.direction_from_previous = prev_order[i]
-            node.ghost = prev_ghosts[i]
-            node.pos = prev_posvecs[i]
+        # Restore nodes and positions
+        self.nodes = []
+        self.pos_to_node = {}
+        for node_dict in prev[1]:
+            pos = Vec3D(node_dict['x'], node_dict['y'], node_dict['z'])
+            node = Node.from_dict(self, node_dict)
 
+            self.nodes.append(node)
+            if not node.ghost:
+                self.pos_to_node[pos] = node
+
+        # Restore node linking
         self.link_nodes()
+        # self.nodes[0].next = self.nodes[1]
+        #
+        # for i in range(1, n_nodes - 2):
+        #     this_node = self.nodes[i]
+        #     prev_node = self.nodes[i - 1]
+        #     next_node = self.nodes[i + 1]
+        #
+        #     this_node.next = next_node
+        #     this_node.prev = prev_node
+        #
+        # self.nodes[-1].prev = self.nodes[-2]
 
-        self.order = prev_order
-        self.pos_to_node = prev_positions
+        # DEBUGGING
+        for posvec, node in self.pos_to_node.items():
+            assert posvec == node.pos
 
+        # for node in self.nodes:
+        #     print(node, node.prev, node.next, node.ghost)
 
 def _validate_protein_letters(seq: str) -> None:
     """
