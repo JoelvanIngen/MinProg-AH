@@ -6,13 +6,13 @@ from protein_folding.algorithms import IterativeRandom
 def main():
     create_experiment_folders()
 
-    sequence = 'HHHHHHHH'
+    sequence = 'H' * 30
     protein = Protein(sequence)
 
     algorithm = IterativeRandom(protein, dimensions=2, debug=True)
     score = algorithm.run()
 
-    protein.plot('./output/evaluate_iterativerandom_protein_len8.png')
+    protein.plot(f'./output/evaluate_iterativerandom_protein_len{len(sequence)}.png')
 
     print(f'Final score: {score}')
 
