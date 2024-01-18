@@ -20,16 +20,31 @@ class Algorithm:
     def get_name(self) -> str:
         return self.__class__.__name__
 
-    def _process_heurstics(self, node_idx: int,
-                           free_directions: list[int],
-                           heuristics: callable) -> list[list[float]]:
+    def _process_heuristics_single_direction(self,
+                                             direction: int,
+                                             node_idx: int,
+                                             heuristics: callable) -> list[float]:
+        """
+        For a given node, computes and returns the heuristic scores for a
+        single direction.
+        """
+        self.protein.preserve()
+        self.protein.nodes[node_idx].change_direction(direction)
+        direction_scores = [heuristic.run() for heuristic in heuristics]
+        self.protein.revert()
+
+        return direction_scores
+
+    def _process_heurstics(self, free_directions: list[int],
+                           *args) -> list[list[float]]:
+        """
+        For a given node, computes and returns the heuristic scores for each
+        free direction.
+        """
         scores = []
         for direction in free_directions:
-            self.protein.preserve()
-            self.protein.nodes[node_idx].change_direction(direction)
-            direction_scores = [heuristic.run() for heuristic in heuristics]
+            direction_scores = self._process_heuristics_single_direction(direction, *args)
             scores.append(direction_scores)
-            self.protein.revert()
 
         return scores
 
