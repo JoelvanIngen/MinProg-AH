@@ -16,7 +16,7 @@ class MinimiseDimensions(Heuristic):
 
     def run(self):
         # Evaluates the protein and calculates the dimension penalty.
-        left_upper, right_lower = get_min_max([node.pos for node in self.protein.nodes])
+        left_upper, right_lower = get_min_max([node.pos for node in self.protein.nodes if not node.ghost])
 
         self.score_per_direction.append(self._calc_size_score(left_upper, right_lower))
 

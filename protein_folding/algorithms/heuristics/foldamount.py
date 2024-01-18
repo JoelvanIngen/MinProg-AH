@@ -17,7 +17,7 @@ class FoldAmount(Heuristic):
         # Evaluates the protein and calculates the number of non-ordered links.
         n_corners = 0
 
-        for node in self.protein.nodes[2:]:
+        for node in [node for node in self.protein.nodes[2:] if not node.ghost]:
             if node.direction_from_previous != node.prev.direction_from_previous:
                 n_corners += 1
 
@@ -25,16 +25,16 @@ class FoldAmount(Heuristic):
 
     def interpret(self) -> list[float]:
         """
-        Normalises the values such that min(scores) = 0 and max(scores) = 1.
+        Normalises the values such that max(scores) = 1.
         """
         _min = min(self.score_per_direction)
         _max = max(self.score_per_direction)
         delta = _max - _min
 
-        if delta == 0:
+        if _max == 0:
             # Avoid division by zero if all scores are similar
             return [0. for _ in self.score_per_direction]
 
-        scores_norm = [(value - _min) / delta for value in self.score_per_direction]
+        scores_norm = [value / _max for value in self.score_per_direction]
         return scores_norm
 
