@@ -79,16 +79,6 @@ class Protein:
 
         self.collect_node_positions()
 
-    def calc_size_score(self):
-        """
-        Computes a score based on the physical dimensions of the protein. This
-            value can be used as a penalty for a specific configuration.
-        """
-        dim = get_min_max([node.pos for node in self.nodes])
-        box = dim[1] - dim[0]
-
-        return box.len_sq()
-
     def calc_area(self):
         """
         Computes the area of the grid, only taking into account x- and
