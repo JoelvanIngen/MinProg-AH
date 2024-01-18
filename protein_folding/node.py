@@ -101,7 +101,7 @@ class Node:
         assert not self.ghost
 
         # Remove position from position -> Node mapping
-        self.protein.pos_to_node.pop(self.pos, None)
+        self.protein.pos_to_node.pop(self.pos)
 
         # Set self to ghosted
         self.ghost = True
@@ -166,7 +166,7 @@ class Node:
 
         # Remove old position from the positions dict if node was not ghosted
         if not self.ghost and not ignore_pos_set:
-            self.protein.pos_to_node.pop(self.pos, None)
+            self.protein.pos_to_node.pop(self.pos)
 
         # Set new position
         self.pos = new_pos
