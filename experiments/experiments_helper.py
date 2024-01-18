@@ -12,5 +12,5 @@ def create_experiment_folders():
 
 def create_bruteforce_folders():
     # Ensures Brute Force folders are created so experiments don't crash
-    if not os.path.exists('./bf_output/'):
-        os.makedirs('./bf_output/')
+    if not os.path.exists('output/bf_output/'):
+        os.makedirs('output/bf_output/')

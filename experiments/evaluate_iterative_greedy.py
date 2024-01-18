@@ -2,6 +2,7 @@ from experiments_helper import create_experiment_folders
 from protein_folding.protein import Protein
 from protein_folding.algorithms import IterativeGreedy
 from random import shuffle
+import cProfile
 
 
 def main():
@@ -22,10 +23,12 @@ def main():
     print(f"Score: {score}")
 
     if dim == 2:
-        protein.plot(f'./output/evaluate_greedy_protein_len{len(sequence)}_dim{dim}.png')
+        protein.plot(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{dim}.png')
     elif dim == 3:
-        protein.plot_3d(f'./output/evaluate_greedy_protein_len{len(sequence)}_dim{dim}.png')
+        protein.plot_3d(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{dim}.png')
 
 
 if __name__ == '__main__':
-    main()
+    profiler = cProfile.Profile()
+    profiler.runcall(main)
+    profiler.dump_stats('output/protein.prof')
