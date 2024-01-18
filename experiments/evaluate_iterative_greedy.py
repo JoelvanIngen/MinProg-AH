@@ -2,6 +2,7 @@ from experiments_helper import create_experiment_folders
 from protein_folding.protein import Protein
 from protein_folding.algorithms import IterativeGreedy
 from random import shuffle
+import cProfile
 
 
 def main():
@@ -28,4 +29,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    profiler = cProfile.Profile()
+    profiler.runcall(main)
+    profiler.dump_stats('output/protein.prof')
