@@ -333,24 +333,6 @@ class Protein:
 
         # Restore node linking
         self.link_nodes()
-        # self.nodes[0].next = self.nodes[1]
-        #
-        # for i in range(1, n_nodes - 2):
-        #     this_node = self.nodes[i]
-        #     prev_node = self.nodes[i - 1]
-        #     next_node = self.nodes[i + 1]
-        #
-        #     this_node.next = next_node
-        #     this_node.prev = prev_node
-        #
-        # self.nodes[-1].prev = self.nodes[-2]
-
-        # DEBUGGING
-        for posvec, node in self.pos_to_node.items():
-            assert posvec == node.pos
-
-        # for node in self.nodes:
-        #     print(node, node.prev, node.next, node.ghost)
     
     def get_node_coordinates(self):
         coordinates = list()
