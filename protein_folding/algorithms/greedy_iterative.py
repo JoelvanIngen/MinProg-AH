@@ -41,15 +41,9 @@ class IterativeGreedy(Algorithm):
     def _next_fold(self, depth: int):
         # Check if we've reached the end
         if depth >= len(self.protein):
-            # Cannot be false if code works correctly, since we only look for
-            # free directions and revert if stuck, reaching the chain end means
-            # having a valid order
-            assert self.protein.has_valid_order()
-            assert True not in [node.ghost for node in self.protein.nodes]
-
-            # if self.protein.get_bond_score() < self.best_score:
-            if fast_compute_bond_score(self.protein.sequence, self.protein.order[1:]) < self.best_score:
-                self.best_score = self.protein.get_bond_score()
+            bond_score = fast_compute_bond_score(self.protein.sequence, self.protein.order[1:])
+            if bond_score < self.best_score:
+                self.best_score = bond_score
                 self.best_order = self.protein.order
                 self.best_order_deepcopy = deepcopy(self.protein.order)
 
