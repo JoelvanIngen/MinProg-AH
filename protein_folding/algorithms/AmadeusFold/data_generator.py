@@ -10,10 +10,10 @@ from protein_folding.protein import Protein
 from sequence_generator import sequence_generator
 
 def data_generator(
-	n_datapoints: int = 10000,
+	n_datapoints: int = 5000,
 	seq_len_limits: list = [5, 10],
-	max_bruteforce_iterations: int = 100000,
-	csv_loc: str = './data/test_data.csv'
+	max_bruteforce_iterations: int = 50000,
+	csv_loc: str = './data/unnamed_data.csv'
 	) -> None:
 
 	dataset = list()
@@ -34,11 +34,11 @@ def data_generator(
 
 		# obtain data from solutions: sequence, score, order, node coordinates
 		for	order in results:
+			sequence_str = "".join(sequence)
 			score = results[order]
 			protein.set_order(order)
 			coordinates = protein.get_node_coordinates()
-
-			datapoint = [sequence, score, order, coordinates]
+			datapoint = [sequence_str, score, order, coordinates]
 			dataset.append(datapoint)
 			i += 1
 			pbar.update(1)
