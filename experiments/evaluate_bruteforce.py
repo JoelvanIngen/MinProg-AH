@@ -24,7 +24,7 @@ def run():
         protein = Protein(seq)
         protein.set_order(order)
         score = results[order]
-        protein.plot(filename=f'./bf_output/{algorithm.get_name()}_#{i + 1}_score{score}.png')
+        protein.plot(filename=f'./output/bf_output/{algorithm.get_name()}_#{i + 1}_score{score}.png')
 
 
 if __name__ == '__main__':
