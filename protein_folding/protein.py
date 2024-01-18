@@ -342,21 +342,7 @@ class Protein:
 
         self.order = prev_order
         self.pos_to_node = prev_positions
-    
-    def random_configuration(self) -> None:
-        """
-        Randomizes the configuration (shape) of the protein by generating a random sequence of directions
-        and applying it using the set_order method.
-        """
-        # Assuming the directions are represented as 1, -1, 2, -2, etc.
-        direction_options = [1, -1, 2, -2, 3, -3] # Add or remove directions based on your model
-        # Generating a random order list of length one less than the number of nodes in the protein
-        random_order = [random.choice(direction_options) for _ in range(len(self.nodes) - 1)]
 
-        # Apply the random order to the protein
-        self.set_order(random_order)
-
-    
 
 def _validate_protein_letters(seq: str) -> None:
     """
