@@ -2,6 +2,7 @@ from copy import deepcopy
 
 from . import Algorithm
 from .heuristics import *
+from protein_folding.fast_protein import fast_compute_bond_score
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -46,7 +47,8 @@ class IterativeGreedy(Algorithm):
             assert self.protein.has_valid_order()
             assert True not in [node.ghost for node in self.protein.nodes]
 
-            if self.protein.get_bond_score() < self.best_score:
+            # if self.protein.get_bond_score() < self.best_score:
+            if fast_compute_bond_score(self.protein.sequence, self.protein.order[1:]) < self.best_score:
                 self.best_score = self.protein.get_bond_score()
                 self.best_order = self.protein.order
                 self.best_order_deepcopy = deepcopy(self.protein.order)
