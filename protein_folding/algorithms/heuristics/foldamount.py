@@ -26,6 +26,15 @@ class foldamount(Heuristic):
         # For now every ordered link is equal!
         return len(non_ordered_links)
 
+    def run(self, node_idx: int, directions: list[int]) -> list[float]:
+        # Evaluates each direction and calculates a score based on the number of non order links.
+        scores = []
+        for direction in directions:
+            non_ordered_links = self._find_non_ordered_links(node_idx, direction)
+            score = self._calculate_links_score(non_ordered_links)
+            scores.append(score)
+        return scores
+
 
 
 
