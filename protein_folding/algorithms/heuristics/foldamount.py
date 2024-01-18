@@ -21,4 +21,11 @@ class foldamount(Heuristic):
                 non_ordered_links.append((node, test_protein.nodes[node_idx]))
         # .direction = previousdirection -> 
         return non_ordered_links     
+    
+    def _calculate_links_score(self, non_ordered_links: list[tuple]) -> float:
+        # For now every ordered link is equal!
+        return len(non_ordered_links)
+
+
+
 
