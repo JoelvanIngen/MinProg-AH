@@ -20,6 +20,19 @@ class Algorithm:
     def get_name(self) -> str:
         return self.__class__.__name__
 
+    def _process_heurstics(self, node_idx: int,
+                           free_directions: list[int],
+                           heuristics: callable) -> list[list[float]]:
+        scores = []
+        for direction in free_directions:
+            self.protein.preserve()
+            self.protein.nodes[node_idx].change_direction(direction)
+            direction_scores = [heuristic.run() for heuristic in heuristics]
+            scores.append(direction_scores)
+            self.protein.revert()
+
+        return scores
+
     def run(self) -> float:
         """
         Runs the algorithm on the protein and calculates and returns
