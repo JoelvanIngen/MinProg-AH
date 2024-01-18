@@ -10,8 +10,8 @@ def run():
     # Create necessary folders
     create_bruteforce_folders()
 
-    seq = "HHPHHHPHPHHHPH"
-    max_iterations = 0
+    seq = "CCCCCCC"
+    max_iterations = 5000000
     dim = 2
     protein = Protein(seq)
     algorithm = BruteForce(protein, dimensions=dim, max_iterations=max_iterations)
@@ -24,7 +24,7 @@ def run():
         protein = Protein(seq)
         protein.set_order(order)
         score = results[order]
-        # protein.plot(filename=f'./bf_output/bf_#{i + 1}_score{score}.png')
+        protein.plot(filename=f'./bf_output/{algorithm.get_name()}_#{i + 1}_score{score}.png')
 
 
 if __name__ == '__main__':

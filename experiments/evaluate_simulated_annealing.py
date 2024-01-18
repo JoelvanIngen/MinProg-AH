@@ -12,7 +12,7 @@ def main():
 	score = algorithm.run()
 	print(f"Score: {score}")
 
-	protein.plot(f'./output/evaluate_simulated_annealing_protein_len{len(sequence)}.png')
+	protein.plot(f'./output/{algorithm.get_name()}_len{len(sequence)}.png')
 
 
 if __name__ == '__main__':

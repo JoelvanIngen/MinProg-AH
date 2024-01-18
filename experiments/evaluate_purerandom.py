@@ -12,7 +12,7 @@ def main():
     algorithm = PureRandom(protein, dimensions=2, debug=True)
     score = algorithm.run()
 
-    protein.plot(f'./output/evaluate_purerandom_protein_len{len(sequence)}.png')
+    protein.plot(f'./output/{algorithm.get_name()}_protein_len{len(sequence)}.png')
 
     print(f'Final score: {score}')
 

@@ -17,6 +17,9 @@ class Algorithm:
 
         self._debug = debug
 
+    def get_name(self) -> str:
+        return self.__class__.__name__
+
     def run(self) -> float:
         """
         Runs the algorithm on the protein and calculates and returns
