@@ -5,7 +5,8 @@ from protein_folding.vector import Vec3D
 class HydrophobicInteraction(Heuristic):
     def __init__(self, *args):
         super().__init__(*args)
-        self.hydrophobic_atoms = [node for node in self.protein.nodes if node.is_hydrophobic()]
+        hydrophobic_letters = {'H'}
+        self.hydrophobic_atoms = [node for node in self.protein.nodes if node.letter in hydrophobic_letters]
 
     def _calculate_potential(self, atom):
         # Compute the potential for a single hydrophobic atom
