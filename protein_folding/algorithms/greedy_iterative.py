@@ -31,6 +31,8 @@ class IterativeGreedy(Algorithm):
         self.best_score: int = 1
         self.best_order: list[int] = []
 
+        self.amount_of_best_found = 0
+
         # Test if deepcopy is actually necessary
         self.best_order_deepcopy: list[int] = []
 
@@ -47,7 +49,9 @@ class IterativeGreedy(Algorithm):
             if bond_score < self.best_score:
                 self.best_score = bond_score
                 self.best_order = self.protein.order
-                self.best_order_deepcopy = deepcopy(self.protein.order)
+                self.amount_of_best_found = 1
+            elif bond_score == self.best_score:
+                self.amount_of_best_found += 1
 
             return
 
@@ -65,10 +69,10 @@ class IterativeGreedy(Algorithm):
             depth, free_directions, self.heuristics)
 
         for i, direction in enumerate(free_directions_sorted):
-            if i == len(free_directions) - 1 and i != 0:
-                # Return early to prevent searching for worst scored branch
-                self._iteration -= 1
-                return
+            # if i == len(free_directions) - 1 and i != 0:
+            #     # Return early to prevent searching for worst scored branch
+            #     self._iteration -= 1
+            #     return
 
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
@@ -81,7 +85,7 @@ class IterativeGreedy(Algorithm):
 
         if self._debug and self._iteration % 100 == 0:
             print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/lowest: {depth}/{self.lowest_callback},'
-                  f' Best score: {self.best_score}')
+                  f' Best score: {self.best_score} ({self.amount_of_best_found} found)')
 
     def run(self) -> float:
         # Start at first node after root node
@@ -89,7 +93,6 @@ class IterativeGreedy(Algorithm):
 
         if self._debug:
             print(self.best_order)
-            print(self.best_order_deepcopy)
 
         self.protein.set_order(self.best_order[1:])
         return self.best_score
