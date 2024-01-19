@@ -99,6 +99,13 @@ class Node:
     def z(self):
         return self.pos.z
 
+    def apply_dict(self, d: dict):
+        self.direction_from_previous = d['direction']
+        self.pos.x = d['x']
+        self.pos.y = d['y']
+        self.pos.z = d['z']
+        self.ghost = d['is_ghost']
+
     def check_position_availability(self, position: Vec3D) -> bool:
         if position not in self.protein.pos_to_node:
             # No nodes occupy position

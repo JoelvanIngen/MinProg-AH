@@ -1,40 +1,40 @@
 from . import Heuristic
-from protein_folding.protein import Protein
-from protein_folding.node import Node
 
-class foldamount(Heuristic):
+
+class FoldAmount(Heuristic):
+    """
+    A heuristic that determines the amount of non-ordered links ('corners',
+        'folds') in the protein, with the philosophy that less ordered links
+        ('straight sections') will result in more compactness and thus a
+        higher chance that a bond is formed.
+
+    Returns the amount of non-ordered links for the protein.
+    """
     def __init__(self, *args):
         super().__init__(*args)
 
-    def _find_non_ordered_links(self, node_idx: int, direction: int) -> list[tuple]:
-        # Method to find non-ordered links for a given node in a specific direction.
-        test_protein = Protein(self.protein.sequence)
-        test_protein.set_order(self.protein.get_order())
-        
-        # Change direction of the node
-        test_protein.nodes[node_idx].change_direction(direction)
+    def run(self):
+        # Evaluates the protein and calculates the number of non-ordered links.
+        n_corners = 0
 
-        non_ordered_links = []
+        for node in [node for node in self.protein.nodes[2:] if not node.ghost]:
+            if node.direction_from_previous != node.prev.direction_from_previous:
+                n_corners += 1
 
-        for i, node in enumerate(test_protein.nodes):
-            if i != node_idx and abs(i - node_idx) > 1 and test_protein.nodes[node_idx].is_neighbour(node):
-                non_ordered_links.append((node, test_protein.nodes[node_idx]))
-        # .direction = previousdirection -> 
-        return non_ordered_links     
-    
-    def _calculate_links_score(self, non_ordered_links: list[tuple]) -> float:
-        # For now every ordered link is equal!
-        return len(non_ordered_links)
+        self.score_per_direction.append(n_corners)
 
-    def run(self, node_idx: int, directions: list[int]) -> list[float]:
-        # Evaluates each direction and calculates a score based on the number of non order links.
-        scores = []
-        for direction in directions:
-            non_ordered_links = self._find_non_ordered_links(node_idx, direction)
-            score = self._calculate_links_score(non_ordered_links)
-            scores.append(score)
-        return scores
+    def interpret(self) -> list[float]:
+        """
+        Normalises the values such that max(scores) = 1.
+        """
+        _min = min(self.score_per_direction)
+        _max = max(self.score_per_direction)
+        delta = _max - _min
 
+        if _max == 0:
+            # Avoid division by zero if all scores are similar
+            return [0. for _ in self.score_per_direction]
 
-
+        scores_norm = [value / _max for value in self.score_per_direction]
+        return scores_norm
 

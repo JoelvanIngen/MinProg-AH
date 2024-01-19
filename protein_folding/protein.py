@@ -331,36 +331,14 @@ class Protein:
         self.order = prev[0]
 
         # Restore nodes and positions
-        self.nodes = []
         self.pos_to_node = {}
-        for node_dict in prev[1]:
+        for i, node_dict in enumerate(prev[1]):
             pos = Vec3D(node_dict['x'], node_dict['y'], node_dict['z'])
-            node = Node.from_dict(self, node_dict)
+            self.nodes[i].apply_dict(node_dict)
 
-            self.nodes.append(node)
-            if not node.ghost:
-                self.pos_to_node[pos] = node
-
-        # Restore node linking
-        self.link_nodes()
-        # self.nodes[0].next = self.nodes[1]
-        #
-        # for i in range(1, n_nodes - 2):
-        #     this_node = self.nodes[i]
-        #     prev_node = self.nodes[i - 1]
-        #     next_node = self.nodes[i + 1]
-        #
-        #     this_node.next = next_node
-        #     this_node.prev = prev_node
-        #
-        # self.nodes[-1].prev = self.nodes[-2]
-
-        # DEBUGGING
-        for posvec, node in self.pos_to_node.items():
-            assert posvec == node.pos
-
-        # for node in self.nodes:
-        #     print(node, node.prev, node.next, node.ghost)
+            # self.nodes.append(node)
+            if not self.nodes[i].ghost:
+                self.pos_to_node[pos] = self.nodes[i]
     
     def get_node_coordinates(self):
         coordinates = list()

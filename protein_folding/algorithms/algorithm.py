@@ -21,9 +21,9 @@ class Algorithm:
         return self.__class__.__name__
 
     def _process_heuristics_single_direction(self,
-                                             direction: int,
                                              node_idx: int,
-                                             heuristics: callable) -> list[float]:
+                                             direction: int,
+                                             heuristics: list[callable]) -> list[float]:
         """
         For a given node, computes and returns the heuristic scores for a
         single direction.
@@ -35,18 +35,36 @@ class Algorithm:
 
         return direction_scores
 
-    def _process_heurstics(self, free_directions: list[int],
-                           *args) -> list[list[float]]:
+    def _process_heurstics(self,
+                           node_idx: int,
+                           free_directions: list[int],
+                           heuristics: list[callable]) -> tuple[list[list[float]], list[int]]:
         """
         For a given node, computes and returns the heuristic scores for each
-        free direction.
+            free direction. Sorts the scores and the corresponding directions
+            and returns both in a tuple.
         """
-        scores = []
-        for direction in free_directions:
-            direction_scores = self._process_heuristics_single_direction(direction, *args)
-            scores.append(direction_scores)
+        # Remove previously remembered heuristic scores
+        for heuristic in heuristics:
+            heuristic.reset()
 
-        return scores
+        # Process heuristic for every free dimension
+        for direction in free_directions:
+            self._process_heuristics_single_direction(node_idx, direction, heuristics)
+
+        # Process data for each heuristic
+        heuristic_scores = [0 for _ in range(len(free_directions))]
+        for heuristic in heuristics:
+            res = heuristic.interpret()
+            for i, val in enumerate(res):
+                heuristic_scores[i] += val
+
+        # Sort directions based on their score from best to worst
+        sorted_pairs = sorted(zip(heuristic_scores, free_directions), reverse=True)
+        scores_sorted = [x for x, _ in sorted_pairs]
+        directions_sorted = [x for _, x in sorted_pairs]
+
+        return scores_sorted, directions_sorted
 
     def run(self) -> float:
         """

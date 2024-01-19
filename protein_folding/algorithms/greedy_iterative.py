@@ -1,10 +1,12 @@
-import random
-from . import Algorithm
-from typing import TYPE_CHECKING
 from copy import deepcopy
 
-from protein_folding.protein import Protein
-from protein_folding.node import Node
+from . import Algorithm
+from .heuristics import *
+from protein_folding.fast_protein import fast_compute_bond_score
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from protein_folding.protein import Protein
 
 direction_dict = {-1: "Left", 1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
 
@@ -24,26 +26,32 @@ class IterativeGreedy(Algorithm):
 
         self._iteration = 0
         self.max_iterations = max_iterations
+        self.lowest_callback = len(protein)
 
         self.best_score: int = 1
         self.best_order: list[int] = []
 
+        self.amount_of_best_found = 0
+
         # Test if deepcopy is actually necessary
         self.best_order_deepcopy: list[int] = []
+
+        self.heuristics = (
+            MinimiseDimensions(self.protein),
+            FoldAmount(self.protein),
+            # Potential(self.protein),
+        )
 
     def _next_fold(self, depth: int):
         # Check if we've reached the end
         if depth >= len(self.protein):
-            # Cannot be false if code works correctly, since we only look for
-            # free directions and revert if stuck, reaching the chain end means
-            # having a valid order
-            assert self.protein.has_valid_order()
-            assert True not in [node.ghost for node in self.protein.nodes]
-
-            if self.protein.get_bond_score() < self.best_score:
-                self.best_score = self.protein.get_bond_score()
+            bond_score = fast_compute_bond_score(self.protein.sequence, self.protein.order[1:])
+            if bond_score < self.best_score:
+                self.best_score = bond_score
                 self.best_order = self.protein.order
-                self.best_order_deepcopy = deepcopy(self.protein.order)
+                self.amount_of_best_found = 1
+            elif bond_score == self.best_score:
+                self.amount_of_best_found += 1
 
             return
 
@@ -52,16 +60,32 @@ class IterativeGreedy(Algorithm):
         if self._iteration > self.max_iterations:
             return
 
-        if self._debug and self._iteration % 100 == 0:
-            print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth: {depth}, Best score: {self.best_score}')
-
         free_directions = self.protein.nodes[depth].get_free_directions(self.directions)
 
-        for direction in free_directions:
+        if not free_directions:
+            return
+
+        direction_scores, free_directions_sorted = self._process_heurstics(
+            depth, free_directions, self.heuristics)
+
+        for i, direction in enumerate(free_directions_sorted):
+            # if i == len(free_directions) - 1 and i != 0:
+            #     # Return early to prevent searching for worst scored branch
+            #     self._iteration -= 1
+            #     return
+
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
             self._next_fold(depth + 1)
             self.protein.revert()
+
+            # Update lowest node to see how much of the configuration has been tried
+            if depth < self.lowest_callback:
+                self.lowest_callback = depth
+
+        if self._debug and self._iteration % 100 == 0:
+            print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/lowest: {depth}/{self.lowest_callback},'
+                  f' Best score: {self.best_score} ({self.amount_of_best_found} found)')
 
     def run(self) -> float:
         # Start at first node after root node
@@ -69,8 +93,6 @@ class IterativeGreedy(Algorithm):
 
         if self._debug:
             print(self.best_order)
-            print(self.best_order_deepcopy)
 
         self.protein.set_order(self.best_order[1:])
         return self.best_score
-
