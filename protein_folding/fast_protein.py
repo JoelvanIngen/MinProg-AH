@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Iterable
 
 
 # Map directions to coordinate deltas by getting direction integers and add
@@ -28,7 +29,7 @@ def _get_bond_score(letter1: str, letter2: str):
 		return -1
 
 
-def fast_compute_bond_score(seq: str, order: list[int]) -> int:
+def fast_compute_bond_score(seq: str, order: Iterable[int]) -> int:
 	"""
 	Computes the bond score for a protein sequence and order. It uses an
 		alternative representation that should be much quicker, but harder to
@@ -102,7 +103,7 @@ def fast_compute_bond_score(seq: str, order: list[int]) -> int:
 	return score
 
 
-def fast_validate_protein(order: list[int]):
+def fast_validate_protein(order: Iterable[int]):
 	"""
 	Computes whether a specified order would result in a valid protein.
 	To do this, it uses an alternative representation for the positions of each
