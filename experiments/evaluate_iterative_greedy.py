@@ -7,9 +7,9 @@ import cProfile
 
 def main():
     create_experiment_folders()
-    sequence = 'H' * 7
-    sequence += 'C' * 7
-    sequence += 'P' * 7
+    sequence = 'H' * 21
+    sequence += 'C' * 3
+    sequence += 'P' * 26
     l = list(sequence)
     shuffle(l)
     sequence = ''.join(l)
@@ -18,8 +18,9 @@ def main():
     dim = 2
     protein = Protein(sequence)
 
-    algorithm = IterativeGreedy(protein, dimensions=dim, max_iterations=2000, debug=True)
+    algorithm = IterativeGreedy(protein, dimensions=dim, max_iterations=6000, debug=True)
     score = algorithm.run()
+    print(f"Sequence: {sequence}")
     print(f"Score: {score}")
 
     if dim == 2:

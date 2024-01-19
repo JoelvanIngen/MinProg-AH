@@ -26,6 +26,7 @@ class IterativeGreedy(Algorithm):
 
         self._iteration = 0
         self.max_iterations = max_iterations
+        self.lowest_callback = len(protein)
 
         self.best_score: int = 1
         self.best_order: list[int] = []
@@ -36,6 +37,7 @@ class IterativeGreedy(Algorithm):
         self.heuristics = (
             MinimiseDimensions(self.protein),
             FoldAmount(self.protein),
+            # Potential(self.protein),
         )
 
     def _next_fold(self, depth: int):
@@ -54,9 +56,6 @@ class IterativeGreedy(Algorithm):
         if self._iteration > self.max_iterations:
             return
 
-        if self._debug and self._iteration % 100 == 0:
-            print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth: {depth}, Best score: {self.best_score}')
-
         free_directions = self.protein.nodes[depth].get_free_directions(self.directions)
 
         if not free_directions:
@@ -65,11 +64,24 @@ class IterativeGreedy(Algorithm):
         direction_scores, free_directions_sorted = self._process_heurstics(
             depth, free_directions, self.heuristics)
 
-        for direction in free_directions_sorted:
+        for i, direction in enumerate(free_directions_sorted):
+            if i == len(free_directions) - 1 and i != 0:
+                # Return early to prevent searching for worst scored branch
+                self._iteration -= 1
+                return
+
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
             self._next_fold(depth + 1)
             self.protein.revert()
+
+            # Update lowest node to see how much of the configuration has been tried
+            if depth < self.lowest_callback:
+                self.lowest_callback = depth
+
+        if self._debug and self._iteration % 100 == 0:
+            print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/lowest: {depth}/{self.lowest_callback},'
+                  f' Best score: {self.best_score}')
 
     def run(self) -> float:
         # Start at first node after root node

@@ -4,47 +4,49 @@ from protein_folding.protein import Protein
 from protein_folding.node import Node
 
 
+# Extra factor to multiply results with so they're not all in range {0.9, 1.]
+_MULT_FACTOR = 7
+
+
 class Potential(Heuristic):
     def __init__(self, *args):
         super().__init__(*args)
 
-    def _find_new_positions(self, node_idx: int, direction: int):
-        # Copy protein to experiment on copy
-        test_protein = Protein(self.protein.sequence)
-        test_protein.set_order(self.protein.get_order())
+    def run(self):
+        score = 0
+        for i, node in enumerate(self.protein.nodes[:-1]):
+            if node.letter == 'P':
+                continue
+            if node.ghost:
+                break
 
-        # Set new direction
-        test_protein.nodes[node_idx].change_direction(test_protein.node_positions, direction)
+            for other_node in self.protein.nodes[i+1:]:
+                if other_node.letter == 'P':
+                    continue
+                if other_node.ghost:
+                    break
 
-        return [node for node in test_protein.nodes[node_idx + 1:] if node.letter != 'P']
+                delta_vec = other_node.pos - node.pos
+                len_sq = delta_vec.len_sq()
+                score += 1 / len_sq
+
+        self.score_per_direction.append(score)
+
+    def interpret(self) -> list[float]:
+        """
+        Normalises all scores such that max(scores) == 1
+        """
+        _min = min(self.score_per_direction)
+        _max = max(self.score_per_direction)
+
+        if _max == 0:
+            return [0. for _ in self.score_per_direction]
+
+        scores_norm = [value / _max for value in self.score_per_direction]  # {, 1]
+        scores_inv = [1 - value for value in scores_norm]  # [0, }
+        positive_norm_factor = 1 - max(scores_inv)
+        scores_corr = [(value + positive_norm_factor) * _MULT_FACTOR - _MULT_FACTOR + 1 for value in scores_inv]  # {, 1]
+        return scores_corr
 
     def _find_sources(self, node_idx: int) -> list[Node]:
         return [node for node in self.protein.nodes[:node_idx] if node.letter != 'P']
-
-    def _find_direction_score(self, sources: list[Node], receivers: list[Node]):
-        # Higher score is better, because nodes closer to eachother
-        score = 0.
-
-        for source in sources:
-            for receiver in receivers:
-                delta_pos = source.pos - receiver.pos
-                r_sq = delta_pos.len_sq()
-
-                score += 1 / r_sq
-
-        return score
-
-    def run(self, node_idx: int, directions: list[int]) -> list[float]:
-        sources = self._find_sources(node_idx)
-
-        receivers_per_direction = []
-        for direction in directions:
-            receivers = self._find_new_positions(node_idx, direction)
-
-            receivers_per_direction.append(receivers)
-
-        scores = []
-        for receivers in receivers_per_direction:
-            scores.append(self._find_direction_score(sources, receivers))
-
-        return scores
