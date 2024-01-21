@@ -66,14 +66,20 @@ def get_next_state(current_state, action):
     return current_state
 
 def get_reward(current_state, next_state):
+    current_score = 0
+    next_score = 0
+
     # Logic to calculate the reward based on the current and next states
     # Assuming reward is based on the bond score
     if fast_validate_protein(current_state.get_order()):
         current_score = current_state.get_bond_score()  # Method to get bond score of the current state
+
     if fast_validate_protein(next_state.get_order()):
         next_score = next_state.get_bond_score()  # Method to get bond score of the next state
+
     reward = next_score - current_score  # Reward is the improvement in bond score
     return reward
+
 
 def run_protein_folding(sequence, iteration):
     protein = Protein(sequence)
