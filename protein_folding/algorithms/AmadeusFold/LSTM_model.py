@@ -52,10 +52,17 @@ class AmadeusFold(nn.Module):
 			out_features=self.prediction_dimension
 		)
 
+		# activation func
+		self.relu = nn.ReLU()
+
 	def forward(self, x):
 		seq_embedded = self.embedding(x)
+
+		input_lstm = self.relu(seq_embedded)
 		output_lstm, _ = self.lstm(seq_embedded)
-		output = self.output_layer(output_lstm)
+
+		input_linear = self.relu(output_lstm)
+		output = self.output_layer(input_linear)
 
 		return output
 
