@@ -43,17 +43,21 @@ class ProteinFoldingAgent(Algorithm):
         return exp_q / exp_q.sum()
 
     def choose_action(self, state, possible_actions):
+        # Flatten possible_actions if it's not 1-dimensional
+        action_indices = list(range(len(possible_actions)))  # Create indices for each action
+
+        # Calculate Q-values and convert to probabilities
         q_values = np.array([self.q_table.get(state, action) for action in possible_actions])
         action_probabilities = self.softmax_probabilities(q_values)
 
         valid_action_found = False
         while not valid_action_found:
-            action = np.random.choice(possible_actions, p=action_probabilities)
+            # Choose an action index based on probabilities
+            chosen_index = np.random.choice(action_indices, p=action_probabilities)
+            action = possible_actions[chosen_index]  # Map back to the actual action
 
-            # Simulate the new order based on the chosen action
+            # Simulate the new order and validate
             new_order = self.simulate_new_order(state, action)
-
-            # Validate the new order
             valid_action_found = fast_validate_protein(new_order)
         
         return action
@@ -131,7 +135,7 @@ def run_protein_folding(sequence, iteration):
 
         agent.learn(current_state, chosen_action, reward, next_state, possible_actions)
 
-        print(f'Current State: {current_state.get_order()}, Action: {chosen_action}, Next State: {next_state}, Reward: {reward}/{current_state.get_bond_score}')
+        print(f'Current State: {current_state.get_order()}, Action: {chosen_action}, Next State: {next_state}, Reward: {reward}/{current_state.get_bond_score()}')
 
         current_state = next_state
 
