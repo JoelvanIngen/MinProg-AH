@@ -31,6 +31,8 @@ class ProteinFoldingAgent(Algorithm):
     def __init__(self, protein, dimensions, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995):
         super().__init__(protein, dimensions)
         self.q_table = QTable()
+        self.learning_rate = learning_rate   # Set learning_rate as an instance attribute
+        self.discount_factor = discount_factor  # Set discount_factor as an instance attribute
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
@@ -60,15 +62,15 @@ def get_free_directions(current_state, directions):
 def get_next_state(current_state, action):
     # Logic to determine the next state based on the current state and chosen action
     node_idx, new_direction = action  # Action decomposed into node index and new direction
-    new_state = current_state.nodes[node_idx].change_direction(new_direction)  # Method to update the state
-    return new_state
+    current_state.nodes[node_idx].change_direction(new_direction)  
+    return current_state
 
 def get_reward(current_state, next_state):
     # Logic to calculate the reward based on the current and next states
     # Assuming reward is based on the bond score
-    if fast_validate_protein(current_state):
+    if fast_validate_protein(current_state.get_order()):
         current_score = current_state.get_bond_score()  # Method to get bond score of the current state
-    if fast_validate_protein(next_state):
+    if fast_validate_protein(next_state.get_order()):
         next_score = next_state.get_bond_score()  # Method to get bond score of the next state
     reward = next_score - current_score  # Reward is the improvement in bond score
     return reward
