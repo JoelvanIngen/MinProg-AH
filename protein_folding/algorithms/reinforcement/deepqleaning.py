@@ -42,6 +42,7 @@ class ProteinFoldingAgent(Algorithm):
             q_values = [self.q_table.get(state, action) for action in possible_actions]
             max_q_value = max(q_values)
             max_actions = [action for action, q in zip(possible_actions, q_values) if q == max_q_value]
+            print(max_q_value)
             return random.choice(max_actions) if max_actions else random.choice(possible_actions)
 
     def learn(self, state, action, reward, next_state, possible_actions):
@@ -54,13 +55,12 @@ def get_free_directions(current_state, directions):
         node_free_directions = node.get_free_directions(directions)
         node_actions = [(idx, direction) for direction in node_free_directions]
         free_actions.extend(node_actions)
-    print(free_actions)
     return free_actions  # Return a list of (node_idx, direction) tuples
 
 def get_next_state(current_state, action):
     # Logic to determine the next state based on the current state and chosen action
     node_idx, new_direction = action  # Action decomposed into node index and new direction
-    new_state = current_state.set_new_direction(node_idx, new_direction)  # Method to update the state
+    new_state = current_state.nodes[node_idx].change_direction(new_direction)  # Method to update the state
     return new_state
 
 def get_reward(current_state, next_state):
