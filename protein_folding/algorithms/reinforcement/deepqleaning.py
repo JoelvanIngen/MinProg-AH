@@ -24,3 +24,11 @@ class QTable:
         max_future_reward = max(future_rewards, default=0)
         new_value = old_value + learning_rate * (reward + discount_factor * max_future_reward - old_value)
         self.set(state, action, new_value)
+
+class ProteinFoldingAgent(Algorithm):
+    def __init__(self, protein, dimensions, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995):
+        super().__init__(learning_rate, discount_factor, protein, dimensions)
+        self.q_table = QTable()
+        self.epsilon = epsilon
+        self.epsilon_min = epsilon_min
+        self.epsilon_decay = epsilon_decay
