@@ -48,11 +48,11 @@ class ProteinFoldingAgent(Algorithm):
         self.q_table.update(state, action, reward, self.learning_rate, self.discount_factor, next_state, possible_actions)
         self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
 
-def get_free_directions(current_state):
+def get_free_directions(current_state, directions):
     # and each node in this structure can provide its free directions
     free_directions = []
     for node in current_state.nodes:
-        node_free_directions = node.get_free_directions()  
+        node_free_directions = node.get_free_directions(directions)  
         free_directions.extend(node_free_directions)
     return list(set(free_directions))  # Return unique free directions
 
@@ -77,10 +77,10 @@ def run_protein_folding(sequence, iteration):
     agent = ProteinFoldingAgent(protein, dimensions = 2, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
     num_iterations = iteration
 
-    current_state = protein.get_order()
+    current_state = protein
 
     for _ in range(num_iterations):
-        possible_actions = get_free_directions(current_state)
+        possible_actions = get_free_directions(current_state, agent.directions)
         chosen_action = agent.choose_action(current_state, possible_actions)
         next_state = get_next_state(current_state, chosen_action)
         reward = get_reward(current_state, next_state)
