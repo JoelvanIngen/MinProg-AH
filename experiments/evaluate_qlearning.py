@@ -1,6 +1,6 @@
 from experiments_helper import create_experiment_folders
 from protein_folding.protein import Protein
-from protein_folding.algorithms.reinforcement import run_protein_folding
+from protein_folding.algorithms.reinforcement.deepqleaning import run_protein_folding
 
 
 def main():
