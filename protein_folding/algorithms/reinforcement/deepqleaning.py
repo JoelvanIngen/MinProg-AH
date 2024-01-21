@@ -38,15 +38,34 @@ class ProteinFoldingAgent(Algorithm):
         self.epsilon_decay = epsilon_decay
 
     def choose_action(self, state, possible_actions):
-        if random.random() < self.epsilon:
-            return random.choice(possible_actions)
-        else:
-            q_values = [self.q_table.get(state, action) for action in possible_actions]
-            max_q_value = max(q_values)
-            max_actions = [action for action, q in zip(possible_actions, q_values) if q == max_q_value]
-            print(max_q_value)
-            return random.choice(max_actions) if max_actions else random.choice(possible_actions)
+        valid_action_found = False
+        while not valid_action_found:
+            if random.random() < self.epsilon:
+                action = random.choice(possible_actions)
+            else:
+                q_values = [self.q_table.get(state, action) for action in possible_actions]
+                max_q_value = max(q_values)
+                max_actions = [action for action, q in zip(possible_actions, q_values) if q == max_q_value]
+                action = random.choice(max_actions) if max_actions else random.choice(possible_actions)
 
+            # Simulate the new order based on the chosen action
+            new_order = self.simulate_new_order(state, action)
+
+            # Validate the new order
+            valid_action_found = fast_validate_protein(new_order)
+        
+        return action
+
+    def simulate_new_order(self, state, action):
+        # Create a copy of the current order
+        new_order = list(state.get_order())
+
+        # Update the new order based on the chosen action
+        node_idx, new_direction = action
+        new_order[node_idx - 1] = new_direction  # Adjust indexing if necessary
+
+        return new_order
+    
     def learn(self, state, action, reward, next_state, possible_actions):
         self.q_table.update(state, action, reward, self.learning_rate, self.discount_factor, next_state, possible_actions)
         self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
@@ -83,7 +102,7 @@ def get_reward(current_state, next_state):
 
 def run_protein_folding(sequence, iteration):
     protein = Protein(sequence)
-    agent = ProteinFoldingAgent(protein, dimensions = 3, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
+    agent = ProteinFoldingAgent(protein, dimensions = 2, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
     num_iterations = iteration
 
     current_state = protein
@@ -96,9 +115,11 @@ def run_protein_folding(sequence, iteration):
 
         agent.learn(current_state, chosen_action, reward, next_state, possible_actions)
 
-        print(f'Current State: {current_state}, Action: {chosen_action}, Next State: {next_state}, Reward: {reward}')
+        print(f'Current State: {current_state.get_order()}, Action: {chosen_action}, Next State: {next_state}, Reward: {reward}')
 
         current_state = next_state
 
         if current_state == 'goal_state':
             break
+
+    return protein
