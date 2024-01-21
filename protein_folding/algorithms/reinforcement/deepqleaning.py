@@ -54,3 +54,8 @@ def get_free_directions(current_state):
         free_directions.extend(node_free_directions)
     return list(set(free_directions))  # Return unique free directions
 
+def get_next_state(current_state, action):
+    # Logic to determine the next state based on the current state and chosen action
+    node_idx, new_direction = action  # Action decomposed into node index and new direction
+    new_state = current_state.set_new_direction(node_idx, new_direction)  # Method to update the state
+    return new_state
