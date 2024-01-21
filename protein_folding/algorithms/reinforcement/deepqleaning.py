@@ -69,3 +69,25 @@ def get_reward(current_state, next_state):
         next_score = next_state.fast_compute_bond_score()  # Method to get bond score of the next state
     reward = next_score - current_score  # Reward is the improvement in bond score
     return reward
+
+def run_protein_folding():
+    protein = Protein("HHHPHHH")
+    agent = ProteinFoldingAgent(protein, dimensions = 2, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
+    num_iterations = 1000
+
+    current_state = self.protein.get_order()
+
+    for _ in range(num_iterations):
+        possible_actions = get_free_directions(current_state)
+        chosen_action = agent.choose_action(current_state, possible_actions)
+        next_state = get_next_state(current_state, chosen_action)
+        reward = get_reward(current_state, next_state)
+
+        agent.learn(current_state, chosen_action, reward, next_state, possible_actions)
+
+        print(f'Current State: {current_state}, Action: {chosen_action}, Next State: {next_state}, Reward: {reward}')
+
+        current_state = next_state
+
+        if current_state == 'goal_state':
+            break
