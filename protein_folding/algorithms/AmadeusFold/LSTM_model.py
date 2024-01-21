@@ -72,7 +72,7 @@ def main():
 	)
 
 	# instantiate model (untrained, so ouput doesn't make sense)
-	model = AmadeusFold()
+	model = AmadeusFold().to(device)
 	
 	# choose a sample sequence and convert to tensor of ints
 	sequence = 'HCHHPHH'
