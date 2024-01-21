@@ -1,11 +1,13 @@
 import random
 import pdb
+import sys
+sys.path.append('..')
 from tqdm import tqdm
 from typing import TYPE_CHECKING
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 from protein_folding.protein import Protein
 
-from . import Algorithm
+from .. import Algorithm
 
 
 class QTable:
@@ -27,7 +29,7 @@ class QTable:
 
 class ProteinFoldingAgent(Algorithm):
     def __init__(self, protein, dimensions, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995):
-        super().__init__(learning_rate, discount_factor, protein, dimensions)
+        super().__init__(protein, dimensions)
         self.q_table = QTable()
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
@@ -63,19 +65,19 @@ def get_next_state(current_state, action):
 def get_reward(current_state, next_state):
     # Logic to calculate the reward based on the current and next states
     # Assuming reward is based on the bond score
-    if fast_validate_protein(dirs_total):
-        current_score = current_state.fast_compute_bond_score()  # Method to get bond score of the current state
-    if fast_validate_protein(dirs_total):
-        next_score = next_state.fast_compute_bond_score()  # Method to get bond score of the next state
+    if fast_validate_protein(current_state):
+        current_score = current_state.get_bond_score()  # Method to get bond score of the current state
+    if fast_validate_protein(next_state):
+        next_score = next_state.get_bond_score()  # Method to get bond score of the next state
     reward = next_score - current_score  # Reward is the improvement in bond score
     return reward
 
-def run_protein_folding():
-    protein = Protein("HHHPHHH")
+def run_protein_folding(sequence, iteration):
+    protein = Protein(sequence)
     agent = ProteinFoldingAgent(protein, dimensions = 2, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
-    num_iterations = 1000
+    num_iterations = iteration
 
-    current_state = self.protein.get_order()
+    current_state = protein.get_order()
 
     for _ in range(num_iterations):
         possible_actions = get_free_directions(current_state)
