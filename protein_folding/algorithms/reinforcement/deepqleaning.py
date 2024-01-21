@@ -41,3 +41,4 @@ class ProteinFoldingAgent(Algorithm):
             max_q_value = max(q_values)
             max_actions = [action for action, q in zip(possible_actions, q_values) if q == max_q_value]
             return random.choice(max_actions) if max_actions else random.choice(possible_actions)
+        
