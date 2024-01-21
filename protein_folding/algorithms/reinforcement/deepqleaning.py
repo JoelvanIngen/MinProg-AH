@@ -59,3 +59,11 @@ def get_next_state(current_state, action):
     node_idx, new_direction = action  # Action decomposed into node index and new direction
     new_state = current_state.set_new_direction(node_idx, new_direction)  # Method to update the state
     return new_state
+
+def get_reward(current_state, next_state):
+    # Logic to calculate the reward based on the current and next states
+    # Assuming reward is based on the bond score
+    current_score = current_state.get_bond_score()  # Method to get bond score of the current state
+    next_score = next_state.get_bond_score()  # Method to get bond score of the next state
+    reward = next_score - current_score  # Reward is the improvement in bond score
+    return reward
