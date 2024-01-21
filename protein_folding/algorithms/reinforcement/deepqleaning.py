@@ -37,16 +37,17 @@ class ProteinFoldingAgent(Algorithm):
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
 
+    def softmax_probabilities(self, q_values):
+        exp_q = np.exp(q_values - np.max(q_values))  # Subtract max to prevent overflow
+        return exp_q / exp_q.sum()
+
     def choose_action(self, state, possible_actions):
+        q_values = np.array([self.q_table.get(state, action) for action in possible_actions])
+        action_probabilities = self.softmax_probabilities(q_values)
+
         valid_action_found = False
         while not valid_action_found:
-            if random.random() < self.epsilon:
-                action = random.choice(possible_actions)
-            else:
-                q_values = [self.q_table.get(state, action) for action in possible_actions]
-                max_q_value = max(q_values)
-                max_actions = [action for action, q in zip(possible_actions, q_values) if q == max_q_value]
-                action = random.choice(max_actions) if max_actions else random.choice(possible_actions)
+            action = np.random.choice(possible_actions, p=action_probabilities)
 
             # Simulate the new order based on the chosen action
             new_order = self.simulate_new_order(state, action)
