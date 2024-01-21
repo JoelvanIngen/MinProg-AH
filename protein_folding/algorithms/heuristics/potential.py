@@ -50,3 +50,21 @@ class Potential(Heuristic):
 
     def _find_sources(self, node_idx: int) -> list[Node]:
         return [node for node in self.protein.nodes[:node_idx] if node.letter != 'P']
+    
+    
+    def calculate_score_for_state(protein_state):
+        score = 0
+        for i, node in enumerate(protein_state.nodes[:-1]):
+            if node.letter == 'P' or node.ghost:
+                continue
+
+            for other_node in protein_state.nodes[i+1:]:
+                if other_node.letter == 'P' or other_node.ghost:
+                    continue
+
+                delta_vec = other_node.pos - node.pos
+                len_sq = delta_vec.len_sq()
+                if len_sq != 0:
+                    score += 1 / len_sq
+
+        return score * _MULT_FACTOR  

@@ -43,28 +43,26 @@ class ProteinFoldingAgent(Algorithm):
         exp_q = np.exp(q_values - np.max(q_values))  # Subtract max to prevent overflow
         return exp_q / exp_q.sum()
 
-    def choose_action(self, state, possible_actions, max_attempts=10):
-        attempts = 0
-        while attempts < max_attempts:
-            if np.random.rand() < self.epsilon:
-                # Exploration: choose a random action
-                action = random.choice(possible_actions)
-            else:
-                # Exploitation: choose the best action based on Q-values
-                q_values = [self.q_table.get(state, action) for action in possible_actions]
-                max_q_value = max(q_values)
-                best_actions = [action for action, q in zip(possible_actions, q_values) if q == max_q_value]
-                action = random.choice(best_actions)
+    def choose_action(self, state, possible_actions):
+        # Flatten possible_actions if it's not 1-dimensional
+        action_indices = list(range(len(possible_actions)))  # Create indices for each action
 
-            # Simulate new order and check validity
+        # Calculate Q-values and convert to probabilities
+        q_values = np.array([self.q_table.get(state, action) for action in possible_actions])
+        action_probabilities = self.softmax_probabilities(q_values)
+
+        valid_action_found = False
+        while not valid_action_found:
+            # Choose an action index based on probabilities
+            chosen_index = np.random.choice(action_indices, p=action_probabilities)
+            action = possible_actions[chosen_index]  # Map back to the actual action
+
+            # Simulate the new order and validate
             new_order = self.simulate_new_order(state, action)
-            if fast_validate_protein(new_order):
-                return action
+            valid_action_found = fast_validate_protein(new_order)
+        
+        return action
 
-            attempts += 1
-
-        # Fallback strategy if no valid action is found
-        return random.choice(possible_actions)  
     def simulate_new_order(self, state, action):
         # Create a copy of the current order
         new_order = list(state.get_order())
@@ -113,34 +111,35 @@ def get_dimension_penalty(state):
     return sum(scores)
 
 def get_reward(current_state, next_state):
-    max_score = 40
-        # Define the weights for different components of the reward
-    score_weight =1.0  # Adjust as necessary
-    fold_amount_weight = 1  # Adjust as necessary
-    dimension_penalty_weight = 1  # Adjust as necessary
-
     if not fast_validate_protein(next_state.get_order()):
-        return -1  # Penalty for invalid states
+        return -1  # Negative reward for invalid states
 
     current_score = -current_state.get_bond_score() if fast_validate_protein(current_state.get_order()) else 0
     next_score = -next_state.get_bond_score()
+    next_state_dimension_penalty = get_dimension_penalty(next_state)
+    dimension_penalty_weight = 1
 
-    # Normalize the scores
-    normalized_current_score = current_score / max_score
-    normalized_next_score = next_score / max_score
-
-    # Calculate fold amount
+    # Calculate fold amounts for current and next states
     current_fold_amount = calculate_fold_amount(current_state)
     next_fold_amount = calculate_fold_amount(next_state)
-    fold_amount_change = next_fold_amount - current_fold_amount
 
-    # Dimension penalty
-    dimension_penalty = get_dimension_penalty(next_state)
+    if are_states_same(current_state, next_state):
+        repeat_action_penalty = -8  # Define your penalty value here
+    else:
+        repeat_action_penalty = 0
+    # Adjust the reward based on fold amount
+    fold_amount_reward = next_fold_amount 
+    potential_score = Potential.calculate_score_for_state(next_state)
+    print(next_score)
+    print(fold_amount_reward)
+    print(potential_score)
 
-    # Compute the final reward
-    reward = (normalized_next_score - normalized_current_score) * score_weight
-    reward += fold_amount_change * fold_amount_weight
-    reward -= dimension_penalty * dimension_penalty_weight
+    # Combine this score with other reward components
+    reward = fold_amount_reward  + next_score * 2
+    #reward = next_score*2  + fold_amount_reward - repeat_action_penalty
+    #reward += potential_score/20
+    reward -= next_state_dimension_penalty * dimension_penalty_weight
+      # Small negative reward to discourage no improvement
 
     return reward
 
