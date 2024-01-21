@@ -46,14 +46,16 @@ class FoldDataset(Dataset):
 		datapoint = self.dataframe.iloc[idx]
 		sequence = datapoint['sequence']
 		coordinates = np.asarray(ast.literal_eval(datapoint['coordinates']))
+		score = datapoint['score']
 
 		if self.transform:
 			coordinates = self.transform(coordinates)
+			score = torch.tensor(score)
 		# divide by maximum found value if normalized
 		if self.normalize:
 			coordinates/= self.max_coordinate_value
 				
-		return sequence, coordinates
+		return sequence, coordinates, score, self.max_coordinate_value
 
 
 if __name__ == '__main__':

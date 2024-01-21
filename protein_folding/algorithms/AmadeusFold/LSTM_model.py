@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 
-_molecule_indices = {'H': 0, 'C': 1, 'P': 2}
+from utils import index_sequence
 
 
 class AmadeusFold(nn.Module):
@@ -82,8 +82,8 @@ def main():
 	model = AmadeusFold().to(device)
 	
 	# choose a sample sequence and convert to tensor of ints
-	sequence = 'HCHHPHH'
-	seq_indexed = [[_molecule_indices[letter] for letter in sequence]]
+	sequence = 'HCHHH'
+	seq_indexed = index_sequence(sequence)
 	
 	# feed indexed input to model
 	test_input = torch.tensor(seq_indexed)
