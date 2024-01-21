@@ -8,7 +8,7 @@ from protein_folding.fast_protein import fast_validate_protein, fast_compute_bon
 from protein_folding.protein import Protein
 
 from .. import Algorithm
-
+from ..heuristics import *
 
 class QTable:
     def __init__(self):
@@ -84,19 +84,30 @@ def get_next_state(current_state, action):
     current_state.nodes[node_idx].change_direction(new_direction)  
     return current_state
 
+def calculate_fold_amount(state):
+    # will depend on how you define and calculate folding amount.
+    fold_amount = FoldAmount(state)
+    return fold_amount
+
 def get_reward(current_state, next_state):
-    current_score = 0
-    next_score = 0
+    if not fast_validate_protein(next_state.get_order()):
+        return -1  # Negative reward for invalid states
 
-    # Logic to calculate the reward based on the current and next states
-    # Assuming reward is based on the bond score
-    if fast_validate_protein(current_state.get_order()):
-        current_score = current_state.get_bond_score()  # Method to get bond score of the current state
+    current_score = current_state.get_bond_score() if fast_validate_protein(current_state.get_order()) else 0
+    next_score = next_state.get_bond_score()
 
-    if fast_validate_protein(next_state.get_order()):
-        next_score = next_state.get_bond_score()  # Method to get bond score of the next state
+    # Calculate fold amounts for current and next states
+    current_fold_amount = calculate_fold_amount(current_state)
+    next_fold_amount = calculate_fold_amount(next_state)
 
-    reward = next_score - current_score  # Reward is the improvement in bond score
+    # Adjust the reward based on fold amount
+    fold_amount_reward = next_fold_amount - current_fold_amount
+
+    reward = next_score - current_score + fold_amount_reward
+
+    if reward == 0:
+        reward = -0.1  # Small negative reward to discourage no improvement
+
     return reward
 
 
