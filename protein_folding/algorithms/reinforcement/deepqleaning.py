@@ -115,6 +115,10 @@ def get_reward(current_state, next_state):
     current_fold_amount = calculate_fold_amount(current_state)
     next_fold_amount = calculate_fold_amount(next_state)
 
+    if are_states_same(current_state, next_state):
+        repeat_action_penalty = -0.8  # Define your penalty value here
+    else:
+        repeat_action_penalty = 0
     # Adjust the reward based on fold amount
     fold_amount_reward = next_fold_amount 
     potential_score = Potential.calculate_score_for_state(next_state)
@@ -123,7 +127,7 @@ def get_reward(current_state, next_state):
     print(potential_score)
 
     # Combine this score with other reward components
-    reward = next_score*3  + fold_amount_reward
+    reward = next_score*3  + fold_amount_reward - repeat_action_penalty
     reward += potential_score/20
       # Small negative reward to discourage no improvement
 
