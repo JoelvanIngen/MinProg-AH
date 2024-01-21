@@ -46,3 +46,12 @@ class ProteinFoldingAgent(Algorithm):
         self.q_table.update(state, action, reward, self.learning_rate, self.discount_factor, next_state, possible_actions)
         self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
 
+def get_free_directions(current_state):
+    # Assuming current_state is a representation of the protein structure
+    # and each node in this structure can provide its free directions
+    free_directions = []
+    for node in current_state.nodes:
+        node_free_directions = node.get_free_directions()  # Method to get free directions for this node
+        free_directions.extend(node_free_directions)
+    return list(set(free_directions))  # Return unique free directions
+
