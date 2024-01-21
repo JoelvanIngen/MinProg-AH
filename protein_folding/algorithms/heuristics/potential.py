@@ -47,6 +47,3 @@ class Potential(Heuristic):
         positive_norm_factor = 1 - max(scores_inv)
         scores_corr = [(value + positive_norm_factor) * _MULT_FACTOR - _MULT_FACTOR + 1 for value in scores_inv]  # {, 1]
         return scores_corr
-
-    def _find_sources(self, node_idx: int) -> list[Node]:
-        return [node for node in self.protein.nodes[:node_idx] if node.letter != 'P']
