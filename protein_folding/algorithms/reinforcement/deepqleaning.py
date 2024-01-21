@@ -38,6 +38,7 @@ class ProteinFoldingAgent(Algorithm):
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
 
+
     def softmax_probabilities(self, q_values):
         exp_q = np.exp(q_values - np.max(q_values))  # Subtract max to prevent overflow
         return exp_q / exp_q.sum()
@@ -99,6 +100,9 @@ def calculate_fold_amount(state):
 
     return score
 
+def are_states_same(current_state, next_state):
+    # Assuming the state comparison is based on the order of nodes
+    return current_state.get_order() == next_state.get_order()
 
 def get_reward(current_state, next_state):
     if not fast_validate_protein(next_state.get_order()):
@@ -113,8 +117,14 @@ def get_reward(current_state, next_state):
 
     # Adjust the reward based on fold amount
     fold_amount_reward = next_fold_amount 
+    potential_score = Potential.calculate_score_for_state(next_state)
     print(next_score)
-    reward = next_score  + fold_amount_reward
+    print(fold_amount_reward)
+    print(potential_score)
+
+    # Combine this score with other reward components
+    reward = next_score*3  + fold_amount_reward
+    reward += potential_score/20
       # Small negative reward to discourage no improvement
 
     return reward
@@ -122,7 +132,7 @@ def get_reward(current_state, next_state):
 
 def run_protein_folding(sequence, iteration):
     protein = Protein(sequence)
-    agent = ProteinFoldingAgent(protein, dimensions = 3, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
+    agent = ProteinFoldingAgent(protein, dimensions = 2, learning_rate=0.1, discount_factor=0.9, epsilon=0.9, epsilon_min=0.01, epsilon_decay=0.995)
     num_iterations = iteration
 
     current_state = protein
