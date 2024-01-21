@@ -9,6 +9,7 @@ from protein_folding.protein import Protein
 
 from .. import Algorithm
 from ..heuristics import *
+import numpy as np
 
 class QTable:
     def __init__(self):
