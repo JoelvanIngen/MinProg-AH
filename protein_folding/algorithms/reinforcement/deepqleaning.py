@@ -51,7 +51,7 @@ class ProteinFoldingAgent(Algorithm):
 def get_free_directions(current_state, directions):
     # and each node in this structure can provide its free directions
     free_directions = []
-    for node in current_state.nodes:
+    for node in current_state.nodes[1:]:
         node_free_directions = node.get_free_directions(directions)  
         free_directions.extend(node_free_directions)
     return list(set(free_directions))  # Return unique free directions
