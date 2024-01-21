@@ -32,3 +32,12 @@ class ProteinFoldingAgent(Algorithm):
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
+
+    def choose_action(self, state, possible_actions):
+        if random.random() < self.epsilon:
+            return random.choice(possible_actions)
+        else:
+            q_values = [self.q_table.get(state, action) for action in possible_actions]
+            max_q_value = max(q_values)
+            max_actions = [action for action, q in zip(possible_actions, q_values) if q == max_q_value]
+            return random.choice(max_actions) if max_actions else random.choice(possible_actions)
