@@ -85,35 +85,38 @@ def get_next_state(current_state, action):
     return current_state
 
 def calculate_fold_amount(state):
-    # will depend on how you define and calculate folding amount.
-    fold_amount = FoldAmount(state)
-    return fold_amount
+    # Create an instance of FoldAmount with the given state
+    fold_amount_heuristic = FoldAmount(state)
+    
+    # Run the heuristic to calculate scores
+    score = fold_amount_heuristic.calculate(state)
+
+    return score
+
 
 def get_reward(current_state, next_state):
     if not fast_validate_protein(next_state.get_order()):
         return -1  # Negative reward for invalid states
 
-    current_score = current_state.get_bond_score() if fast_validate_protein(current_state.get_order()) else 0
-    next_score = next_state.get_bond_score()
+    current_score = -current_state.get_bond_score() if fast_validate_protein(current_state.get_order()) else 0
+    next_score = -next_state.get_bond_score()
 
     # Calculate fold amounts for current and next states
     current_fold_amount = calculate_fold_amount(current_state)
     next_fold_amount = calculate_fold_amount(next_state)
 
     # Adjust the reward based on fold amount
-    fold_amount_reward = next_fold_amount - current_fold_amount
-
-    reward = next_score - current_score + fold_amount_reward
-
-    if reward == 0:
-        reward = -0.1  # Small negative reward to discourage no improvement
+    fold_amount_reward = next_fold_amount 
+    print(next_score)
+    reward = next_score  + fold_amount_reward
+      # Small negative reward to discourage no improvement
 
     return reward
 
 
 def run_protein_folding(sequence, iteration):
     protein = Protein(sequence)
-    agent = ProteinFoldingAgent(protein, dimensions = 2, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
+    agent = ProteinFoldingAgent(protein, dimensions = 3, learning_rate=0.1, discount_factor=0.9, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995)
     num_iterations = iteration
 
     current_state = protein
@@ -126,7 +129,7 @@ def run_protein_folding(sequence, iteration):
 
         agent.learn(current_state, chosen_action, reward, next_state, possible_actions)
 
-        print(f'Current State: {current_state.get_order()}, Action: {chosen_action}, Next State: {next_state}, Reward: {reward}')
+        print(f'Current State: {current_state.get_order()}, Action: {chosen_action}, Next State: {next_state}, Reward: {reward}/{current_state.get_bond_score}')
 
         current_state = next_state
 
