@@ -63,7 +63,9 @@ def get_next_state(current_state, action):
 def get_reward(current_state, next_state):
     # Logic to calculate the reward based on the current and next states
     # Assuming reward is based on the bond score
-    current_score = current_state.get_bond_score()  # Method to get bond score of the current state
-    next_score = next_state.get_bond_score()  # Method to get bond score of the next state
+    if fast_validate_protein(dirs_total):
+        current_score = current_state.fast_compute_bond_score()  # Method to get bond score of the current state
+    if fast_validate_protein(dirs_total):
+        next_score = next_state.fast_compute_bond_score()  # Method to get bond score of the next state
     reward = next_score - current_score  # Reward is the improvement in bond score
     return reward
