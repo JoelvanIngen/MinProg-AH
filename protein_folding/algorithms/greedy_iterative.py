@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 from . import Algorithm
 from .heuristics import *
 from protein_folding.fast_protein import fast_compute_bond_score
@@ -19,7 +21,7 @@ class IterativeGreedy(Algorithm):
         itself into a corner, it will restart from scratch.
     """
 
-    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 10000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
         self._iteration = 0
@@ -45,6 +47,11 @@ class IterativeGreedy(Algorithm):
     def saving_by_cutting_branch(self, depth: int):
         return self.dimensions ** (len(self.protein) - depth - 1)
 
+    def _increment_iteration(self):
+        self._iteration += 1
+        if self.pbar:
+            self.pbar.update(1)
+
     def _next_fold(self, depth: int):
         # Check if we've reached the end
         if depth >= len(self.protein):
@@ -59,7 +66,7 @@ class IterativeGreedy(Algorithm):
 
             return
 
-        self._iteration += 1
+        self._increment_iteration()
 
         if self._iteration > self.max_iterations:
             return
@@ -93,6 +100,9 @@ class IterativeGreedy(Algorithm):
                   f' Best score: {self.best_score} ({self.amount_of_best_found} found)')
 
     def run(self) -> float:
+        if self._show_progress:
+            self.pbar = tqdm(range(self.max_iterations))
+
         # Start at first node after root node
         self._next_fold(depth=1)
 
