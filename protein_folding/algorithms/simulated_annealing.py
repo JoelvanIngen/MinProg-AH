@@ -47,7 +47,7 @@ class SimulatedAnnealing(Algorithm):
             dirs_total[node_idx] = direction 
         
         dirs_total = dirs_total[1:]
-
+        print(dirs_total)
         return dirs_total
                 
     def run(self) -> float:
@@ -68,7 +68,6 @@ class SimulatedAnnealing(Algorithm):
 
             # Prevent computing score if order is not valid
             if fast_validate_protein(dirs_total):
-
                 comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
                 decision_float = random.random()
                 if comparison_score <= score or threshold > decision_float:

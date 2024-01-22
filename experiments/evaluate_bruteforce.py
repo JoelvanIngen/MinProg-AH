@@ -6,12 +6,13 @@ from protein_folding.protein import Protein
 from protein_folding.algorithms import BruteForce
 import time
 
+
 def run():
     # Create necessary folders
     create_bruteforce_folders()
 
-    seq = "HHPHHHPHPHHHPH"
-    max_iterations = 5000000
+    seq = "HHPCHHPCCPCCCC"
+    max_iterations = 0
     dim = 2
     protein = Protein(seq)
     algorithm = BruteForce(protein, dimensions=dim, max_iterations=max_iterations, verbose=True)
@@ -20,12 +21,12 @@ def run():
     print(results)
     print(f"Lowest score: {min(results.values())}")
 
-    # for i, order in enumerate(results.keys()):
-    #     protein = Protein(seq)
-    #     protein.set_order(order)
-    #     score = results[order]
-    #     print(f"{i}: {score}")
-        # protein.plot(filename=f'./output/bf_output/{algorithm.get_name()}_#{i + 1}_score{score}.png')
+    for i, order in enumerate(results.keys()):
+        protein = Protein(seq)
+        protein.set_order(order)
+        score = results[order]
+        print(f"Protein {i + 1}: {score}")
+        protein.plot(filename=f'./output/bf_output/{algorithm.get_name()}_#{i + 1}_score{score}.png')
 
 
 if __name__ == '__main__':
@@ -37,4 +38,3 @@ if __name__ == '__main__':
     start_time = time.perf_counter()
     run()
     print(time.perf_counter() - start_time)
-

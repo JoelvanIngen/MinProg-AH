@@ -45,7 +45,9 @@ class IterativeGreedy(Algorithm):
     def _next_fold(self, depth: int):
         # Check if we've reached the end
         if depth >= len(self.protein):
+
             bond_score = fast_compute_bond_score(self.protein.sequence, self.protein.order[1:])
+            print(bond_score)
             if bond_score < self.best_score:
                 self.best_score = bond_score
                 self.best_order = self.protein.order
@@ -61,7 +63,7 @@ class IterativeGreedy(Algorithm):
             return
 
         free_directions = self.protein.nodes[depth].get_free_directions(self.directions)
-
+        print(free_directions)
         if not free_directions:
             return
 
@@ -76,6 +78,7 @@ class IterativeGreedy(Algorithm):
 
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
+            print(self.best_order)
             self._next_fold(depth + 1)
             self.protein.revert()
 
