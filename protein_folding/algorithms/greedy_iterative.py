@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 from . import Algorithm
 from .heuristics import *
 from protein_folding.fast_protein import fast_compute_bond_score
@@ -33,8 +31,10 @@ class IterativeGreedy(Algorithm):
 
         self.amount_of_best_found = 0
 
-        # Test if deepcopy is actually necessary
-        self.best_order_deepcopy: list[int] = []
+        self.dimensions = dimensions
+
+        self.budget = 0
+        self.cost_per_iteration = max_iterations / dimensions ** (len(self.protein) - 1)
 
         self.heuristics = (
             MinimiseDimensions(self.protein),
@@ -42,12 +42,14 @@ class IterativeGreedy(Algorithm):
             # Potential(self.protein),
         )
 
+    def saving_by_cutting_branch(self, depth: int):
+        return self.dimensions ** (len(self.protein) - depth - 1)
+
     def _next_fold(self, depth: int):
         # Check if we've reached the end
         if depth >= len(self.protein):
 
             bond_score = fast_compute_bond_score(self.protein.sequence, self.protein.order[1:])
-            print(bond_score)
             if bond_score < self.best_score:
                 self.best_score = bond_score
                 self.best_order = self.protein.order
@@ -63,12 +65,13 @@ class IterativeGreedy(Algorithm):
             return
 
         free_directions = self.protein.nodes[depth].get_free_directions(self.directions)
-        print(free_directions)
         if not free_directions:
             return
 
-        direction_scores, free_directions_sorted = self._process_heurstics(
+        direction_scores, free_directions_sorted = self._process_heuristics(
             depth, free_directions, self.heuristics)
+
+        # Determine budget and decide on prining if necessary
 
         for i, direction in enumerate(free_directions_sorted):
             # if i == len(free_directions) - 1 and i != 0:
@@ -78,7 +81,6 @@ class IterativeGreedy(Algorithm):
 
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
-            print(self.best_order)
             self._next_fold(depth + 1)
             self.protein.revert()
 
