@@ -47,7 +47,6 @@ class SimulatedAnnealing(Algorithm):
             dirs_total[node_idx] = direction 
         
         dirs_total = dirs_total[1:]
-        print(dirs_total)
         return dirs_total
                 
     def run(self) -> float:

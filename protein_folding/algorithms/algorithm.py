@@ -35,7 +35,7 @@ class Algorithm:
 
         return direction_scores
 
-    def _process_heurstics(self,
+    def _process_heuristics(self,
                            node_idx: int,
                            free_directions: list[int],
                            heuristics: list[callable]) -> tuple[list[list[float]], list[int]]:

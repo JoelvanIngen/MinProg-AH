@@ -131,6 +131,13 @@ class Node:
         # Set self to ghosted
         self.ghost = True
 
+    def unghost(self):
+        assert self.ghost
+        assert self.pos not in self.protein.pos_to_node
+        self.protein.pos_to_node[self.pos] = self
+
+        self.ghost = False
+
     def get_free_directions(self, try_directions: list[int]) -> list[int]:
         """
         Determines and returns the directions the node could go in from
@@ -152,6 +159,10 @@ class Node:
         free_deltas = [
             delta for delta in delta_vec_list if self.check_position_availability(self.prev.pos + delta)
         ]
+
+        if self.id != 1 and len(free_deltas) == 4:
+            print(self.protein.order, self.protein.pos_to_node, self.__repr__())
+            assert False
 
         # Convert back to direction integer and return list of free directions
         return [_direction_from_delta_pos[delta] for delta in free_deltas]
