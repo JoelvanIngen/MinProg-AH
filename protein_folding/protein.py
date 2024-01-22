@@ -316,6 +316,36 @@ class Protein:
         if show:
             mlab.show()
 
+    def animate_3d(self, orders):
+        x = [float(n.x) for n in self.nodes]
+        y = [float(n.y) for n in self.nodes]
+        z = [float(n.z) for n in self.nodes]
+
+        line = mlab.plot3d(x, y, z, color=(0,0,0))
+
+        @mlab.animate()
+        def anim():
+            i = 0
+            while True: 
+                #time.sleep(.05)
+                i += 1
+                i %= len(orders)
+                x = list()
+                y = list()
+                z = list()
+                self.set_order(orders[i])
+
+                x = [float(n.x) for n in self.nodes]
+                y = [float(n.y) for n in self.nodes]
+                z = [float(n.z) for n in self.nodes]
+
+                line.mlab_source.set(x=x, y=y, z=z)
+                mlab.roll(1)
+                yield
+
+        anim()
+        mlab.show()
+
     def preserve(self):
         node_dicts = [node.to_dict() for node in self.nodes]
 
