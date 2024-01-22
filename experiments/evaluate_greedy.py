@@ -19,7 +19,7 @@ def main():
 
     algorithm = Greedy(protein, dimensions=dim, debug=True)
     score = algorithm.run()
-    print(f"Score: {score}")
+    print(f"Score: {protein.get_bond_score()}")
 
     if dim == 2:
         protein.plot(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{dim}.png')
