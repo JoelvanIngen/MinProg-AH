@@ -14,7 +14,8 @@ class Algorithm:
     def __init__(self, protein: 'Protein', dimensions: int,
                  heuristics=(),
                  debug=False,
-                 visualise=False):
+                 visualise=False,
+                 show_progressbar=True):
 
         self.protein = protein
         self.directions = _dimensions_to_directions_mapping[dimensions]
@@ -25,6 +26,9 @@ class Algorithm:
 
         self._visualise = visualise
         self._order_history = []
+
+        self._show_progress = show_progressbar
+        self.pbar = None
 
     def get_name(self) -> str:
         return self.__class__.__name__

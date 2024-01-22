@@ -21,7 +21,8 @@ class SimulatedAnnealingHeuristics(Algorithm):
     """
 
     def __init__(self, protein: 'Protein', dimensions,
-                 reset_threshold: int = 5000, **kwargs):
+                 reset_threshold: int = 5000,
+                 n_permutations: int = 10000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         # Decrease of threshold value per iteration
         self.decrease = .9997
@@ -30,70 +31,67 @@ class SimulatedAnnealingHeuristics(Algorithm):
         self._iteration = 0
 
         # Amount of valid permutations that the algorithm will perform in total
-        self.n_permutations = 60000
+        self.n_permutations = n_permutations
 
         # Amount of iterations without improvement that are permitted before
         # the algorithm resets itself
         self.reset_threshold = reset_threshold
+        self.iterations_until_reset = reset_threshold
 
-    def get_permutated_directions(self, node_idx: int):
-        """
-        TODO: should be implemented within protein
-        A function to obtain a set of directions that differs from the current
-        protein ordering starting from a direction change at node [node_idx].
-        The returned directions are an ordering of the same sequence as
-        self.protein, but not necessarily legal.
+        # Run stats
+        self.overall_best_score = 1
+        self.overall_best_order = []
 
-        Pre:
-            - node_idx is an index between 1 and len(sequence) - 1
-        Post:
-            - returns a list of directions that can be fed to protein.set_order
-        """
-        dirs_total = [None] + self.protein.get_order()
-        node = self.protein.nodes[node_idx]
-        free_directions = node.get_free_directions(self.directions)
+    def _increment_iteration(self):
+        self._iteration += 1
+        if self.pbar:
+            self.pbar.update(1)
 
-        if free_directions:
-            direction = random.choice(free_directions)
-            dirs_total[node_idx] = direction
+    def _compare_score(self, order, run_best_score, run_best_order, threshold):
+        score = fast_compute_bond_score(self.protein.sequence, order[1:])
 
-        dirs_total = dirs_total[1:]
+        if score >= run_best_score:
+            self.iterations_until_reset -= 1
 
-        return dirs_total
-
-    def _compare_score(self, order, run_best_score, threshold):
-        score = fast_compute_bond_score(self.protein.sequence, test_order)
         if score <= run_best_score or random.random() < threshold:
-            return score,
+            self.protein.set_order(order[1:])
+            return score, order
+        else:
+            return run_best_score, run_best_order
 
     def _find_valid_move(self, idx, order, directions):
         for direction in directions:
             order[idx] = direction
-            if fast_validate_protein(order):
+            if fast_validate_protein(order[1:]):
                 return direction
 
         return None
 
-    def _select_node(self):
+    def _select_random_node(self):
         idx = random.randint(1, len(self.protein.sequence) - 1)
         node = self.protein.nodes[idx]
 
         return idx, node
 
-    def _run_attempt(self, overall_best_score: int):
+    def _run_attempt(self):
         threshold = 1
         run_best_score = 1
         run_best_order = []
 
+        self.iterations_until_reset = self.reset_threshold
+
         while True:
-            node_idx, node = self._select_node()
+            self._increment_iteration()
+
+            node_idx, node = self._select_random_node()
 
             free_directions = node.get_free_directions(self.directions)
             if not free_directions:
                 continue
 
             if random.random() < threshold:
-                free_directions_sorted = random.shuffle(free_directions)
+                free_directions_sorted = free_directions
+                random.shuffle(free_directions_sorted)
             else:
                 _, free_directions_sorted = self._process_heuristics(
                     node_idx, free_directions, self.heuristics)
@@ -104,9 +102,14 @@ class SimulatedAnnealingHeuristics(Algorithm):
             if not chosen_direction:
                 continue
 
-            self._compare_score(test_order, run_best_score, threshold)
+            run_best_score, run_best_order = self._compare_score(test_order, run_best_score, run_best_order, threshold)
 
-        if run_best_score < overall_best_score:
+            if self.iterations_until_reset < 0 or self._iteration > self.n_permutations:
+                break
+
+        if run_best_score < self.overall_best_score:
+            self.overall_best_score = run_best_score
+            self.overall_best_order = run_best_order
             return run_best_score, run_best_order
 
     def run(self) -> float:
@@ -114,107 +117,12 @@ class SimulatedAnnealingHeuristics(Algorithm):
         Runs the algorithm up to the maximum amount of iterations, and resets
         if there has been no improvement for `self.reset_threshold` iterations.
         """
-        pbar = tqdm(range(self.n_permutations))
+        if self._show_progress:
+            self.pbar = tqdm(range(self.n_permutations))
 
         while True:
             self._run_attempt()
 
-
-    def run(self) -> float:
-        """
-        Runs a simulated annealing algorithm for n_permutations iterations.
-
-        Post:
-            - self.protein is ordered in the way that the algorithm found to
-            maximise the bond score.
-        """
-        progressbar = tqdm(range(self.n_permutations))
-
-        best_order = []
-        best_order_overall = []
-        best_score = 1
-        threshold = 1
-
-        while True:
-            # print(self.protein.order)
-            # Get random node index to permutate and determine its free directions
-            node_idx = random.randint(1, len(self.protein.sequence) - 1)
-            node = self.protein.nodes[node_idx]
-            free_directions = node.get_free_directions(self.directions)
-
-            # print(f"Node: {node_idx}")
-
-            if not free_directions:
-                # if self._debug:
-                #     print("No free directions found")
-                continue
-
-            if random.random() < threshold:
-                free_directions_sorted = free_directions
-            else:
-                _, free_directions_sorted = self._process_heuristics(
-                    node_idx, free_directions, self.heuristics)
-
-            order_test = self.protein.order[:]
-            for direction in free_directions_sorted:
-                order_test[node_idx] = direction
-                if fast_validate_protein(order_test[1:]):
-                    # node.change_direction(direction)
-                    # print(self.protein.pos_to_node)
-                    break
-
-            else:
-                # If no direction results in a valid protein, continue to next permutation
-                # if self._debug:
-                #   print("No direction resulted in valid configuration")
-                continue
-
-            score = fast_compute_bond_score(self.protein.sequence, order_test[1:])
-            if score <= best_score or threshold > random.random():
-                if self._debug and score < best_score:
-                    print(f"New best score: {score}, old best score: {best_score}")
-
-                if score < best_score:
-                    best_order_overall = order_test
-
-                best_order = order_test
-                best_score = score
-                self.protein.unghost_all()
-                node.change_direction(direction)
-                self.protein.unghost_all()
-
-            threshold *= self.decrease
-            self._iteration += 1
-            progressbar.update(1)
             if self._iteration > self.n_permutations:
-                break
-
-        self.protein.set_order(best_order_overall[1:])
-        return best_score
-
-        # best_order = []
-        # score = 0
-        # threshold = 1
-        # for _ in tqdm(range(self.n_permutations)):
-        #     # get random node idx to permutate from and new directions
-        #     node_idx = random.randint(1, len(self.protein.sequence) - 1)
-        #     dirs_total = self.get_permutated_directions(node_idx)
-        #
-        #     # Prevent computing score if order is not valid
-        #     if fast_validate_protein(dirs_total):
-        #
-        #         comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
-        #         decision_float = random.random()
-        #         if comparison_score <= score or threshold > decision_float:
-        #             self.protein.set_order(dirs_total)
-        #             score = comparison_score
-        #
-        #         if comparison_score <= score:
-        #             best_order = dirs_total
-        #
-        #     threshold *= self.decrease
-        #
-        # self.protein.set_order(best_order)
-        # score = self.protein.get_bond_score()
-        #
-        # return score
+                self.protein.set_order(self.overall_best_order[1:])
+                return self.overall_best_score
