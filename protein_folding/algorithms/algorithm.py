@@ -11,14 +11,21 @@ _dimensions_to_directions_mapping = {
 
 
 class Algorithm:
-    def __init__(self, protein: 'Protein', dimensions: int, debug=False):
+    def __init__(self, protein: 'Protein', dimensions: int, debug=False, visualise=False):
         self.protein = protein
         self.directions = _dimensions_to_directions_mapping[dimensions]
 
         self._debug = debug
 
+        self._visualise = visualise
+        self._order_history = []
+
     def get_name(self) -> str:
         return self.__class__.__name__
+
+    def _keep_order_history(self, order: list[int] | None):
+        if self._visualise:
+            self._order_history.append(order[:] if order else self.protein.order[:])
 
     def _process_heuristics_single_direction(self,
                                              node_idx: int,
