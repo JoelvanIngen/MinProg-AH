@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from protein_folding.algorithms.bruteforce import BruteForce
 from protein_folding.protein import Protein
-from sequence_generator import sequence_generator
+from utils import sequence_generator
 
 def data_generator(
 	n_datapoints: int = 5000,
