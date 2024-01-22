@@ -20,20 +20,21 @@ class SimulatedAnnealingHeuristics(Algorithm):
     by the way metals anneal.
     """
 
-    def __init__(self, protein: 'Protein', dimensions, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions,
+                 reset_threshold: int = 5000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
-        # decrease of threshold value per iteration
+        # Decrease of threshold value per iteration
         self.decrease = .9997
-        # number of random mutations to allow
-        # TODO: decide how to determine when to stop algorithm
-        self.n_permutations = 60000
+
+        # Current iteration counter
         self._iteration = 0
 
-        self.heuristics = (
-            MinimiseDimensions(self.protein),
-            FoldAmount(self.protein),
-            # Potential(self.protein),
-        )
+        # Amount of valid permutations that the algorithm will perform in total
+        self.n_permutations = 60000
+
+        # Amount of iterations without improvement that are permitted before
+        # the algorithm resets itself
+        self.reset_threshold = reset_threshold
 
     def get_permutated_directions(self, node_idx: int):
         """
@@ -60,6 +61,65 @@ class SimulatedAnnealingHeuristics(Algorithm):
 
         return dirs_total
 
+    def _compare_score(self, order, run_best_score, threshold):
+        score = fast_compute_bond_score(self.protein.sequence, test_order)
+        if score <= run_best_score or random.random() < threshold:
+            return score,
+
+    def _find_valid_move(self, idx, order, directions):
+        for direction in directions:
+            order[idx] = direction
+            if fast_validate_protein(order):
+                return direction
+
+        return None
+
+    def _select_node(self):
+        idx = random.randint(1, len(self.protein.sequence) - 1)
+        node = self.protein.nodes[idx]
+
+        return idx, node
+
+    def _run_attempt(self, overall_best_score: int):
+        threshold = 1
+        run_best_score = 1
+        run_best_order = []
+
+        while True:
+            node_idx, node = self._select_node()
+
+            free_directions = node.get_free_directions(self.directions)
+            if not free_directions:
+                continue
+
+            if random.random() < threshold:
+                free_directions_sorted = random.shuffle(free_directions)
+            else:
+                _, free_directions_sorted = self._process_heuristics(
+                    node_idx, free_directions, self.heuristics)
+
+            # Copy protein order to experiment on
+            test_order = self.protein.order[:]
+            chosen_direction = self._find_valid_move(node_idx, test_order, free_directions_sorted)
+            if not chosen_direction:
+                continue
+
+            self._compare_score(test_order, run_best_score, threshold)
+
+        if run_best_score < overall_best_score:
+            return run_best_score, run_best_order
+
+    def run(self) -> float:
+        """
+        Runs the algorithm up to the maximum amount of iterations, and resets
+        if there has been no improvement for `self.reset_threshold` iterations.
+        """
+        pbar = tqdm(range(self.n_permutations))
+
+        while True:
+            self._run_attempt()
+
+
     def run(self) -> float:
         """
         Runs a simulated annealing algorithm for n_permutations iterations.
@@ -71,6 +131,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
         progressbar = tqdm(range(self.n_permutations))
 
         best_order = []
+        best_order_overall = []
         best_score = 1
         threshold = 1
 
@@ -88,9 +149,11 @@ class SimulatedAnnealingHeuristics(Algorithm):
                 #     print("No free directions found")
                 continue
 
-            _scores, free_directions_sorted = self._process_heuristics(
-                node_idx, free_directions, self.heuristics)
-            # print(_scores, free_directions_sorted)
+            if random.random() < threshold:
+                free_directions_sorted = free_directions
+            else:
+                _, free_directions_sorted = self._process_heuristics(
+                    node_idx, free_directions, self.heuristics)
 
             order_test = self.protein.order[:]
             for direction in free_directions_sorted:
@@ -110,6 +173,10 @@ class SimulatedAnnealingHeuristics(Algorithm):
             if score <= best_score or threshold > random.random():
                 if self._debug and score < best_score:
                     print(f"New best score: {score}, old best score: {best_score}")
+
+                if score < best_score:
+                    best_order_overall = order_test
+
                 best_order = order_test
                 best_score = score
                 self.protein.unghost_all()
@@ -122,7 +189,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
             if self._iteration > self.n_permutations:
                 break
 
-        self.protein.set_order(best_order[1:])
+        self.protein.set_order(best_order_overall[1:])
         return best_score
 
         # best_order = []
