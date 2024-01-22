@@ -10,6 +10,60 @@ PROTEIN_LENGTH = 10
 N_ITERATIONS = 10
 
 
+# TODO: Change name? What would we actually call something that makes combinations?
+class Combinator:
+    def __init__(self, algorithms=None, heuristics=None, show_progressbar=True):
+        self.algorithms = algorithms if algorithms else get_algorithms()
+        self.heuristics = heuristics if heuristics else get_heuristics()
+
+        self.heuristic_combinations = create_heuristic_combinations(self.heuristics)
+
+        self.avg_scores = []
+
+        self.show_progressbar = show_progressbar
+        self.pbar = None
+
+    def run_all(self):
+        if self.show_progressbar:
+            number_of_runs = len(self.algorithms) * len(self.heuristic_combinations) * N_ITERATIONS
+            self.pbar = tqdm(range(number_of_runs))
+
+        for a in self.algorithms:
+            self.run_all_heuristics(a)
+
+    def run_all_heuristics(self, a):
+        for combination in self.heuristic_combinations:
+            runs_avg = self.repeat_run_algorithm(a, combination)
+            self.avg_scores.append((f"{a.name} - {[h.name for h in combination]}", runs_avg))
+
+    def repeat_run_algorithm(self, a, heuristics):
+        return avg([self.run_algorithm_once(a, heuristics=heuristics) for _ in range(N_ITERATIONS)])
+
+    def run_algorithm_once(self, a, heuristics):
+        if self.pbar:
+            self.pbar.update(1)
+            self.pbar.desc = f"Algorithm: {a.name}, Heuristics: {[h.name for h in heuristics]}"
+
+        protein = Protein(generate_random_sequence(PROTEIN_LENGTH))
+        algorithm = a(protein, dimensions=2, heuristics=self.heuristic_combinations, show_progressbar=False)
+        score = algorithm.run()
+        return score
+
+    def print_scores(self):
+        print(self.avg_scores)
+
+
+def get_algorithms():
+    return (
+        IterativeGreedy,
+        SimulatedAnnealingHeuristics,
+    )
+
+
+def get_heuristics():
+    return get_available_heuristics()
+
+
 def create_heuristic_combinations(heuristics_list):
     """
     Creates a list containing all possible heuristics combinations for
@@ -27,47 +81,15 @@ def create_heuristic_combinations(heuristics_list):
     return all_combinations
 
 
-def run_all_combinations():
-    algorithms = (
-        IterativeGreedy,
-        SimulatedAnnealingHeuristics,
-    )
-
-    number_of_runs = len(algorithms) * len(create_heuristic_combinations(get_available_heuristics())) * N_ITERATIONS
-    pbar = tqdm(range(number_of_runs))
-
-    avg_scores = []
-    for algorithm in algorithms:
-        avg_scores.append(run_each_heuristic_for_algorithm(algorithm, pbar))
-
-        print(list(zip(get_available_heuristics(), avg_scores)))
-
-
-def run_each_heuristic_for_algorithm(algorithm: Algorithm, pbar):
-    scores_per_heuristic = []
-    for heuristic_combination in tqdm(
-            create_heuristic_combinations(get_available_heuristics()),
-            desc=f"Algorithm: {algorithm}"
-    ):
-        scores_per_heuristic.append(repeat_run_algorithm(algorithm, heuristic_combination, pbar))
-
-    return [sum(scores) / len(scores) for scores in scores_per_heuristic]
-
-
-def repeat_run_algorithm(algorithm: Algorithm, heuristic_combination: list[Heuristic], pbar):
-    return [run_algorithm(algorithm, heuristic_combination, pbar) for _ in range(N_ITERATIONS)]
-
-
-def run_algorithm(algorithm_to_run, heuristics_combination: list[Heuristic], pbar):
-    pbar.update(1)
-    pbar.desc = f"{algorithm_to_run, heuristics_combination}"
-    protein = Protein(generate_random_sequence(PROTEIN_LENGTH))
-    algorithm = algorithm_to_run(protein, dimensions=2, heuristics=heuristics_combination, show_progressbar=False)
-    return algorithm.run()
+def avg(values: list[float]) -> float:
+    return sum(values) / len(values)
 
 
 def main():
-    run_all_combinations()
+    c = Combinator()
+    c.run_all()
+
+    c.print_scores()
 
 
 if __name__ == '__main__':
