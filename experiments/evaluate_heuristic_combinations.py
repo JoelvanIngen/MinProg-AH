@@ -7,7 +7,7 @@ from protein_folding.algorithms import *
 from protein_folding.algorithms.heuristics import Heuristic
 
 PROTEIN_LENGTH = 10
-N_ITERATIONS = 100
+N_ITERATIONS = 10
 
 
 def create_heuristic_combinations(heuristics_list):
@@ -62,7 +62,7 @@ def run_algorithm(algorithm_to_run, heuristics_combination: list[Heuristic], pba
     pbar.update(1)
     pbar.desc = f"{algorithm_to_run, heuristics_combination}"
     protein = Protein(generate_random_sequence(PROTEIN_LENGTH))
-    algorithm = algorithm_to_run(protein, dimensions=2, heuristics=heuristics_combination)
+    algorithm = algorithm_to_run(protein, dimensions=2, heuristics=heuristics_combination, show_progressbar=False)
     return algorithm.run()
 
 
