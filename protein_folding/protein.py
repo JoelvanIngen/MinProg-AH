@@ -346,6 +346,11 @@ class Protein:
             coordinates.append((float(node.x), float(node.y), float(node.z)))
         return coordinates
 
+    def unghost_all(self):
+        for node in self.nodes:
+            if node.ghost:
+                node.unghost()
+
 
 def _validate_protein_letters(seq: str) -> None:
     """
