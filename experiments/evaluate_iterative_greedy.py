@@ -18,7 +18,7 @@ def main():
     dim = 2
     protein = Protein(sequence)
 
-    algorithm = IterativeGreedy(protein, dimensions=dim, max_iterations=6000, debug=True)
+    algorithm = IterativeGreedy(protein, dimensions=dim, max_iterations=10000)
     score = algorithm.run()
     print(f"Sequence: {sequence}")
     print(f"Score: {score}")
