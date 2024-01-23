@@ -70,11 +70,14 @@ class BruteForce(Algorithm):
             self.max_configs = (dimensions * 2) ** self.n
         self.score_tracker = ScoreTracker(max_scores=10)
 
+        self.valid_configurations_found = 0
+
     def run(self) -> dict:
         # for i, order in zip(range(self.configs), self.order_list):
         order = tuple([-2] * (len(self.protein.sequence) - 1))
         for _ in range(self.max_configs):
             if fast_validate_protein(order):
+                self.valid_configurations_found += 1
                 score = fast_compute_bond_score(seq=self.sequence, order=order)
                 if score < self.score_tracker.lowest_top_score:
                     if self.verbose:
@@ -83,7 +86,7 @@ class BruteForce(Algorithm):
                     self.score_tracker.add_score(order, score)
             order = generate_new_combination(self.directions, order)
             self.configs += 1
-            if self.verbose:
+            if self.verbose and self.configs % 100_000 == 0:
                 print(f"Config {self.configs}/{self.max_configs}"
                       f"({100 * self.configs // self.max_configs}%)")
         print(f"Stopped at config {self.configs} with order {order}")

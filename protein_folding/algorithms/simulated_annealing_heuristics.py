@@ -21,8 +21,8 @@ class SimulatedAnnealingHeuristics(Algorithm):
     """
 
     def __init__(self, protein: 'Protein', dimensions,
-                 reset_threshold: int = 5000,
-                 n_permutations: int = 10000, **kwargs):
+                 reset_threshold: int = 1000,
+                 n_permutations: int = 5000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         # Decrease of threshold value per iteration
         self.decrease = .9997
@@ -89,12 +89,12 @@ class SimulatedAnnealingHeuristics(Algorithm):
             if not free_directions:
                 continue
 
-            if random.random() < threshold:
+            if not self.heuristics or random.random() < threshold:
                 free_directions_sorted = free_directions
                 random.shuffle(free_directions_sorted)
             else:
                 _, free_directions_sorted = self._process_heuristics(
-                    node_idx, free_directions, self.heuristics)
+                    node_idx, free_directions, self.heuristics, unghost=True)
 
             # Copy protein order to experiment on
             test_order = self.protein.order[:]
