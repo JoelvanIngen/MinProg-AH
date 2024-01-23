@@ -9,6 +9,7 @@ from protein_folding.algorithms.bruteforce import BruteForce
 from protein_folding.protein import Protein
 from utils import sequence_generator
 
+
 def data_generator(
 	n_datapoints: int = 5000,
 	seq_len_limits: list = [5, 10],
