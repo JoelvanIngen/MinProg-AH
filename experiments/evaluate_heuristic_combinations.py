@@ -1,5 +1,6 @@
 from experiments_helper import get_available_heuristics, generate_random_sequence
 import itertools
+from pprint import pprint
 from tqdm import tqdm
 
 from protein_folding.protein import Protein
@@ -36,7 +37,8 @@ class Combinator:
     def run_all_heuristics(self, a):
         for combination in self.heuristic_combinations:
             runs_avg = self.repeat_run_algorithm(a, combination)
-            self.avg_scores.append((f"{a.name} - {[h.name for h in combination]}", runs_avg))
+            self.avg_scores.append((f"{a(self.sample_protein, 2).name} - "
+                                    f"{[h(self.sample_protein).name for h in combination]}", runs_avg))
 
     def repeat_run_algorithm(self, a, heuristics):
         return avg([self.run_algorithm_once(a, heuristics=heuristics) for _ in range(N_ITERATIONS)])
@@ -53,7 +55,7 @@ class Combinator:
         return score
 
     def print_scores(self):
-        print(self.avg_scores)
+        pprint(self.avg_scores)
 
 
 def get_algorithms():
