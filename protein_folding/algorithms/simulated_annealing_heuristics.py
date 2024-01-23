@@ -89,7 +89,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
             if not free_directions:
                 continue
 
-            if random.random() < threshold:
+            if not self.heuristics or random.random() < threshold:
                 free_directions_sorted = free_directions
                 random.shuffle(free_directions_sorted)
             else:
