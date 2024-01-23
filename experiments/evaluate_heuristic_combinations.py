@@ -5,19 +5,22 @@ from tqdm import tqdm
 
 from protein_folding.protein import Protein
 from protein_folding.algorithms import *
-from protein_folding.algorithms.heuristics import Heuristic
+from protein_folding.algorithms.heuristics import *
 
 PROTEIN_LENGTH = 10
-N_ITERATIONS = 10
+N_ITERATIONS = 20
 
 
 # TODO: Change name? What would we actually call something that makes combinations?
 class Combinator:
-    def __init__(self, algorithms=None, heuristics=None, show_progressbar=True):
+    def __init__(self, algorithms=None, heuristics=None, combine_heuristics=True, show_progressbar=True):
         self.algorithms = algorithms if algorithms else get_algorithms()
         self.heuristics = heuristics if heuristics else get_heuristics()
 
-        self.heuristic_combinations = create_heuristic_combinations(self.heuristics)
+        if combine_heuristics:
+            self.heuristic_combinations = create_heuristic_combinations(self.heuristics)
+        else:
+            self.heuristic_combinations = heuristics_separate(self.heuristics)
 
         self.avg_scores = []
 
@@ -86,12 +89,22 @@ def create_heuristic_combinations(heuristics_list):
     return all_combinations
 
 
+def heuristics_separate(heuristics_list):
+    all_combinations = [[]]
+
+    for h in heuristics_list:
+        all_combinations.append([h])
+
+    return all_combinations
+
 def avg(values: list[float]) -> float:
     return sum(values) / len(values)
 
 
 def main():
-    c = Combinator()
+    c = Combinator(
+        combine_heuristics=False
+    )
     c.run_all()
 
     c.print_scores()
