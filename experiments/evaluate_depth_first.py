@@ -1,24 +1,18 @@
-from experiments_helper import create_experiment_folders
+from experiments_helper import create_experiment_folders, generate_random_sequence
 from protein_folding.protein import Protein
-from protein_folding.algorithms import IterativeGreedy
+from protein_folding.algorithms import DepthFirst
 from random import shuffle
 import cProfile
 
 
 def main():
     create_experiment_folders()
-    sequence = 'H' * 21
-    sequence += 'C' * 3
-    sequence += 'P' * 26
-    l = list(sequence)
-    shuffle(l)
-    sequence = ''.join(l)
-    # sequence = "HHPHHHPHPHHHPH"
+    sequence = generate_random_sequence(12)
     score = 0
     dim = 2
     protein = Protein(sequence)
 
-    algorithm = IterativeGreedy(protein, dimensions=dim, max_iterations=6000, debug=True)
+    algorithm = DepthFirst(protein, dimensions=dim, max_iterations=5000, debug=True)
     score = algorithm.run()
     print(f"Sequence: {sequence}")
     print(f"Score: {score}")
@@ -30,6 +24,8 @@ def main():
 
 
 if __name__ == '__main__':
-    profiler = cProfile.Profile()
-    profiler.runcall(main)
-    profiler.dump_stats('output/protein.prof')
+    # profiler = cProfile.Profile()
+    # profiler.runcall(main)
+    # profiler.dump_stats('output/protein.prof')
+
+    main()

@@ -18,6 +18,10 @@ class Heuristic:
 
         self.score_per_direction = []
 
+    @property
+    def name(self) -> str:
+        return self.__class__.__name__
+
     def run(self):
         """
         Runs the heuristic and computes a score for a protein configuration

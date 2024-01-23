@@ -1,6 +1,6 @@
 import random
 
-def sequence_generator(length: int, fractions: list = [.5, .25, .25]) -> list:
+def sequence_generator(length: int, fractions: list = [.5, .25, .25]) -> str:
 	"""
 	generate a sequence of len length of valid molecules (letters). Fractions
 	denotes the fraction of the total letters that will be (not exactly)
@@ -19,4 +19,4 @@ def sequence_generator(length: int, fractions: list = [.5, .25, .25]) -> list:
 	sequence += ['C'] * int(length * .25)
 	sequence += ['P'] * (length - int(length * .5) - int(length * .25))
 	random.shuffle(sequence)
-	return sequence
+	return ''.join(sequence)

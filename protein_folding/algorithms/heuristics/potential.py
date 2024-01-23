@@ -14,13 +14,14 @@ class Potential(Heuristic):
 
     def run(self):
         score = 0
-        for i, node in enumerate(self.protein.nodes[:-1]):
+        for i, node in enumerate(self.protein.nodes[3:]):
             if node.letter == 'P':
                 continue
             if node.ghost:
                 break
 
-            for other_node in self.protein.nodes[i+1:]:
+            start_j = (i + 1) % 2
+            for other_node in self.protein.nodes[start_j:i-1:2]:
                 if other_node.letter == 'P':
                     continue
                 if other_node.ghost:

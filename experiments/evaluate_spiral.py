@@ -12,7 +12,7 @@ def main():
     # l = list(sequence)
     # shuffle(l)
     # sequence = ''.join(l)
-    sequence = "HHPHHHPHPHHHPH"
+    sequence = "CPPCCPHHCHHPPCHHPC"
 
     protein = Protein(sequence)
 
