@@ -44,22 +44,26 @@ class Algorithm:
     def _process_heuristics_single_direction(self,
                                              node_idx: int,
                                              direction: int,
-                                             heuristics: list[callable]) -> list[float]:
+                                             heuristics: list[callable],
+                                             unghost: bool) -> list[float]:
         """
         For a given node, computes and returns the heuristic scores for a
         single direction.
         """
         self.protein.preserve()
         self.protein.nodes[node_idx].change_direction(direction)
+        if unghost:
+            self.protein.unghost_all()
         direction_scores = [heuristic.run() for heuristic in heuristics]
         self.protein.revert()
 
         return direction_scores
 
     def _process_heuristics(self,
-                           node_idx: int,
-                           free_directions: list[int],
-                           heuristics: list[callable]) -> tuple[list[list[float]], list[int]]:
+                            node_idx: int,
+                            free_directions: list[int],
+                            heuristics: list[callable],
+                            unghost: bool = False) -> tuple[list[list[float]], list[int]]:
         """
         For a given node, computes and returns the heuristic scores for each
             free direction. Sorts the scores and the corresponding directions
@@ -71,7 +75,7 @@ class Algorithm:
 
         # Process heuristic for every free dimension
         for direction in free_directions:
-            self._process_heuristics_single_direction(node_idx, direction, heuristics)
+            self._process_heuristics_single_direction(node_idx, direction, heuristics, unghost)
 
         # Process data for each heuristic
         heuristic_scores = [0 for _ in range(len(free_directions))]
