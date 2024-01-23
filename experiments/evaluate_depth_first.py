@@ -7,7 +7,7 @@ import cProfile
 
 def main():
     create_experiment_folders()
-    sequence = generate_random_sequence(15)
+    sequence = generate_random_sequence(12)
     score = 0
     dim = 2
     protein = Protein(sequence)

@@ -13,7 +13,7 @@ def main():
 
     scores = []
     for _ in tqdm(range(N)):
-        sequence = generate_random_sequence(12)
+        sequence = generate_random_sequence(20)
         protein = Protein(sequence)
 
         algorithm = DepthFirst(protein, dimensions=2, max_iterations=2500, debug=False, show_progressbar=False)
@@ -28,7 +28,7 @@ def main():
     print(f'Average final score: {average_value:.2f}')
     print(f"All scores: {scores}")
 
-    plt.hist(scores, bins=int(abs(min_value)), color='blue', edgecolor='black')
+    plt.hist(scores, bins=int(abs(min_value) - 1), color='blue', edgecolor='black')
     plt.axvline(average_value, color='red', linestyle='dashed', linewidth=2, label=f'Average: {average_value:.2f}')
     plt.axvline(min_value, color='green', linestyle='dashed', linewidth=2, label=f'Min: {min_value}')
     # plt.axvline(max_value, color='orange', linestyle='dashed', linewidth=2, label=f'Max: {max_value}')
@@ -40,9 +40,9 @@ def main():
     # Adding labels and title
     plt.xlabel('Value')
     plt.ylabel('Frequency')
-    plt.title('Pure Random with Average, Min, and Max')
+    plt.title('Depth First with Average, Min, and Max')
     plt.legend()
-    plt.savefig('output/IterativeGreedyStats')
+    plt.savefig('output/DepthFirstStats')
 
 
 if __name__ == '__main__':

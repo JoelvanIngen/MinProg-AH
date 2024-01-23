@@ -7,8 +7,8 @@ from protein_folding.protein import Protein
 from protein_folding.algorithms import *
 from protein_folding.algorithms.heuristics import *
 
-PROTEIN_LENGTH = 10
-N_ITERATIONS = 40
+PROTEIN_LENGTH = 16
+N_ITERATIONS = 250
 
 
 # TODO: Change name? What would we actually call something that makes combinations?
@@ -103,7 +103,8 @@ def avg(values: list[float]) -> float:
 
 def main():
     c = Combinator(
-        combine_heuristics=False
+        algorithms= [DepthFirst, SimulatedAnnealingHeuristics],
+        combine_heuristics=True
     )
     c.run_all()
 
