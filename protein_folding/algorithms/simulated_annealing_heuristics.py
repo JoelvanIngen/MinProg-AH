@@ -21,7 +21,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
     """
 
     def __init__(self, protein: 'Protein', dimensions,
-                 reset_threshold: int = 5000,
+                 reset_threshold: int = 1000,
                  n_permutations: int = 10000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         # Decrease of threshold value per iteration
