@@ -83,7 +83,7 @@ class BruteForce(Algorithm):
                     self.score_tracker.add_score(order, score)
             order = generate_new_combination(self.directions, order)
             self.configs += 1
-            if self.verbose:
+            if self.verbose and self.configs % 100_000 == 0:
                 print(f"Config {self.configs}/{self.max_configs}"
                       f"({100 * self.configs // self.max_configs}%)")
         print(f"Stopped at config {self.configs} with order {order}")
