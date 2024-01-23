@@ -28,6 +28,8 @@ def run():
         print(f"Protein {i + 1}: {score}")
         protein.plot(filename=f'./output/bf_output/{algorithm.get_name()}_#{i + 1}_score{score}.png')
 
+    print(f"Valid configurations: {algorithm.valid_configurations_found}")
+
 
 if __name__ == '__main__':
     # profiler = cProfile.Profile()
