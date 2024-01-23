@@ -8,7 +8,7 @@ from protein_folding.algorithms import *
 from protein_folding.algorithms.heuristics import *
 
 PROTEIN_LENGTH = 10
-N_ITERATIONS = 20
+N_ITERATIONS = 40
 
 
 # TODO: Change name? What would we actually call something that makes combinations?
