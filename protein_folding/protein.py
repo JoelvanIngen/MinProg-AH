@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-try:
-    from mayavi import mlab
-except:
-       pass
+#try:
+#    from mayavi import mlab
+#except:
+#       pass
 
 from .definitions import *
 from .node import Node, _delta_pos_from_direction
@@ -316,6 +316,53 @@ class Protein:
         mlab.savefig(filename)
         if show:
             mlab.show()
+
+    def animate_2d(self, orders):
+        """
+        animates the folding process live.
+        orders = list of sequentially tried orders (make attribute in folder)
+        """
+        fig = plt.figure()
+
+        for order in orders:
+            self.set_order(order)
+            prev = Vec3D(0, 0, 0)
+
+            for n in self.nodes:
+                # Put node letter at node's position
+                plt.text(n.x, n.y, n.letter, size='10')
+
+                # Draw protein line segment from previous node
+                plt.plot([prev.x, n.x], [prev.y, n.y], '-', color='black', linewidth=1.5)
+
+                # Save position as previous
+                prev = n.pos
+
+            # Add lines between all pairings
+            neighbours = self.get_all_neighbours()
+            neighbours_filtered = self.filter_neighbours_by_nonzero_score(neighbours)
+            for pairing in neighbours_filtered:
+                node1, node2 = pairing
+
+                if node1.letter == 'H' and node2.letter == 'H':
+                    line_colour = 'green'
+                elif (node1.letter == 'H' and node2.letter == 'C'
+                    or node1.letter == 'C' and node2.letter == 'H'):
+                    line_colour = 'orange'
+                elif node1.letter == 'C' and node2.letter == 'C':
+                    line_colour = 'red'
+                else:
+                    # Should never trigger, for now this mostly shows nothing gets through the if-statements
+                    raise Exception(f"Letters {node1.letter} and {node2.letter} should not be neighbours")
+
+                plt.plot([node1.x, node2.x], [node1.y, node2.y], '--', color=line_colour, linewidth=1)
+                # Get full dimensions of protein
+                dim = get_min_max(self.nodes)
+            
+            plt.axis('off')
+            plt.draw()
+            plt.pause(0.01)
+            plt.clf()
 
     def animate_3d(self, orders):
         x = [float(n.x) for n in self.nodes]
