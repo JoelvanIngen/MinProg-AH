@@ -1,12 +1,11 @@
-from experiments_helper import create_experiment_folders
+from experiments_helper import create_experiment_folders, generate_random_sequence
 from protein_folding.protein import Protein
 from protein_folding.algorithms import SimulatedAnnealingHeuristics
 
 
 def main():
 	create_experiment_folders()
-	sequence = 'HHPCHHPCCPCPPHHHHPPHCHPHPHCHPPHHPCHHPCCPCPPHHHHPPHCHPHPHCHPPHHPCHHPCCPCPPHHHHPPHCHPHPHCHPP'
-	# sequence = 'HHHHHHHHHH'
+	sequence = generate_random_sequence(14)
 	protein = Protein(sequence)
 
 	algorithm = SimulatedAnnealingHeuristics(protein, dimensions=2, debug=True)
