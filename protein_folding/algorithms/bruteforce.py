@@ -67,7 +67,7 @@ class BruteForce(Algorithm):
         if max_iterations > 0:
             self.max_configs = max_iterations
         else:
-            self.max_configs = 4 ** self.n
+            self.max_configs = (dimensions * 2) ** self.n
         self.score_tracker = ScoreTracker(max_scores=10)
 
     def run(self) -> dict:
