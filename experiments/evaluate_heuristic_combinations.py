@@ -63,7 +63,7 @@ class Combinator:
 
 def get_algorithms():
     return (
-        IterativeGreedy,
+        DepthFirst,
         SimulatedAnnealingHeuristics,
     )
 

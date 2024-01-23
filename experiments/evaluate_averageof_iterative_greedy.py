@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from experiments_helper import create_experiment_folders, generate_random_sequence
 from protein_folding.protein import Protein
-from protein_folding.algorithms import IterativeGreedy
+from protein_folding.algorithms import DepthFirst
 
 N = 1000
 
@@ -16,7 +16,7 @@ def main():
         sequence = generate_random_sequence(12)
         protein = Protein(sequence)
 
-        algorithm = IterativeGreedy(protein, dimensions=2, max_iterations=2500, debug=False, show_progressbar=False)
+        algorithm = DepthFirst(protein, dimensions=2, max_iterations=2500, debug=False, show_progressbar=False)
         score = algorithm.run()
         scores.append(score)
 

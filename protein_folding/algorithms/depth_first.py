@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 direction_dict = {-1: "Left", 1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
 
 
-class IterativeGreedy(Algorithm):
+class DepthFirst(Algorithm):
     """
     A greedy algorithm that applies a direction for each individual
         node, starting from the first node after the root node. It determines
