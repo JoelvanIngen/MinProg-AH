@@ -21,7 +21,7 @@ class IterativeGreedy(Algorithm):
         itself into a corner, it will restart from scratch.
     """
 
-    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 10000, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
         self._iteration = 0
