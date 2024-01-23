@@ -23,6 +23,8 @@ class Combinator:
         self.show_progressbar = show_progressbar
         self.pbar = None
 
+        self.sample_protein = Protein("HH")
+
     def run_all(self):
         if self.show_progressbar:
             number_of_runs = len(self.algorithms) * len(self.heuristic_combinations) * N_ITERATIONS
@@ -42,7 +44,8 @@ class Combinator:
     def run_algorithm_once(self, a, heuristics):
         if self.pbar:
             self.pbar.update(1)
-            self.pbar.desc = f"Algorithm: {a.name}, Heuristics: {[h.name for h in heuristics]}"
+            self.pbar.desc = (f"Algorithm: {a(self.sample_protein, 2).name}, "
+                              f"Heuristics: {[h(self.sample_protein).name for h in heuristics]}")
 
         protein = Protein(generate_random_sequence(PROTEIN_LENGTH))
         algorithm = a(protein, dimensions=2, heuristics=self.heuristic_combinations, show_progressbar=False)
@@ -72,7 +75,7 @@ def create_heuristic_combinations(heuristics_list):
     Code adapted from Stackoverflow:
     https://stackoverflow.com/questions/8371887/making-all-possible-combinations-of-a-list
     """
-    all_combinations = []
+    all_combinations = [[]]
 
     for i in range(1, len(heuristics_list) + 1):
         els = [list(x) for x in itertools.combinations(heuristics_list, i)]
