@@ -247,6 +247,7 @@ class Protein:
         plt.xlim(dim[0].x - 0.5, dim[1].x + 0.5)
         plt.ylim(dim[0].y - 0.5, dim[1].y + 0.5)
         plt.axis('off')
+        plt.text(dim[0].x - 0.5, dim[0].y - 0.5, f"Score: {self.get_bond_score()}")
 
         # Save image
         plt.savefig(filename)
