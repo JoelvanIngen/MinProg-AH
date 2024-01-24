@@ -44,7 +44,7 @@ class FoldLoss(nn.Module):
 			score_diff = torch.abs(prediction_score - target_score)
 			# unless similar score is achieved, compare to target coordinates
 			if score_diff != 0:
-				score_diff += torch.abs(torch.sum(rounded_predictions - targets))
+				score_diff += score_diff * torch.abs(torch.sum(rounded_predictions - targets))
 		# to avoid creating minima going from invalid orders to valid orders
 		# with bad scores, add the target score as minimum score loss
 		else:
