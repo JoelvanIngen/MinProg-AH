@@ -94,7 +94,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
                 random.shuffle(free_directions_sorted)
             else:
                 _, free_directions_sorted = self._process_heuristics(
-                    node_idx, free_directions, self.heuristics, unghost=True)
+                    node_idx, free_directions, unghost=True)
 
             # Copy protein order to experiment on
             test_order = self.protein.order[:]
