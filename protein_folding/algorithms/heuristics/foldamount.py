@@ -25,11 +25,10 @@ class FoldAmount(Heuristic):
 
     def interpret(self) -> list[float]:
         """
-        Normalises the values such that max(scores) = 1.
+        Normalises the values such that max(scores) = 1 and min(scores) > 0.
         """
         _min = min(self.score_per_direction)
         _max = max(self.score_per_direction)
-        delta = _max - _min
 
         if _max == 0:
             # Avoid division by zero if all scores are similar
