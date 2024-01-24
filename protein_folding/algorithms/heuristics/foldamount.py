@@ -36,15 +36,3 @@ class FoldAmount(Heuristic):
 
         scores_norm = [value / _max for value in self.score_per_direction]
         return scores_norm
-    
-    def calculate(self, state):
-        # Count the number of non-ordered links in the protein state.
-        n_corners = 0
-        nodes = [node for node in state.nodes[1:] if not node.ghost] # Adjusted to start from the second node
-
-        for i in range(1, len(nodes)):
-            if nodes[i].direction_from_previous != nodes[i - 1].direction_from_previous:
-                n_corners += 1
-
-        return n_corners
-
