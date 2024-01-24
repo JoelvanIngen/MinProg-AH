@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import ast
 
-from utils import index_sequence
 
 class FoldDataset(Dataset):
 	"""
@@ -19,25 +18,17 @@ class FoldDataset(Dataset):
 			csv_location='./data/test_data.csv',
 			shuffle=True,
 			transform = ToTensor(),
-			normalize = True
+			normalize = True,
+			norm_val = 15
 			) -> None:
 		self.transform = transform
 		self.normalize = normalize
+		self.norm_val = norm_val
 		
 		# read in .csv file
 		self.dataframe = pd.read_csv(csv_location)
 		if shuffle:
 			self.dataframe = self.dataframe.sample(frac = 1)
-
-		# find maximum coordinate value in any direction
-		self.max_coordinate_value = 0
-		for idx in range(len(self.dataframe)):
-			datapoint = self.dataframe.iloc[idx]
-			coordinates_list = ast.literal_eval(datapoint['coordinates'])
-			for coordinates in coordinates_list:
-				for coordinate in coordinates:
-					if abs(coordinate) > self.max_coordinate_value:
-						self.max_coordinate_value = abs(coordinate)
 
 	def __len__(self) -> int:
 		return len(self.dataframe)
@@ -51,11 +42,12 @@ class FoldDataset(Dataset):
 		if self.transform:
 			coordinates = self.transform(coordinates)
 			score = torch.tensor(score)
+	
 		# divide by maximum found value if normalized
 		if self.normalize:
-			coordinates/= self.max_coordinate_value
+			coordinates/= self.norm_val
 				
-		return sequence, coordinates, score, self.max_coordinate_value
+		return sequence, coordinates, score
 
 
 if __name__ == '__main__':
