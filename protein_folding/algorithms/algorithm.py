@@ -15,14 +15,18 @@ class Algorithm:
                  heuristics=(),
                  debug=False,
                  visualise=False,
-                 show_progressbar=True):
+                 show_progressbar=True,
+                 keep_score_history=False):
 
         self.protein = protein
         self.directions = _dimensions_to_directions_mapping[dimensions]
 
-        self.heuristics = (
+        self.heuristics = [
             h(protein) for h in heuristics
-        )
+        ]
+
+        self.keep_score_history = keep_score_history
+        self.best_score_history = []
 
         self._debug = debug
 
@@ -105,3 +109,9 @@ class Algorithm:
             optimised protein configuration
         """
         pass
+
+    def plot_score_progress(self):
+        import matplotlib.pyplot as plt
+        print(list[*range(len(self.best_score_history))], self.best_score_history)
+        plt.plot([*range(len(self.best_score_history))], self.best_score_history)
+        plt.show()
