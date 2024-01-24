@@ -1,14 +1,14 @@
 from experiments_helper import get_available_heuristics, generate_random_sequence
+import numpy as np
 import itertools
-from pprint import pprint
 from tqdm import tqdm
 
 from protein_folding.protein import Protein
 from protein_folding.algorithms import *
 from protein_folding.algorithms.heuristics import *
 
-PROTEIN_LENGTH = 16
-N_ITERATIONS = 250
+PROTEIN_LENGTH = 20
+N_ITERATIONS = 1000
 
 
 # TODO: Change name? What would we actually call something that makes combinations?
@@ -22,7 +22,7 @@ class Combinator:
         else:
             self.heuristic_combinations = heuristics_separate(self.heuristics)
 
-        self.avg_scores = []
+        self.scores = []
 
         self.show_progressbar = show_progressbar
         self.pbar = None
@@ -39,12 +39,12 @@ class Combinator:
 
     def run_all_heuristics(self, a):
         for combination in self.heuristic_combinations:
-            runs_avg = self.repeat_run_algorithm(a, combination)
-            self.avg_scores.append((f"{a(self.sample_protein, 2).name} - "
-                                    f"{[h(self.sample_protein).name for h in combination]}", runs_avg))
+            runs_scores = self.repeat_run_algorithm(a, combination)
+            self.scores.append((f"{a(self.sample_protein, 2).name} - "
+                                f"{[h(self.sample_protein).name for h in combination]}", runs_scores))
 
     def repeat_run_algorithm(self, a, heuristics):
-        return avg([self.run_algorithm_once(a, heuristics=heuristics) for _ in range(N_ITERATIONS)])
+        return [self.run_algorithm_once(a, heuristics=heuristics) for _ in range(N_ITERATIONS)]
 
     def run_algorithm_once(self, a, heuristics):
         if self.pbar:
@@ -53,12 +53,14 @@ class Combinator:
                               f"Heuristics: {[h(self.sample_protein).name for h in heuristics]}")
 
         protein = Protein(generate_random_sequence(PROTEIN_LENGTH))
-        algorithm = a(protein, dimensions=2, heuristics=self.heuristic_combinations, show_progressbar=False)
+        algorithm = a(protein, dimensions=2, heuristics=heuristics, show_progressbar=False)
         score = algorithm.run()
         return score
 
     def print_scores(self):
-        pprint(self.avg_scores)
+        for name, scores in self.scores:
+            print(f"{name} - Avg: {np.mean(scores)} | Median: {np.median(scores)} | Std: {np.std(scores)} | "
+                  f"25% - 75%: ({np.percentile(scores, 25)} - {np.percentile(scores, 75)})")
 
 
 def get_algorithms():
@@ -97,14 +99,15 @@ def heuristics_separate(heuristics_list):
 
     return all_combinations
 
+
 def avg(values: list[float]) -> float:
     return sum(values) / len(values)
 
 
 def main():
     c = Combinator(
-        algorithms= [DepthFirst, SimulatedAnnealingHeuristics],
-        combine_heuristics=True
+        algorithms= [DepthFirst],
+        combine_heuristics=False
     )
     c.run_all()
 

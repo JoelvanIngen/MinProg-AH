@@ -20,7 +20,9 @@ class Algorithm:
         self.protein = protein
         self.directions = _dimensions_to_directions_mapping[dimensions]
 
-        self.heuristics = heuristics
+        self.heuristics = (
+            h(protein) for h in heuristics
+        )
 
         self._debug = debug
 
@@ -62,24 +64,26 @@ class Algorithm:
     def _process_heuristics(self,
                             node_idx: int,
                             free_directions: list[int],
-                            heuristics: list[callable],
                             unghost: bool = False) -> tuple[list[list[float]], list[int]]:
         """
         For a given node, computes and returns the heuristic scores for each
             free direction. Sorts the scores and the corresponding directions
             and returns both in a tuple.
         """
+        if not self.heuristics:
+            return [0 for _ in free_directions], free_directions
+
         # Remove previously remembered heuristic scores
-        for heuristic in heuristics:
+        for heuristic in self.heuristics:
             heuristic.reset()
 
         # Process heuristic for every free dimension
         for direction in free_directions:
-            self._process_heuristics_single_direction(node_idx, direction, heuristics, unghost)
+            self._process_heuristics_single_direction(node_idx, direction, self.heuristics, unghost)
 
         # Process data for each heuristic
         heuristic_scores = [0 for _ in range(len(free_directions))]
-        for heuristic in heuristics:
+        for heuristic in self.heuristics:
             res = heuristic.interpret()
             for i, val in enumerate(res):
                 heuristic_scores[i] += val

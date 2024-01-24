@@ -12,7 +12,7 @@ def main():
     dim = 2
     protein = Protein(sequence)
 
-    algorithm = DepthFirst(protein, dimensions=dim, max_iterations=5000, debug=True)
+    algorithm = DepthFirst(protein, dimensions=dim, max_iterations=20000, debug=True)
     score = algorithm.run()
     print(f"Sequence: {sequence}")
     print(f"Score: {score}")

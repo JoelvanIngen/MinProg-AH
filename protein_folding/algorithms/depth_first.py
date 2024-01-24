@@ -21,7 +21,7 @@ class DepthFirst(Algorithm):
         itself into a corner, it will restart from scratch.
     """
 
-    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, pruning=True, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
         self._iteration = 0
@@ -35,19 +35,15 @@ class DepthFirst(Algorithm):
 
         self.dimensions = dimensions
 
-        self.budget = 0
+        self.pruning = pruning
+        self.budget = 100
         self.cost_per_iteration = max_iterations / dimensions ** (len(self.protein) - 1)
 
-        self.heuristics = (
-            MinimiseDimensions(self.protein),
-            FoldAmount(self.protein),
-            # Potential(self.protein),
-        )
-
     def saving_by_cutting_branch(self, depth: int):
-        return self.dimensions ** (len(self.protein) - depth - 1)
+        return (2 * self.dimensions - 1) ** (len(self.protein) - depth - 1)
 
     def _increment_iteration(self):
+        self.budget -= 1
         self._iteration += 1
         if self.pbar:
             self.pbar.update(1)
@@ -76,9 +72,14 @@ class DepthFirst(Algorithm):
             return
 
         direction_scores, free_directions_sorted = self._process_heuristics(
-            depth, free_directions, self.heuristics)
+            depth, free_directions)
 
-        # Determine budget and decide on prining if necessary
+        # print(f"Budget: {self.budget}")
+        while self.pruning and self.budget < 0 and len(free_directions_sorted) > 1 and len(self.protein) - depth > 1:
+            # Prune worst branch
+            free_directions_sorted.pop(-1)
+            self.budget += int(self.saving_by_cutting_branch(depth) * self.cost_per_iteration) + 1  # Round up
+            # print(f"Nodes pruned: {self.saving_by_cutting_branch(depth)}, new budget: {self.budget} (depth {depth})")
 
         for i, direction in enumerate(free_directions_sorted):
             # if i == len(free_directions) - 1 and i != 0:
