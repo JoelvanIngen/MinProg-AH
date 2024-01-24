@@ -160,10 +160,6 @@ class Node:
             delta for delta in delta_vec_list if self.check_position_availability(self.prev.pos + delta)
         ]
 
-        if self.id != 1 and len(free_deltas) == 4:
-            print(self.protein.order, self.protein.pos_to_node, self.__repr__())
-            assert False
-
         # Convert back to direction integer and return list of free directions
         return [_direction_from_delta_pos[delta] for delta in free_deltas]
 
