@@ -112,6 +112,5 @@ class Algorithm:
 
     def plot_score_progress(self):
         import matplotlib.pyplot as plt
-        print(list[*range(len(self.best_score_history))], self.best_score_history)
         plt.plot([*range(len(self.best_score_history))], self.best_score_history)
         plt.show()
