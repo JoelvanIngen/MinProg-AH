@@ -72,7 +72,7 @@ class DepthFirst(Algorithm):
             return
 
         direction_scores, free_directions_sorted = self._process_heuristics(
-            depth, free_directions, self.heuristics)
+            depth, free_directions)
 
         # print(f"Budget: {self.budget}")
         while self.pruning and self.budget < 0 and len(free_directions_sorted) > 1 and len(self.protein) - depth > 1:

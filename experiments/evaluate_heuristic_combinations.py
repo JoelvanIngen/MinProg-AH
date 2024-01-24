@@ -8,7 +8,7 @@ from protein_folding.algorithms import *
 from protein_folding.algorithms.heuristics import *
 
 PROTEIN_LENGTH = 16
-N_ITERATIONS = 250
+N_ITERATIONS = 50
 
 
 # TODO: Change name? What would we actually call something that makes combinations?
@@ -53,7 +53,7 @@ class Combinator:
                               f"Heuristics: {[h(self.sample_protein).name for h in heuristics]}")
 
         protein = Protein(generate_random_sequence(PROTEIN_LENGTH))
-        algorithm = a(protein, dimensions=2, heuristics=self.heuristic_combinations, show_progressbar=False)
+        algorithm = a(protein, dimensions=2, heuristics=heuristics, show_progressbar=False)
         score = algorithm.run()
         return score
 
@@ -103,8 +103,8 @@ def avg(values: list[float]) -> float:
 
 def main():
     c = Combinator(
-        algorithms= [DepthFirst, SimulatedAnnealingHeuristics],
-        combine_heuristics=True
+        algorithms= [DepthFirst],
+        combine_heuristics=False
     )
     c.run_all()
 
