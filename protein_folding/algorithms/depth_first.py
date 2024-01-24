@@ -82,11 +82,6 @@ class DepthFirst(Algorithm):
             # print(f"Nodes pruned: {self.saving_by_cutting_branch(depth)}, new budget: {self.budget} (depth {depth})")
 
         for i, direction in enumerate(free_directions_sorted):
-            # if i == len(free_directions) - 1 and i != 0:
-            #     # Return early to prevent searching for worst scored branch
-            #     self._iteration -= 1
-            #     return
-
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
             self._next_fold(depth + 1)
