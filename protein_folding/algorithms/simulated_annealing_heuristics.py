@@ -24,10 +24,12 @@ class SimulatedAnnealingHeuristics(Algorithm):
                  reset_threshold: int = 1000,
                  n_permutations: int = 5000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
-        # Decrease of threshold value per iteration
-        self.decrease = .9997
+
+        decrease = 0.9997
+        self.thresholds = [decrease ** i for i in range(n_permutations)]
 
         # Current iteration counter
+        self.run_iteration = 0
         self._iteration = 0
 
         # Amount of valid permutations that the algorithm will perform in total
@@ -43,6 +45,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
         self.overall_best_order = []
 
     def _increment_iteration(self):
+        self.run_iteration += 1
         self._iteration += 1
         if self.pbar:
             self.pbar.update(1)
@@ -74,7 +77,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
         return idx, node
 
     def _run_attempt(self):
-        threshold = 1
+        self.run_iteration = 0
         run_best_score = 1
         run_best_order = []
 
@@ -82,6 +85,8 @@ class SimulatedAnnealingHeuristics(Algorithm):
 
         while True:
             self._increment_iteration()
+
+            threshold = self.thresholds[self.run_iteration]
 
             node_idx, node = self._select_random_node()
 
