@@ -21,7 +21,7 @@ class DepthFirst(Algorithm):
         itself into a corner, it will restart from scratch.
     """
 
-    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, pruning=True, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
         self._iteration = 0
@@ -35,14 +35,9 @@ class DepthFirst(Algorithm):
 
         self.dimensions = dimensions
 
+        self.pruning = pruning
         self.budget = 100
         self.cost_per_iteration = max_iterations / dimensions ** (len(self.protein) - 1)
-
-        self.heuristics = (
-            MinimiseDimensions(self.protein),
-            FoldAmount(self.protein),
-            # Potential(self.protein),
-        )
 
     def saving_by_cutting_branch(self, depth: int):
         return (2 * self.dimensions - 1) ** (len(self.protein) - depth - 1)
@@ -80,7 +75,7 @@ class DepthFirst(Algorithm):
             depth, free_directions, self.heuristics)
 
         # print(f"Budget: {self.budget}")
-        while self.budget < 0 and len(free_directions_sorted) > 1 and len(self.protein) - depth > 1:
+        while self.pruning and self.budget < 0 and len(free_directions_sorted) > 1 and len(self.protein) - depth > 1:
             # Prune worst branch
             free_directions_sorted.pop(-1)
             self.budget += int(self.saving_by_cutting_branch(depth) * self.cost_per_iteration) + 1  # Round up
