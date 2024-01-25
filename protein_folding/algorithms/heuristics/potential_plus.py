@@ -12,14 +12,27 @@ class PotentialPlus(Heuristic):
     def __init__(self, *args):
         super().__init__(*args)
 
-    def run(self, *, node):
+    def run(self, node=None):
         score = 0
 
-        if node.id < 3:
+        if node:
+            # Only compute for a specific single node
+            score += self._iterate_for_node(node, score)
             return self.score_per_direction.append(score)
 
-        start_j = (node.id + 1) % 2
-        for other_node in self.protein.nodes[start_j:node.id-1:2]:
+        # Compute for all nodes
+        for i, node in enumerate(self.protein.nodes[3:], start=3):
+            if node.ghost:
+                break
+
+            score += self._iterate_for_node(i, score)
+
+        self.score_per_direction.append(score)
+
+    def _iterate_for_node(self, node, score):
+        node_idx = node.id
+        start_j = (node_idx + 1) % 2
+        for other_node in self.protein.nodes[start_j:node_idx - 1:2]:
             if other_node.ghost:
                 break
 
@@ -40,7 +53,7 @@ class PotentialPlus(Heuristic):
             len_sq = delta_vec.len_sq()
             score += (1 / len_sq) * mult
 
-        self.score_per_direction.append(score)
+        return score
 
     def interpret(self) -> list[float]:
         """
