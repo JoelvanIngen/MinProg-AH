@@ -48,8 +48,8 @@ def fold_validity_quantified_loss(coordinates) -> float:
     Post:
         - a float containing the accumulated loss is returned
     """
-    multiplier_duplicate_coordinates = 1.0
-    multiplier_invalid_steps = 1.0
+    multiplier_duplicate_coordinates = 3.
+    multiplier_invalid_steps = 1.
 
     # penalty for duplicate coordinates, ie overlapping molecules
     loss = (multiplier_duplicate_coordinates *
@@ -60,9 +60,10 @@ def fold_validity_quantified_loss(coordinates) -> float:
         coor_1 = coordinates[0][idx - 1]
         coor_2 = coordinates[0][idx]
         diff = coor_1 - coor_2
-        if not (torch.count_nonzero(diff) == 1 and
-                torch.abs(torch.sum(diff)) == 1):
-            loss += multiplier_invalid_steps
+        n_apart = torch.count_nonzero(diff)
+        diff_sum = torch.abs(torch.sum(diff))
+        if not (n_apart == 1 and diff_sum == 1):
+            loss += multiplier_invalid_steps + n_apart + diff_sum
 
     return loss
 
