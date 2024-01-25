@@ -39,6 +39,12 @@ class Vec3D:
     def __len__(self) -> float:
         return sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
+    def __mul__(self, other: int):
+        return Vec3D(x=self.x * other, y=self.y * other, z=self.z * other)
+
+    def __rmul__(self, other: int):
+        return self.__mul__(other)
+
     def __repr__(self) -> str:
         return f"Vec3D({self.x}, {self.y}, {self.z})"
 
