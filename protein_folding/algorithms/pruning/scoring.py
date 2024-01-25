@@ -3,8 +3,11 @@ from protein_folding.fast_protein import fast_compute_bond_score
 
 
 class Score(Pruning):
-    def __init__(self, *args):
-        super().__init__(*args)
+    def __init__(self, protein, mult):
+        super().__init__(protein)
+
+        # Higher multiplier: less likely to prune
+        self.mult = mult
 
     def run(self, *, best_score, depth) -> bool:
         """
@@ -25,6 +28,6 @@ class Score(Pruning):
 
         score = -fast_compute_bond_score(self.protein.sequence[:depth + 1], self.protein.order[1:depth + 1])
 
-        threshold = len(self.protein) * depth / (4 * -best_score)
+        threshold = len(self.protein) * depth / (self.mult * -best_score)
 
         return score < threshold
