@@ -73,9 +73,8 @@ class DepthFirst(Algorithm):
             pruner = Score(self.protein)
             return pruner.run(best_score=self.best_score, depth=depth)
 
-        def _reached_max_iterations():
-            if self._iteration > self.max_iterations:
-                return
+        def _reached_max_iterations() -> bool:
+            return self._iteration > self.max_iterations
 
         if _reached_protein_end():
             return
