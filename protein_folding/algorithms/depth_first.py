@@ -9,8 +9,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from protein_folding.protein import Protein
 
-direction_dict = {-1: "Left", 1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
-
 
 class DepthFirst(Algorithm):
     """
