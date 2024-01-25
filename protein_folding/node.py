@@ -190,6 +190,10 @@ class Node:
         if not self.direction_from_previous:
             raise Exception("First node in chain!")
 
+        # Do nothing if new direction is same as old direction
+        if direction == self.direction_from_previous:
+            return
+
         # Get new position vector from direction
         new_pos = calc_position_from_direction(direction, self.prev)
 
