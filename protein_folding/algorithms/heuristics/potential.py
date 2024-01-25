@@ -12,7 +12,7 @@ class Potential(Heuristic):
     def __init__(self, *args):
         super().__init__(*args)
 
-    def run(self):
+    def run(self, **kwargs):
         score = 0
         for i, node in enumerate(self.protein.nodes[3:], start=3):
             if node.letter == 'P':

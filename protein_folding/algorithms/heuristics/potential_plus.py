@@ -12,34 +12,33 @@ class PotentialPlus(Heuristic):
     def __init__(self, *args):
         super().__init__(*args)
 
-    def run(self):
+    def run(self, *, node):
         score = 0
-        for i, node in enumerate(self.protein.nodes[3:], start=3):
-            if node.ghost:
+
+        if node.id < 3:
+            return self.score_per_direction.append(score)
+
+        start_j = (node.id + 1) % 2
+        for other_node in self.protein.nodes[start_j:node.id-1:2]:
+            if other_node.ghost:
                 break
 
-            start_j = (i + 1) % 2
-            for other_node in self.protein.nodes[start_j:i-1:2]:
-                if other_node.ghost:
-                    break
+            mult = 0
+            match node.letter + other_node.letter:
+                case 'CC':
+                    mult = 4
+                case 'HH' | 'CH' | 'HC':
+                    mult = 1
+                case 'PP':
+                    mult = 1
+                case 'PH' | 'HP':
+                    mult = -1
+                case 'PC' | 'CP':
+                    mult = -4
 
-                match node.letter + other_node.letter:
-                    case 'CC':
-                        mult = 4
-                    case 'HH' | 'CH' | 'HC':
-                        mult = 1
-                    case 'PP':
-                        mult = 1
-                    case 'PH' | 'HP':
-                        mult = -1
-                    case 'PC' | 'CP':
-                        mult = -4
-                    case _:
-                        return Exception("We forgot to implement a letter combination")
-
-                delta_vec = other_node.pos - node.pos
-                len_sq = delta_vec.len_sq()
-                score += (1 / len_sq) * mult
+            delta_vec = other_node.pos - node.pos
+            len_sq = delta_vec.len_sq()
+            score += (1 / len_sq) * mult
 
         self.score_per_direction.append(score)
 

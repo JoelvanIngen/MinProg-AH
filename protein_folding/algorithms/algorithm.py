@@ -60,7 +60,7 @@ class Algorithm:
         self.protein.nodes[node_idx].change_direction(direction)
         if unghost:
             self.protein.unghost_all()
-        direction_scores = [heuristic.run() for heuristic in heuristics]
+        direction_scores = [heuristic.run(node=self.protein.nodes[node_idx]) for heuristic in heuristics]
         self.protein.revert()
 
         return direction_scores

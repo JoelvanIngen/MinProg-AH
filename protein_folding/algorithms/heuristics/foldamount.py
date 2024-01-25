@@ -13,7 +13,7 @@ class FoldAmount(Heuristic):
     def __init__(self, *args):
         super().__init__(*args)
 
-    def run(self):
+    def run(self, **kwargs):
         # Evaluates the protein and calculates the number of non-ordered links.
         n_corners = 0
 
