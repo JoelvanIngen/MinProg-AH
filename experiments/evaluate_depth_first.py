@@ -8,12 +8,12 @@ import cProfile
 
 def main():
     create_experiment_folders()
-    # sequence = generate_realistic_sequence(30)
-    sequence = "HHPCHHPCCPCPPHHHHPPHCHPHPHCHPP"
+    sequence = generate_realistic_sequence(30)
+    # sequence = "HHPCHHPCCPCPPHHHHPPHCHPHPHCHPP"
     dim = 2
     protein = Protein(sequence)
 
-    algorithm = DepthFirst(protein, dimensions=dim, max_iterations=20000, debug=True, keep_score_history=True,
+    algorithm = DepthFirst(protein, dimensions=dim, max_iterations=20000, prune_multiplier=7, debug=True, keep_score_history=True,
                            keep_order_history=True,
                            heuristics=[
                                # PotentialPlus,
