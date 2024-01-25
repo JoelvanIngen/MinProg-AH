@@ -16,7 +16,8 @@ class Algorithm:
                  debug=False,
                  visualise=False,
                  show_progressbar=True,
-                 keep_score_history=False):
+                 keep_score_history=False,
+                 keep_order_history=False):
 
         self.protein = protein
         self.directions = _dimensions_to_directions_mapping[dimensions]
@@ -27,6 +28,9 @@ class Algorithm:
 
         self.keep_score_history = keep_score_history
         self.best_score_history = []
+
+        self.keep_order_history = keep_order_history
+        self.order_history = []
 
         self._debug = debug
 
