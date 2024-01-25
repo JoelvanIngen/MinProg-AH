@@ -22,7 +22,7 @@ class DepthFirst(Algorithm):
         itself into a corner, it will restart from scratch.
     """
 
-    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, pruning=True, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
         self._iteration = 0
@@ -37,20 +37,7 @@ class DepthFirst(Algorithm):
 
         self.dimensions = dimensions
 
-        self.pruning = pruning
-        self.budget = 100
-        self.cost_per_iteration = max_iterations / dimensions ** (len(self.protein))
-
-    def saving_by_cutting_branch(self, depth: int):
-        """
-        Calculates the amount of nodes that have (theoretically) been pruned,
-            which can then be added back to the budget multiplied with the
-            cost per iteration.
-        """
-        return (2 * self.dimensions - 1) ** (len(self.protein) - depth - 1)
-
     def _increment_iteration(self):
-        self.budget -= 1
         self._iteration += 1
 
         if self.pbar:
@@ -63,55 +50,42 @@ class DepthFirst(Algorithm):
             if fast_validate_protein(self.protein.order[1:]):
                 self.order_history.append(self.protein.order[1:])
 
-    def prune(self, directions, depth):
-        """
-        Prunes the worst branches until either we have enough budget, or until
-            there is only one branch left
-
-        Only prune if the following conditions are true:
-        - Pruning is enabled
-        - We have negative budget
-        - There are 2 or more branches remaining
-        - We are not at the last iteration (pruning won't save any calculating)
-        """
-        # print(f"Budget: {self.budget}")
-        while self.pruning and self.budget < 0 and len(directions) > 1 and len(self.protein) - depth > 1:
-            # Prune worst branch
-            directions.pop(-1)
-            self.budget += int(self.saving_by_cutting_branch(depth) * self.cost_per_iteration) + 1  # Round up
-            # print(f"Nodes pruned: {self.saving_by_cutting_branch(depth)}, new budget: {self.budget} (depth {depth})")
-
-        return directions
-
     def _next_fold(self, depth: int):
-        # Check if we've reached the end
-        if depth >= len(self.protein):
-            self.end_nodes_evaluated += 1
+        def _reached_protein_end() -> bool:
+            # Check if we've reached the end of the protein and keep results
+            if depth >= len(self.protein):
+                self.end_nodes_evaluated += 1
 
-            bond_score = fast_compute_bond_score(self.protein.sequence, self.protein.order[1:])
-            if bond_score < self.best_score:
-                self.best_score = bond_score
-                self.best_order = self.protein.order
-                self.amount_of_best_found = 1
-            elif bond_score == self.best_score:
-                self.amount_of_best_found += 1
+                bond_score = fast_compute_bond_score(self.protein.sequence, self.protein.order[1:])
+                if bond_score < self.best_score:
+                    self.best_score = bond_score
+                    self.best_order = self.protein.order
+                    self.amount_of_best_found = 1
+                elif bond_score == self.best_score:
+                    self.amount_of_best_found += 1
 
+                return True
+
+            else:
+                return False
+
+        def _prune_score() -> bool:
+            pruner = Score(self.protein)
+            return pruner.run(best_score=self.best_score, depth=depth)
+
+        def _reached_max_iterations():
+            if self._iteration > self.max_iterations:
+                return
+
+        if _reached_protein_end():
             return
 
-        # Check if we can prune position
-        # pruner = Neighbours(self.protein)
-        # if pruner.run() and depth > 1:
-        #     # print("SNAP")
-        #     return
-
-        pruner = Score(self.protein)
-        if pruner.run(best_score=self.best_score, depth=depth):
-            # print("SNAP")
+        if _prune_score():
             return
 
         self._increment_iteration()
 
-        if self._iteration > self.max_iterations:
+        if _reached_max_iterations():
             return
 
         free_directions = self.protein.nodes[depth].get_free_directions(self.directions)
@@ -121,19 +95,17 @@ class DepthFirst(Algorithm):
         direction_scores, free_directions_sorted = self._process_heuristics(
             depth, free_directions)
 
-        free_directions_sorted = self.prune(free_directions_sorted, depth)
-
         for i, direction in enumerate(free_directions_sorted):
             self.protein.preserve()
             self.protein.nodes[depth].change_direction(direction)
             self._next_fold(depth + 1)
             self.protein.revert()
 
-            # Update lowest node to see how much of the configuration has been tried
+            # Update lowest-reached node to see how much of the configuration has been tried
             if depth < self.lowest_callback:
                 self.lowest_callback = depth
 
-        if self._debug and self._iteration % 100 == 0:
+        if self._debug and self._iteration % 200 == 0:
             print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/lowest: {depth}/{self.lowest_callback},'
                   f' Best score: {self.best_score} ({self.amount_of_best_found} found), End nodes reached: '
                   f'{self.end_nodes_evaluated}')
