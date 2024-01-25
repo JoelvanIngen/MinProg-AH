@@ -2,7 +2,8 @@ from tqdm import tqdm
 
 from . import Algorithm
 from .heuristics import *
-from protein_folding.fast_protein import fast_compute_bond_score
+from .pruning import *
+from protein_folding.fast_protein import fast_compute_bond_score, fast_validate_protein
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -58,6 +59,10 @@ class DepthFirst(Algorithm):
         if self.keep_score_history:
             self.best_score_history.append(self.best_score)
 
+        if self.keep_order_history:
+            if fast_validate_protein(self.protein.order[1:]):
+                self.order_history.append(self.protein.order[1:])
+
     def prune(self, directions, depth):
         """
         Prunes the worst branches until either we have enough budget, or until
@@ -91,6 +96,17 @@ class DepthFirst(Algorithm):
             elif bond_score == self.best_score:
                 self.amount_of_best_found += 1
 
+            return
+
+        # # Check if we can prune position
+        # pruner = Neighbours(self.protein)
+        # if pruner.run() and depth > 1:
+        #     # print("SNAP")
+        #     return
+
+        pruner = Score(self.protein)
+        if pruner.run(best_score=self.best_score, depth=depth):
+            # print("SNAP")
             return
 
         self._increment_iteration()
