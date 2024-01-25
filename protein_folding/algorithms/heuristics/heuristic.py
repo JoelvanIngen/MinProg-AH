@@ -22,7 +22,7 @@ class Heuristic:
     def name(self) -> str:
         return self.__class__.__name__
 
-    def run(self, *, node):
+    def run(self, **kwargs):
         """
         Runs the heuristic and computes a score for a protein configuration
 

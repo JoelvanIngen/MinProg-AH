@@ -90,16 +90,24 @@ class SimulatedAnnealingHeuristics(Algorithm):
 
             node_idx, node = self._select_random_node()
 
+            self.protein.unghost_all()
             free_directions = node.get_free_directions(self.directions)
             if not free_directions:
                 continue
+
+            free_directions_legal = []
+            for direction in free_directions:
+                test_order = self.protein.order[:]
+                test_order[node_idx] = direction
+                if fast_validate_protein(test_order[1:]):
+                    free_directions_legal.append(direction)
 
             if not self.heuristics or random.random() < threshold:
                 free_directions_sorted = free_directions
                 random.shuffle(free_directions_sorted)
             else:
                 _, free_directions_sorted = self._process_heuristics(
-                    node_idx, free_directions, unghost=True)
+                    node_idx, free_directions_legal, unghost=True)
 
             # Copy protein order to experiment on
             test_order = self.protein.order[:]
