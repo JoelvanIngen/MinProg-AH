@@ -20,11 +20,11 @@ class Score(Pruning):
 
         non_ghosted = [node for node in self.protein.nodes if not node.ghost]
         amount_non_ghosted = len(non_ghosted)
-        if depth < 15:
+        if depth < 8:
             return False
 
         score = -fast_compute_bond_score(self.protein.sequence[:depth + 1], self.protein.order[1:depth + 1])
 
-        threshold = len(self.protein) * depth / (6 * -best_score)
+        threshold = len(self.protein) * depth / (4 * -best_score)
 
         return score < threshold
