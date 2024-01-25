@@ -23,7 +23,9 @@ class SimulatedAnnealing(Algorithm):
         self.decrease = .9997
         # number of random mutations to allow
         # TODO: decide how to determine when to stop algorithm
-        self.n_permutations = 20000
+        self.n_permutations = 5000 #15000
+        self.orders = list()
+        self.orders.append(([1] * (len(protein.sequence) - 1)))
 
     def get_permutated_directions(self, node_idx: int):
         """
@@ -47,6 +49,7 @@ class SimulatedAnnealing(Algorithm):
             dirs_total[node_idx] = direction 
         
         dirs_total = dirs_total[1:]
+
         return dirs_total
                 
     def run(self) -> float:
@@ -67,9 +70,12 @@ class SimulatedAnnealing(Algorithm):
 
             # Prevent computing score if order is not valid
             if fast_validate_protein(dirs_total):
+
                 comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
                 decision_float = random.random()
                 if comparison_score <= score or threshold > decision_float:
+                    if self.orders[-1] != dirs_total:
+                        self.orders.append(dirs_total)
                     self.protein.set_order(dirs_total)
                     score = comparison_score
 
