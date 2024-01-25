@@ -79,40 +79,6 @@ class Protein:
 
         self.collect_node_positions()
 
-    def calc_size_score(self):
-        """
-        Computes a score based on the physical dimensions of the protein. This
-            value can be used as a penalty for a specific configuration.
-        """
-        dim = get_min_max([node.pos for node in self.nodes])
-        box = dim[1] - dim[0]
-
-        return box.len_sq()
-
-    def calc_area(self):
-        """
-        Computes the area of the grid, only taking into account x- and
-            y-coordinates.
-
-        post: an integer is returned representing the area occupied by the protein
-        """
-        dim = get_min_max([node.pos for node in self.nodes])
-        box = dim[1] - dim[0]
-
-        return box.area()
-
-    def calc_volume(self):
-        """
-        Computes the physical volume of the protein, taking into account
-            three dimensions.
-
-        post: an integer is returned representing the volume occupied by the protein
-        """
-        dim = get_min_max([node.pos for node in self.nodes])
-        box = dim[1] - dim[0]
-
-        return box.volume()
-
     def collect_node_positions(self):
         self.pos_to_node = {}
         for node in self.nodes:
@@ -361,7 +327,7 @@ class Protein:
             
             plt.axis('off')
             plt.draw()
-            plt.pause(0.01)
+            plt.pause(0.5)
             plt.clf()
 
     def animate_3d(self, orders):
