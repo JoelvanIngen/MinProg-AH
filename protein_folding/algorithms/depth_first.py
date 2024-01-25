@@ -37,6 +37,8 @@ class DepthFirst(Algorithm):
 
         self.dimensions = dimensions
 
+        self.score_prune_mult = 4
+
     def _increment_iteration(self):
         self._iteration += 1
 
@@ -70,22 +72,16 @@ class DepthFirst(Algorithm):
                 return False
 
         def _prune_score() -> bool:
-            pruner = Score(self.protein)
+            pruner = Score(self.protein, self.score_prune_mult)
             return pruner.run(best_score=self.best_score, depth=depth)
 
         def _reached_max_iterations() -> bool:
             return self._iteration > self.max_iterations
 
-        if _reached_protein_end():
-            return
-
-        if _prune_score():
+        if _reached_protein_end() or _prune_score() or _reached_max_iterations():
             return
 
         self._increment_iteration()
-
-        if _reached_max_iterations():
-            return
 
         free_directions = self.protein.nodes[depth].get_free_directions(self.directions)
         if not free_directions:
