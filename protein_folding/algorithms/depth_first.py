@@ -99,10 +99,10 @@ class DepthFirst(Algorithm):
             return
 
         # Check if we can prune position
-        pruner = Neighbours(self.protein)
-        if pruner.run() and depth > 1:
-            # print("SNAP")
-            return
+        # pruner = Neighbours(self.protein)
+        # if pruner.run() and depth > 1:
+        #     # print("SNAP")
+        #     return
 
         pruner = Score(self.protein)
         if pruner.run(best_score=self.best_score, depth=depth):
