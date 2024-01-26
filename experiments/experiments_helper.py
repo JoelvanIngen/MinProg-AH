@@ -22,7 +22,7 @@ def generate_random_sequence(length):
 
 
 def generate_realistic_sequence(length):
-    return ''.join(random.choices(['H', 'P', 'C'], [0.3, 0.5, 0.2], k=length))
+    return ''.join(random.choices(['H', 'P', 'C'], [0.5, 0.2, 0.3], k=length))
 
 
 def get_available_heuristics():
