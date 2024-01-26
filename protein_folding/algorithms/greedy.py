@@ -1,11 +1,10 @@
 import random
-from . import Algorithm
-from typing import TYPE_CHECKING
-from copy import deepcopy
 
+from . import Algorithm
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from protein_folding.protein import Protein
-    from protein_folding.node import Node
 
 direction_dict = {-1: "Left", 1: "Right", 2: "Up", -2: "Down", 3: "Forward", -3: "Backward"}
 

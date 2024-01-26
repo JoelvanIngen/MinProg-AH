@@ -1,6 +1,7 @@
-from . import Algorithm
 from protein_folding.protein import Protein
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
+from . import Algorithm
+
 from typing import Iterable
 
 

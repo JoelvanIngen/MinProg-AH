@@ -1,5 +1,5 @@
-from . import Pruning
 from protein_folding.fast_protein import fast_compute_bond_score
+from . import Pruning
 
 
 class Score(Pruning):
@@ -9,7 +9,7 @@ class Score(Pruning):
         # Higher multiplier: less likely to prune
         self.mult = mult
 
-    def run(self, *, best_score, depth) -> bool:
+    def run(self, *, best_score: int, depth: int) -> bool:
         """
         Counts the amount of nodes with no neighbours and decides whether the
             configuration should be pruned. Returns a bool indicating the
@@ -21,8 +21,6 @@ class Score(Pruning):
                     be more than half
         """
 
-        non_ghosted = [node for node in self.protein.nodes if not node.ghost]
-        amount_non_ghosted = len(non_ghosted)
         if depth < 8 or best_score > -2:
             return False
 

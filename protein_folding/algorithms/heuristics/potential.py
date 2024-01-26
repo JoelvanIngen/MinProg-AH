@@ -1,8 +1,5 @@
 from . import Heuristic
 
-from protein_folding.protein import Protein
-from protein_folding.node import Node
-
 
 # Extra factor to multiply results with so they're not all in range {0.9, 1.]
 _MULT_FACTOR = 7

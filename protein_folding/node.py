@@ -1,7 +1,7 @@
 import protein_folding.definitions as definitions
 from .vector import Vec3D
 
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .protein import Protein
 

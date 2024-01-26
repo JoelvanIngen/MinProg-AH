@@ -1,5 +1,5 @@
-from . import Heuristic
 from protein_folding.vector import Vec3D, get_min_max
+from . import Heuristic
 
 
 class MinimiseDimensions(Heuristic):
