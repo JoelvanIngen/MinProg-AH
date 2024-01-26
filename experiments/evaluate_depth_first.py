@@ -9,7 +9,7 @@ N_DIMENSIONS = 2
 
 USE_RANDOM_SEQUENCE = True
 RANDOM_SEQUENCE_LENGTH = 30
-CUSTOM_SEQUENCE = "HHPCHHPCCPCPPHHCHHPPHCHPHPHCHPP"
+CUSTOM_SEQUENCE = "HHPCHHPCCPCPPHHHHPPHCHPHPHCHPP"
 
 FIND_BEST_PRUNE_PARAMETERS = True
 USE_PROFILING = False
@@ -28,10 +28,10 @@ def main():
         prune_parameter = find_best_prune_parameter(sequence)
     else:
         prune_parameter = 7
-    print("fUsing parameter {prune_parameter} for score-based pruning")
+    print(f"Using parameter {prune_parameter} for score-based pruning")
 
     protein = Protein(sequence)
-    algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=int(N_ITERATIONS/2),
+    algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
                            prune_multiplier=prune_parameter, debug=True, keep_score_history=True,
                            keep_order_history=True,
                            heuristics=[
@@ -64,7 +64,7 @@ def find_best_prune_parameter(sequence: str):
     while parameter > 2.5:
         print(f"Trying prune_parameter = {parameter}")
         protein = Protein(sequence)
-        algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
+        algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=int(N_ITERATIONS/2),
                                prune_multiplier=parameter, keep_score_history=True,
                                keep_order_history=True, show_progressbar=False,
                                heuristics=[
