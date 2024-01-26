@@ -19,7 +19,8 @@ class DepthFirst(Algorithm):
         itself into a corner, it will restart from scratch.
     """
 
-    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, prune_multiplier=4, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000,
+                 prune_alpha=0.5, prune_beta=15, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
         self._iteration = 0
@@ -34,7 +35,8 @@ class DepthFirst(Algorithm):
 
         self.dimensions = dimensions
 
-        self.prune_multiplier = prune_multiplier
+        self.prune_alpha = prune_alpha
+        self.prune_beta = prune_beta
 
     def _increment_iteration(self):
         self._iteration += 1
@@ -69,7 +71,7 @@ class DepthFirst(Algorithm):
                 return False
 
         def _prune_score() -> bool:
-            pruner = Score(self.protein, self.prune_multiplier)
+            pruner = Score(self.protein, alpha=self.prune_alpha, beta=self.prune_beta)
             return pruner.run(best_score=self.best_score, depth=depth)
 
         def _reached_max_iterations() -> bool:

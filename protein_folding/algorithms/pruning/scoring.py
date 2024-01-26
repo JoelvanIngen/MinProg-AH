@@ -1,13 +1,24 @@
+import math
+
 from protein_folding.fast_protein import fast_compute_bond_score
 from . import Pruning
 
 
 class Score(Pruning):
-    def __init__(self, protein, mult):
+    def __init__(self, protein, alpha=0.5, beta=15, use_linear=False):
         super().__init__(protein)
 
-        # Higher multiplier: less likely to prune
-        self.mult = mult
+        self.protein_length = len(protein)
+
+        # I called the parameters alpha and beta because I see other algorithms
+        # use those letters. There is no further scientific reason.
+        # Alpha: Affect scaling speed. Higher alpha: faster scaling
+        #   -> more pruning
+        # Beta: Affects fixed margin. Higher beta:
+        #   -> less pruning
+        self.alpha = alpha
+        self.beta = beta
+        self.use_linear = use_linear
 
     def run(self, *, best_score: int, depth: int) -> bool:
         """
@@ -21,11 +32,16 @@ class Score(Pruning):
                     be more than half
         """
 
-        if depth < 8 or best_score > -2:
+        # Prevent pruning if we do not yet have a good score base, to prevent
+        # pruning too aggressivel
+        if depth < self.protein_length / 3 + 2 or best_score > -5:
             return False
 
         score = -fast_compute_bond_score(self.protein.sequence[:depth + 1], self.protein.order[1:depth + 1])
 
-        threshold = len(self.protein) * depth / (self.mult * -best_score)
+        if self.use_linear:
+            threshold = self.protein_length * depth / (self.beta * -best_score)
+        else:
+            threshold = -best_score * math.exp(1 / self.protein_length * depth * self.alpha) - self.beta
 
         return score < threshold
