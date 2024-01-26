@@ -326,7 +326,7 @@ class Protein:
             
             plt.axis('off')
             plt.draw()
-            plt.pause(0.5)
+            plt.pause(0.01)
             plt.clf()
 
     def animate_3d(self, orders):
