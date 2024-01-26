@@ -1,6 +1,3 @@
-from copy import deepcopy
-
-
 class Stack:
     def __init__(self):
         self._direction_history: list[list[int | None]] = []

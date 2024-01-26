@@ -1,9 +1,8 @@
 from tqdm import tqdm
 
-from . import Algorithm
-from .heuristics import *
-from .pruning import *
 from protein_folding.fast_protein import fast_compute_bond_score, fast_validate_protein
+from . import Algorithm
+from .pruning import *
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

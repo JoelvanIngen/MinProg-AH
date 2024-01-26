@@ -1,11 +1,15 @@
 from . import Pruning
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from protein_folding.node import Node
+
 
 class Neighbours(Pruning):
     def __init__(self, *args):
         super().__init__(*args)
 
-    def has_neighbours(self, node, others):
+    def has_neighbours(self, node: 'Node', others: list['Node']) -> bool:
         for other in others:
             if abs(other.id - node.id) <= 1:
                 continue
@@ -15,7 +19,7 @@ class Neighbours(Pruning):
 
         return False
 
-    def _count_nodes_with_no_neighbours(self, nodes):
+    def _count_nodes_with_no_neighbours(self, nodes: list ['Node']) -> int:
         count = 0
 
         for node in nodes:

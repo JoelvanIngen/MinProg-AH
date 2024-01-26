@@ -1,12 +1,10 @@
 import random
 from tqdm import tqdm
 
-from . import Algorithm
-from .heuristics import *
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
+from . import Algorithm
 
 from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
     from protein_folding.protein import Protein
 

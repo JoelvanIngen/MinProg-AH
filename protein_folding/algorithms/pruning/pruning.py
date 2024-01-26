@@ -1,5 +1,10 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from protein_folding.protein import Protein
+
+
 class Pruning:
-    def __init__(self, protein):
+    def __init__(self, protein: 'Protein'):
         self.protein = protein
 
     def run(self, **kwargs) -> bool:
