@@ -1,24 +1,53 @@
+"""
+Runs the Depth-First algorithm and can tune its parameters if configured to do so.
+Author: Joël
+
+Parameters:
+    N_ITERATIONS: Amount of iterations the algorithm is allowed to run at most. It might still run fewer iterations if
+        pruning is strict.
+    N_DIMENSIONS: Can be set to either 2 or 3, and represents the amount of dimensions the protein can fold in.
+    USE_RANDOM_SEQUENCE: Determines whether a random sequence will be generated or the custom sequence is used.
+    RANDOM_SEQUENCE_LENGTH: Length of sequence to generate if USE_RANDOM_SEQUENCE is set to True.
+    CUSTOM_SEQUENCE: Custom sequence to use if USE_RANDOM_SEQUENCE is set to False.
+    PLOT_BEST: Visualises the best protein configuration if set to True.
+    ALPHA: Alpha parameter to use for pruning. Affects required score threshold increase per depth. ALPHA = 0.5 is a
+        good starting value.
+    BETA: Beta parameter to use for pruning. Affects fixed score threshold margin. BETA = 18 is a good starting value.
+    FIND_BEST_BETA_VALUE: Will try different parameters for Beta using fewer iterations and use the best for full run.
+        Very slow but finds good results.
+    USE_PROFILING: Switches profiling on or off.
+
+Finding the best value for beta:
+    Use FIND_BEST_BETA_VALUE = True and set ALPHA = 0.5. The script will then loop through different Beta values and
+    select the one that yields the best results.
+    Even better results can be found by manually setting Beta to the best value that the script found, increasing the
+    number of iterations and setting Alpha to 0.45 or even 0.40.
+"""
+
 import cProfile
-from experiments_helper import create_experiment_folders, generate_random_sequence, generate_realistic_sequence
+from experiments_helper import create_experiment_folders, generate_realistic_sequence
 from protein_folding.protein import Protein
 from protein_folding.algorithms import DepthFirst
 from protein_folding.algorithms.heuristics import *
 
-N_ITERATIONS = 1000000
+N_ITERATIONS = 100000
 N_DIMENSIONS = 2
 
 USE_RANDOM_SEQUENCE = False
 RANDOM_SEQUENCE_LENGTH = 30
-CUSTOM_SEQUENCE = "HHPHPHPHPHHHHPHPPPHPPPHPPPPHPPPHPPPHPHHHHPHPHPHPHH"
+CUSTOM_SEQUENCE = "HHPCHHPCCPCPPHHHHPPHCHPHPHCHPP"
+PLOT_BEST = True
 
-ALPHA = 0.5
-BETA = 10
+ALPHA = 0.50
+BETA = 18
 
-FIND_BEST_PRUNE_PARAMETERS = False
+FIND_BEST_BETA_VALUE = True
 USE_PROFILING = False
 
 
 def main():
+    assert 2 <= N_DIMENSIONS <= 3, f"Number of dimensions must be 2 or 3, but is set to {N_DIMENSIONS}"
+
     create_experiment_folders()
 
     if USE_RANDOM_SEQUENCE:
@@ -27,18 +56,17 @@ def main():
         sequence = CUSTOM_SEQUENCE
     print(f"Using sequence {sequence}")
 
-    if FIND_BEST_PRUNE_PARAMETERS:
+    if FIND_BEST_BETA_VALUE:
         beta = find_best_prune_parameter(sequence)
     else:
         beta = BETA
-    print(f"Using beta = {beta} for score-based pruning")
+    print(f"Using alpha = {ALPHA}, beta = {beta} for score-based pruning")
 
     protein = Protein(sequence)
     algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
                            prune_alpha=ALPHA, prune_beta=beta, debug=True, keep_score_history=True,
                            keep_order_history=True,
                            heuristics=[
-                               # PotentialPlus,
                                MinimiseDimensions
                            ])
 
@@ -46,10 +74,11 @@ def main():
     print(f"Sequence: {sequence}")
     print(f"Score: {score}")
 
-    if N_DIMENSIONS == 2:
-        protein.plot(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{N_DIMENSIONS}.png')
-    elif N_DIMENSIONS == 3:
-        protein.plot_3d(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{N_DIMENSIONS}.png')
+    if PLOT_BEST:
+        filename = f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{N_DIMENSIONS}.png'
+        plotter = protein.plot if N_DIMENSIONS == 2 else protein.plot_3d
+
+        plotter(filename)
 
     # algorithm.plot_score_progress()
     protein.animate_2d(algorithm.order_history)
