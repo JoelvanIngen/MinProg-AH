@@ -1,3 +1,10 @@
+"""
+Contains functions for performance-crucial functionality that perform much better than their corresponding methods from
+Protein class.
+
+Author: Joël
+"""
+
 import numpy as np
 
 from typing import Sequence
