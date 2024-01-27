@@ -1,3 +1,9 @@
+"""
+Creates the Protein structure in such a way that it should be easy to extend with new functionality in the future.
+
+Authors: Jarec, Joël, Wolf
+"""
+
 import matplotlib.pyplot as plt
 #try:
 #    from mayavi import mlab

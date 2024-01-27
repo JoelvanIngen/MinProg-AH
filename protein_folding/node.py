@@ -1,3 +1,9 @@
+"""
+Creates the Node structure in such a way that it should be easy to extend with new functionality in the future.
+
+Authors: Jarec, Joël, Wolf
+"""
+
 import protein_folding.definitions as definitions
 from .vector import Vec3D
 
