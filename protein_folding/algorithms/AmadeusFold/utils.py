@@ -1,9 +1,37 @@
 import random
 import torch
+from torch.nn.utils.rnn import pad_sequence
 import numpy as np
 
 
 _molecule_indices = {'H': 0, 'C': 1, 'P': 2}
+
+
+def collate_fn(batch):
+    # Sort the batch by sequence length (in descending order)
+    batch.sort(key=lambda x: len(x[0]), reverse=True)
+
+    sequences, coordinates, scores = zip(*batch)
+    
+    # Pad sequences to the length of the longest sequence
+    padded_sequences = pad_sequence(sequences, batch_first=True, padding_value=3)
+    padded_coordinates = pad_sequence(coordinates, batch_first=True, padding_value=1.)
+
+    return padded_sequences, padded_coordinates
+
+
+def collate_fn_with_score(batch):
+    # Sort the batch by sequence length (in descending order)
+    batch.sort(key=lambda x: len(x[0]), reverse=True)
+
+    sequences, coordinates, scores = zip(*batch)
+    
+    # Pad sequences to the length of the longest sequence
+    padded_sequences = pad_sequence(sequences, batch_first=True, padding_value=3)
+    padded_coordinates = pad_sequence(coordinates, batch_first=True, padding_value=1.)
+    scores = torch.tensor(scores, dtype=torch.float32)
+
+    return padded_sequences, padded_coordinates, scores
 
 
 class StraightThroughEstimator(torch.autograd.Function):
@@ -99,7 +127,7 @@ def compute_bond_score_coordinates(seq, coordinates):
 
     seq_idx = 1
     order_idx = 0
-    for coordinate in coordinates[0][1:]:
+    for coordinate in coordinates[1:]:
         x = int(coordinate[0])
         y = int(coordinate[1])
         z = int(coordinate[2])
