@@ -1,3 +1,9 @@
+"""
+A vector class to keep track of positions and to easily offload maths to.
+
+Authors: Joël
+"""
+
 from math import sqrt
 
 

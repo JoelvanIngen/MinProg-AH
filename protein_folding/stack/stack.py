@@ -1,3 +1,10 @@
+"""
+A stack class to save a protein state and load it using as little memory and prevent as many object creations as
+possible
+
+Authors: Joël
+"""
+
 class Stack:
     def __init__(self):
         self._direction_history: list[list[int | None]] = []

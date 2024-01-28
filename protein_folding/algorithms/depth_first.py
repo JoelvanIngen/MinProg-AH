@@ -26,6 +26,7 @@ class DepthFirst(Algorithm):
         self._iteration = 0
         self.max_iterations = max_iterations
         self.lowest_callback = len(protein)
+        self.batch_lowest_callback = len(protein)
 
         self.best_score: int = 1
         self.best_order: list[int] = []
@@ -98,11 +99,16 @@ class DepthFirst(Algorithm):
             # Update lowest-reached node to see how much of the configuration has been tried
             if depth < self.lowest_callback:
                 self.lowest_callback = depth
+            if depth < self.batch_lowest_callback:
+                self.batch_lowest_callback = depth
 
-        if self._debug and self._iteration % 200 == 0:
-            print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/lowest: {depth}/{self.lowest_callback},'
+        if self._debug and self._iteration % 1000 == 0:
+            print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/batch lowest/lowest: '
+                  f'{depth}/{self.batch_lowest_callback}/{self.lowest_callback},'
                   f' Best score: {self.best_score} ({self.amount_of_best_found} found), End nodes reached: '
                   f'{self.end_nodes_evaluated}')
+
+            self.batch_lowest_callback = len(self.protein)
 
     def run(self) -> float:
         if self._show_progress:
