@@ -22,7 +22,7 @@ class PotentialPlus(Heuristic):
             if node.ghost:
                 break
 
-            score += self._iterate_for_node(i, score)
+            score += self._iterate_for_node(node, score)
 
         self.score_per_direction.append(score)
 

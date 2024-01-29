@@ -5,10 +5,10 @@ Authors: Jarec, Joël, Wolf
 """
 
 import matplotlib.pyplot as plt
-#try:
-#    from mayavi import mlab
-#except:
-#       pass
+try:
+    from mayavi import mlab
+except:
+       pass
 
 from .definitions import *
 from .node import Node, _delta_pos_from_direction
@@ -179,19 +179,13 @@ class Protein:
             - order is saved as image under filename
         """
 
-        fig = plt.figure()
+        colour_dict = {
+            'P': 'black',
+            'H': 'limegreen',
+            'C': 'red'
+        }
 
-        prev = Vec3D(0, 0, 0)
-
-        for n in self.nodes:
-            # Put node letter at node's position
-            plt.text(n.x, n.y, n.letter, size='10')
-
-            # Draw protein line segment from previous node
-            plt.plot([prev.x, n.x], [prev.y, n.y], '-', color='black', linewidth=1.5)
-
-            # Save position as previous
-            prev = n.pos
+        fig, ax = plt.subplots()
 
         # Add lines between all pairings
         neighbours = self.get_all_neighbours()
@@ -211,6 +205,19 @@ class Protein:
                 raise Exception(f"Letters {node1.letter} and {node2.letter} should not be neighbours")
 
             plt.plot([node1.x, node2.x], [node1.y, node2.y], '--', color=line_colour, linewidth=1)
+
+        prev = Vec3D(0, 0, 0)
+        for n in self.nodes:
+            # Put node letter at node's position
+            plt.text(n.x + 0.1, n.y + 0.1, n.letter, size='10')
+            circle = plt.Circle((n.x, n.y), 0.08, color=colour_dict[n.letter])
+            ax.add_patch(circle)
+
+            # Draw protein line segment from previous node
+            plt.plot([prev.x, n.x], [prev.y, n.y], '-', color='black', linewidth=1.5)
+
+            # Save position as previous
+            prev = n.pos
 
         # Get full dimensions of protein
         dim = get_min_max(self.nodes)

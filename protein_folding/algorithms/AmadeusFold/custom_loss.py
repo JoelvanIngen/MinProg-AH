@@ -1,8 +1,94 @@
 import torch
 import torch.nn as nn
+import sys
 
 from dataset import FoldDataset
 from utils import compute_bond_score_coordinates, fold_validity_quantified_loss, StraightThroughEstimator
+
+
+class FoldLossVectorised(nn.Module):
+	"""
+	A custom loss function to create a general metric for the quality of a fold
+	prediction model. There are three main components:
+
+	Rounding error: the model outputs floats, but the grid is discrete. The
+		difference between the nearest int and a float is added to total
+		loss.
+
+	Validity: a function has been created to quantify the "invalidness" of a
+		model output, to allow for gradient descent. The more factors that make
+		an output invalid (improper distancing, duplicate coordinates), the
+		higher this score is.
+
+	Score difference: if a valid fold has a worse score than the optimal score
+		in the dataset, a loss is added that scales with the difference between
+		the prediction and the order of the datapoint
+	"""
+	def __init__(
+		self,
+		rounding_scale = 50.0,
+		validity_scale = 1.0,
+		bond_qual_scale = 1.0
+	):
+		super().__init__()
+		self.rounding_scale = rounding_scale
+		self.validity_scale = validity_scale
+		self.bond_qual_scale = bond_qual_scale
+
+	def forward(
+		self, 
+		predictions, 
+		norm_factor, 
+		sequence,
+		targets, 
+		target_score,
+	):
+		# un-normalise predictions and targets
+		predictions *= norm_factor
+		targets *= norm_factor
+
+		# round output with straight-through estimator (differentiable)
+		rounded_predictions = StraightThroughEstimator.apply(predictions)
+
+		# determine rounding error, scale and add to loss
+		rounding_error = torch.mean((predictions - rounded_predictions)**2, )
+
+		# determine validity, scale and add to loss
+		total_validity = [fold_validity_quantified_loss(pred) for pred in rounded_predictions]
+		validity = torch.sum(torch.tensor(total_validity, requires_grad=True))
+		if validity == 0:
+			print(rounded_predictions)
+			sys.exit()
+
+		# if presented ordering is valid compute score difference
+		if validity == 0:
+			prediction_scores = list()
+			for i in range(len(sequence)):
+				score = compute_bond_score_coordinates(sequence[i], predictions[i])
+				prediction_scores.append(score)
+			prediction_score = torch.tensor(prediction_scores, requires_grad=True)
+			score_diff = torch.sum(prediction_score - target_score).float()
+
+			# if lower score is found, the dataset does not contain optimal folds
+			# and should not be used
+			if score_diff < 0:
+				print(f"NOTICE: a score {prediction_score} has been found for a sequence that is lower than the optimal score {target_score} in the dataset. Consider the validity of your data!")
+			# unless similar score is achieved, compare to target coordinates
+			elif score_diff > 0:
+				score_diff += torch.mean(torch.abs(rounded_predictions - targets))
+		# to avoid creating minima going from invalid orders to valid orders
+		# with bad scores, add the target score as maximum score loss
+		else:
+			score_diff = -1 * torch.mean(target_score) * len(sequence)
+	
+		# calculate total loss
+		loss = (
+			rounding_error * self.rounding_scale 
+			#validity * self.validity_scale +
+			#score_diff * self.bond_qual_scale
+		)
+		#breakpoint()
+		return loss
 
 
 class FoldLoss(nn.Module):

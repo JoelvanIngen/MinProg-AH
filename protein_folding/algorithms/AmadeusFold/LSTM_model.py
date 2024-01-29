@@ -27,8 +27,8 @@ class AmadeusFold(nn.Module):
 		super().__init__()
 
 		# settings
-		self.embedding_size = 32
-		self.lstm_hidden_size = 128
+		self.embedding_size = 8
+		self.lstm_hidden_size = 64
 		self.lstm_n_hidden_layers = 1
 		self.prediction_dimension = 3
 
@@ -54,15 +54,20 @@ class AmadeusFold(nn.Module):
 
 		# activation func
 		self.relu = nn.ReLU()
+		self.sigmoid = nn.Sigmoid()
 
 	def forward(self, x):
 		seq_embedded = self.embedding(x)
 
-		input_lstm = self.relu(seq_embedded)
+		#input_lstm = self.sigmoid(seq_embedded)
+		#output_lstm, _ = self.lstm(seq_embedded)
+
 		output_lstm, _ = self.lstm(seq_embedded)
 
-		input_linear = self.relu(output_lstm)
-		output = self.output_layer(input_linear)
+		#input_linear = self.sigmoid(output_lstm)
+		#output = self.output_layer(input_linear)
+
+		output = self.output_layer(output_lstm)
 
 		return output
 
