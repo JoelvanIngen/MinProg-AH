@@ -31,3 +31,6 @@ Depth-First: Found score of -8 in 5800 iterations using alpha=0.5 and beta=7, an
 
 ### 2.C
 Depth-First: Found score of -9 in 13200 iterations using alpha=0.5 and beta=6.
+
+### 2.D
+Depth-First: Found score of -15 in 45000 iterations using alpha=0.5 and beta=12.
