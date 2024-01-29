@@ -37,6 +37,7 @@ USE_RANDOM_SEQUENCE = False
 RANDOM_SEQUENCE_LENGTH = 30
 CUSTOM_SEQUENCE = "HHPCHHPCCPCPPHHHHPPHCHPHPHCHPP"
 PLOT_BEST = True
+ANIMATE_SEARCH = False
 
 ALPHA = 0.50
 BETA = 18
@@ -65,7 +66,7 @@ def main():
     protein = Protein(sequence)
     algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
                            prune_alpha=ALPHA, prune_beta=beta, debug=True, keep_score_history=True,
-                           keep_order_history=True,
+                           keep_order_history=ANIMATE_SEARCH, show_progressbar=False,
                            heuristics=[
                                MinimiseDimensions
                            ])
@@ -81,8 +82,11 @@ def main():
         plotter(filename)
 
     # algorithm.plot_score_progress()
-    protein.animate_2d(algorithm.order_history)
 
+    if ANIMATE_SEARCH:
+        protein.animate_2d(algorithm.order_history)
+
+    # Prints best configuration depth vs score
     from protein_folding.fast_protein import fast_compute_bond_score
     for i in range(4, len(protein.order) - 1):
         print(i, fast_compute_bond_score(protein.sequence[:i], protein.order[1:i]))
@@ -116,7 +120,10 @@ def find_best_prune_parameter(sequence: str):
             # More pruning will only result in even less searches
             break
 
-        parameter -= 1
+        if parameter > 1.5 * -best_score:
+            parameter = int(1.5 * -best_score)
+        else:
+            parameter -= 1
 
     return best_p
 
