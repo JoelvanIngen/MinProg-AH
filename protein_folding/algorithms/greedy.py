@@ -29,15 +29,11 @@ class Greedy(Algorithm):
         # Iterate through nodes, check their available directions,
         # choose a random one and apply it
         for node in self.protein.nodes[1:]:
-            print(f"Placing Node {node.id}/{len(self.protein.nodes[1:])} now at {node.pos}")
             direction_scores = {}
             free_directions = node.get_free_directions(self.directions)
 
             if not free_directions:
-                print("No free directions found, trying again.")
                 return False
-
-            print(f"Free Directions: {free_directions}")
 
             for direction in free_directions:
                 self.protein.preserve()
@@ -51,7 +47,6 @@ class Greedy(Algorithm):
 
                 direction_scores[direction] = sum(neighbours)
                 # direction_scores[direction] = self.protein.get_bond_score()
-                # print(f"Direction checked: {direction_dict[direction]}")
                 self.protein.revert()
 
             # results = {}
@@ -62,7 +57,6 @@ class Greedy(Algorithm):
             min_value = min(direction_scores.values())
             best_directions = [k for k, v in direction_scores.items() if v == min_value]
             chosen_direction = random.choice(best_directions)
-            print(f"Selected {direction_dict[chosen_direction]}")
             node.change_direction(chosen_direction)
         return True
 

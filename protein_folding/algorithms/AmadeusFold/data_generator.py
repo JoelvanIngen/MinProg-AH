@@ -9,14 +9,14 @@ import os
 
 from protein_folding.algorithms.bruteforce import BruteForce
 from protein_folding.protein import Protein
-from utils import sequence_generator
+from sequence_generator import sequence_generator
 
 
 def data_generator(
-        n_datapoints: int = 1000,
-        seq_len_limits: list = [8, 13],
-        max_bruteforce_iterations: int = 2000000,
-        csv_loc: str = './data/unnamed_data.csv'
+        n_datapoints: int = 50000,
+        seq_len_limits: list = [9, 13],
+        max_bruteforce_iterations: int = 10000000,
+        csv_loc: str = './data/50k_datapoints.csv'
 ) -> None:
     dataset = list()
 

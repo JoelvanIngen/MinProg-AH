@@ -10,6 +10,7 @@ Parameters:
     RANDOM_SEQUENCE_LENGTH: Length of sequence to generate if USE_RANDOM_SEQUENCE is set to True.
     CUSTOM_SEQUENCE: Custom sequence to use if USE_RANDOM_SEQUENCE is set to False.
     PLOT_BEST: Visualises the best protein configuration if set to True.
+    ANIMATE_SEARCH: Animates all orders the algorithm went through if set to True.
     ALPHA: Alpha parameter to use for pruning. Affects required score threshold increase per depth. ALPHA = 0.5 is a
         good starting value.
     BETA: Beta parameter to use for pruning. Affects fixed score threshold margin. BETA = 18 is a good starting value.
@@ -30,18 +31,19 @@ from protein_folding.protein import Protein
 from protein_folding.algorithms import DepthFirst
 from protein_folding.algorithms.heuristics import *
 
-N_ITERATIONS = 100000
+N_ITERATIONS = 1000000
 N_DIMENSIONS = 2
 
 USE_RANDOM_SEQUENCE = False
 RANDOM_SEQUENCE_LENGTH = 30
-CUSTOM_SEQUENCE = "HHPCHHPCCPCPPHHHHPPHCHPHPHCHPP"
+CUSTOM_SEQUENCE = "HHPHHHPHPHHHPH"
 PLOT_BEST = True
+ANIMATE_SEARCH = False
 
-ALPHA = 0.50
-BETA = 18
+ALPHA = 0.5
+BETA = 6
 
-FIND_BEST_BETA_VALUE = True
+FIND_BEST_BETA_VALUE = False
 USE_PROFILING = False
 
 
@@ -64,8 +66,8 @@ def main():
 
     protein = Protein(sequence)
     algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
-                           prune_alpha=ALPHA, prune_beta=beta, debug=True, keep_score_history=True,
-                           keep_order_history=True,
+                           prune_alpha=ALPHA, prune_beta=beta, debug=False, keep_score_history=True,
+                           keep_order_history=ANIMATE_SEARCH, show_progressbar=True,
                            heuristics=[
                                MinimiseDimensions
                            ])
@@ -75,14 +77,17 @@ def main():
     print(f"Score: {score}")
 
     if PLOT_BEST:
-        filename = f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{N_DIMENSIONS}.png'
+        filename = f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{N_DIMENSIONS}_a{ALPHA}_b{beta}.png'
         plotter = protein.plot if N_DIMENSIONS == 2 else protein.plot_3d
 
         plotter(filename)
 
     # algorithm.plot_score_progress()
-    protein.animate_2d(algorithm.order_history)
 
+    if ANIMATE_SEARCH:
+        protein.animate_2d(algorithm.order_history)
+
+    # Prints best configuration depth vs score
     from protein_folding.fast_protein import fast_compute_bond_score
     for i in range(4, len(protein.order) - 1):
         print(i, fast_compute_bond_score(protein.sequence[:i], protein.order[1:i]))
@@ -116,7 +121,10 @@ def find_best_prune_parameter(sequence: str):
             # More pruning will only result in even less searches
             break
 
-        parameter -= 1
+        if parameter > 1.5 * -best_score:
+            parameter = int(1.5 * -best_score)
+        else:
+            parameter -= 1
 
     return best_p
 
