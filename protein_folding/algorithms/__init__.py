@@ -7,4 +7,5 @@ from .simulated_annealing_heuristics import SimulatedAnnealingHeuristics
 from .spiral import Spiral
 from .greedy import Greedy
 from .depth_first import DepthFirst
+from .breadth_first import BreadthFirst
 from .bruteforce import BruteForce
