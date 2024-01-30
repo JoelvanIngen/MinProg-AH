@@ -1,3 +1,4 @@
+import heapq
 from tqdm import tqdm
 
 from protein_folding.fast_protein import fast_compute_bond_score, fast_validate_protein
@@ -13,7 +14,30 @@ class QueueEmptyError(Exception):
     pass
 
 
-class StateQueue:
+class StateQueueHeapQ:
+    def __init__(self):
+        self._queue = []
+        heapq.heappush(self._queue, ((0, 0), [1]))
+
+        self.iteration = 1
+
+    def get_highest_score_state(self) -> list[int]:
+        """
+        Finds and returns state with the highest score so far
+        """
+        if len(self._queue) == 0:
+            raise QueueEmptyError
+
+        _score_iteration, state = heapq.heappop(self._queue)
+        print(_score_iteration[0])
+        return state
+
+    def push(self, order: list[int], score: int) -> None:
+        heapq.heappush(self._queue, ((-score, self.iteration), order))
+        self.iteration += 1
+
+
+class StateQueueStandard:
     def __init__(self):
         self.scores: list[int] = [0]
         self.states: list[list[int]] = [[1]]
@@ -38,15 +62,6 @@ class StateQueue:
 
 
 class BeamSearch(Algorithm):
-    """
-    A greedy algorithm that applies a direction for each individual
-        node, starting from the first node after the root node. It determines
-        for each node what the available directions are and which directions
-        are already occupied. Then it chooses the direction which yields the
-        highest immediate score change. If there are no directions left i.e., it worked
-        itself into a corner, it will restart from scratch.
-    """
-
     def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
@@ -59,7 +74,7 @@ class BeamSearch(Algorithm):
         self.end_nodes_evaluated = 0
         self.amount_of_best_found = 0
 
-        self.queue = StateQueue()
+        self.queue = StateQueueStandard()
 
     def _increment_iteration(self):
         if self.pbar:
@@ -89,7 +104,9 @@ class BeamSearch(Algorithm):
         return valid_next_orders
 
     def get_best_order(self):
-        return self.queue.get_highest_score_state()
+        state = self.queue.get_highest_score_state()
+        # print(state, fast_compute_bond_score(self.protein.sequence[:len(state) + 1], state))
+        return state
 
     def save_orders(self, orders):
         for order in orders:
