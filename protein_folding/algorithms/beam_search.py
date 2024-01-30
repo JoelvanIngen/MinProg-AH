@@ -101,7 +101,7 @@ class BeamSearch(Algorithm):
 
     def keep_best_scores(self, orders):
         for order in orders:
-            score = fast_compute_bond_score(self.protein.sequence[:len(order)], order)
+            score = fast_compute_bond_score(self.protein.sequence[:len(order) + 1], order)
             if score < self.best_score:
                 if self._debug:
                     print(f"Found new best score of {score} with order: {order}")
