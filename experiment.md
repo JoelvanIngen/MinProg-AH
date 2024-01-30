@@ -85,5 +85,5 @@ annealing dat het op sommige plekken in de bovenstaande resultaten ingehaald
 wordt binnen de beperkte rekentijd die beide algoritmes kregen. Voor een 
 toepassing waar de score het belangrijkst is zou dus een rigoureuzer algoritme 
 als depth-first een betere keuze zijn, terwijl andere opties als simulated 
-annealing juist voordeliger zouden kunnen zijn als quantiteit en snelheid 
+annealing juist voordeliger zouden kunnen zijn als kwantiteit en snelheid 
 belangrijker is.
