@@ -10,6 +10,7 @@ Parameters:
     RANDOM_SEQUENCE_LENGTH: Length of sequence to generate if USE_RANDOM_SEQUENCE is set to True.
     CUSTOM_SEQUENCE: Custom sequence to use if USE_RANDOM_SEQUENCE is set to False.
     PLOT_BEST: Visualises the best protein configuration if set to True.
+    ANIMATE_SEARCH: Animates all orders the algorithm went through if set to True.
     ALPHA: Alpha parameter to use for pruning. Affects required score threshold increase per depth. ALPHA = 0.5 is a
         good starting value.
     BETA: Beta parameter to use for pruning. Affects fixed score threshold margin. BETA = 18 is a good starting value.
@@ -65,8 +66,8 @@ def main():
 
     protein = Protein(sequence)
     algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
-                           prune_alpha=ALPHA, prune_beta=beta, debug=True, keep_score_history=True,
-                           keep_order_history=ANIMATE_SEARCH, show_progressbar=False,
+                           prune_alpha=ALPHA, prune_beta=beta, debug=False, keep_score_history=True,
+                           keep_order_history=ANIMATE_SEARCH, show_progressbar=True,
                            heuristics=[
                                MinimiseDimensions
                            ])
