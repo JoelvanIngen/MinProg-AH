@@ -5,10 +5,10 @@ Authors: Jarec, Joël, Wolf
 """
 
 import matplotlib.pyplot as plt
-try:
-    from mayavi import mlab
-except:
-       pass
+#try:
+#    from mayavi import mlab
+#except:
+#       pass
 
 from .definitions import *
 from .node import Node, _delta_pos_from_direction

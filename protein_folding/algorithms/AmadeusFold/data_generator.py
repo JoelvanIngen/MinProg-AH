@@ -14,7 +14,7 @@ from utils import sequence_generator
 
 def data_generator(
         n_datapoints: int = 1000,
-        seq_len_limits: list = [5, 13],
+        seq_len_limits: list = [8, 13],
         max_bruteforce_iterations: int = 2000000,
         csv_loc: str = './data/unnamed_data.csv'
 ) -> None:
@@ -31,7 +31,7 @@ def data_generator(
         protein = Protein(sequence)
 
         # generate brute force solutions
-        algorithm = BruteForce(protein, dimensions=2, max_iterations=max_bruteforce_iterations)
+        algorithm = BruteForce(protein, dimensions=3, max_iterations=max_bruteforce_iterations)
         results = algorithm.run()
 
         # obtain data from solutions: sequence, score, order, node coordinates
