@@ -1,5 +1,3 @@
 matplotlib
 numpy
 tqdm
-mayavi
-PyQt5
