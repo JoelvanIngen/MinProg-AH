@@ -24,7 +24,7 @@ class SimulatedAnnealingMinDim(Algorithm):
         # decrease of threshold value per iteration
         self.decrease = .999
         # number of random mutations to allow
-        self.n_permutations = 15000
+        self.n_permutations = 11000
         self.orders = list()
         self.orders.append(([1] * (len(protein.sequence) - 1)))
 
@@ -55,6 +55,7 @@ class SimulatedAnnealingMinDim(Algorithm):
             for direction in free_directions:
                 dirs_total[node_idx] = direction 
                 size_scores.append(1/self.get_size_score(dirs_total))
+                # todo: check validity before this, else smaller but invalid happens often
             
             direction = random.choices(free_directions, weights=size_scores, k=1)[0]
             dirs_total[node_idx] = direction 
@@ -75,7 +76,7 @@ class SimulatedAnnealingMinDim(Algorithm):
         score = 0
         size_score = 9999
         threshold = 1
-        for _ in tqdm(range(self.n_permutations)):
+        for _ in range(self.n_permutations): #tqdm(range(self.n_permutations)):
             # get random node idx to permutate from and new directions
             node_idx = random.randint(1, len(self.protein.sequence) - 1)
             dirs_total = self.get_permutated_directions(node_idx)

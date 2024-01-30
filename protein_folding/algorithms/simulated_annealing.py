@@ -18,10 +18,10 @@ class SimulatedAnnealing(Algorithm):
     def __init__(self, protein: 'Protein', dimensions, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
         # decrease of threshold value per iteration
-        self.decrease = .9997
+        self.decrease = .999
         # number of random mutations to allow
         # TODO: decide how to determine when to stop algorithm
-        self.n_permutations = 5000 #15000
+        self.n_permutations = 15000 #15000
         self.orders = list()
         self.orders.append(([1] * (len(protein.sequence) - 1)))
 
@@ -61,7 +61,7 @@ class SimulatedAnnealing(Algorithm):
         best_order = []
         score = 0
         threshold = 1
-        for _ in tqdm(range(self.n_permutations)):
+        for _ in range(self.n_permutations): #tqdm(range(self.n_permutations)):
             # get random node idx to permutate from and new directions
             node_idx = random.randint(1, len(self.protein.sequence) - 1)
             dirs_total = self.get_permutated_directions(node_idx)
@@ -71,7 +71,7 @@ class SimulatedAnnealing(Algorithm):
 
                 comparison_score = fast_compute_bond_score(self.protein.sequence, dirs_total)
                 decision_float = random.random()
-                if comparison_score <= score or threshold > decision_float:
+                if comparison_score < score or threshold > decision_float:
                     if self.orders[-1] != dirs_total:
                         self.orders.append(dirs_total)
                     self.protein.set_order(dirs_total)

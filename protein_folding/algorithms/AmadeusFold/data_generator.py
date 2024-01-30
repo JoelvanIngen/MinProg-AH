@@ -31,7 +31,7 @@ def data_generator(
         protein = Protein(sequence)
 
         # generate brute force solutions
-        algorithm = BruteForce(protein, dimensions=2, max_iterations=max_bruteforce_iterations)
+        algorithm = BruteForce(protein, dimensions=3, max_iterations=max_bruteforce_iterations)
         results = algorithm.run()
 
         # obtain data from solutions: sequence, score, order, node coordinates
