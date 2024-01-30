@@ -30,19 +30,19 @@ from protein_folding.protein import Protein
 from protein_folding.algorithms import DepthFirst
 from protein_folding.algorithms.heuristics import *
 
-N_ITERATIONS = 100000
+N_ITERATIONS = 1000000
 N_DIMENSIONS = 2
 
 USE_RANDOM_SEQUENCE = False
 RANDOM_SEQUENCE_LENGTH = 30
-CUSTOM_SEQUENCE = "HHPCHHPCCPCPPHHHHPPHCHPHPHCHPP"
+CUSTOM_SEQUENCE = "HHPHHHPHPHHHPH"
 PLOT_BEST = True
 ANIMATE_SEARCH = False
 
-ALPHA = 0.50
-BETA = 18
+ALPHA = 0.5
+BETA = 6
 
-FIND_BEST_BETA_VALUE = True
+FIND_BEST_BETA_VALUE = False
 USE_PROFILING = False
 
 
@@ -76,7 +76,7 @@ def main():
     print(f"Score: {score}")
 
     if PLOT_BEST:
-        filename = f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{N_DIMENSIONS}.png'
+        filename = f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{N_DIMENSIONS}_a{ALPHA}_b{beta}.png'
         plotter = protein.plot if N_DIMENSIONS == 2 else protein.plot_3d
 
         plotter(filename)
