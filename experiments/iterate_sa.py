@@ -1,4 +1,3 @@
-import subprocess
 import time
 
 from experiments_helper import create_experiment_folders
