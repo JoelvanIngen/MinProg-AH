@@ -1,6 +1,9 @@
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
+## Experiments (milestone)
+To run timed tests on simulated annealing algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
+
 ## Algorithms
 **Brute Force**: Tries all possible combinations. Given enough time, this algorithm will find the best shape, but is impractical to run for sufficiently large proteins.
 
