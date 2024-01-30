@@ -70,3 +70,20 @@
 **Greedy**: -25
 **DepthFirst**: -29, Alpha=0.5, Beta=15 (100000 iterations)
 **SimulatedAnnealing**: -31
+
+## 4 - Analyse
+Zoals we in het begin van het project voorspelden schaalt het verschil tussen 
+de baselines en de algoritmen met de state space van de sequence. Dit 
+blijkt ten eerste uit dat het verschil tussen de scores van de baseline en van 
+sommige algoritmen toeneemt naarmate de sequence length toeneemt, maar ook uit 
+het nog grotere verschil tussen de baselines en de algoritmen in 3 dimensies. 
+Verder komen ook voor- en nadelen van algoritmes naar voren, die belangrijk 
+worden als je folds zou willen renderen met een specifiek doel; het depth-first 
+algoritme is rigoureuzer en levert waarschijnlijk als je onbeperkte runtime 
+hebt een lagere score op, maar is dusdanig veel langzamer dan simulated 
+annealing dat het op sommige plekken in de bovenstaande resultaten ingehaald 
+wordt binnen de beperkte rekentijd die beide algoritmes kregen. Voor een 
+toepassing waar de score het belangrijkst is zou dus een rigoureuzer algoritme 
+als depth-first een betere keuze zijn, terwijl andere opties als simulated 
+annealing juist voordeliger zouden kunnen zijn als quantiteit en snelheid 
+belangrijker is.
