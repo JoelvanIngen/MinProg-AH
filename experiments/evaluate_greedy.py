@@ -6,26 +6,34 @@ from random import shuffle
 
 def main():
     create_experiment_folders()
-    sequence = 'H' * 40
-    sequence += 'C' * 40
-    sequence += 'P' * 20
-    l = list(sequence)
-    shuffle(l)
-    sequence = ''.join(l)
-    sequence = "CPPCCPHHCHHPPCHHPC"
-    score = 0
-    dim = 2
-    protein = Protein(sequence)
+    sequences = {"HHPHHHPHPHHHPH": 0,
+                 "HPHPPHHPHPPHPHHPPHPH": 0,
+                 "PPPHHPPHHPPPPPHHHHHHHPPHHPPPPHHPPHPP": 0,
+                 "HHPHPHPHPHHHHPHPPPHPPPHPPPPHPPPHPPPHPHHHHPHPHPHPHH": 0,
+                 "PPCHHPPCHPPPPCHHHHCHHPPHHPPPPHHPPHPP": 0,
+                 "CPPCHPPCHPPCPPHHHHHHCCPCHPPCPCHPPHPC": 0,
+                 "HCPHPCPHPCHCHPHPPPHPPPHPPPPHPCPHPPPHPHHHCCHCHCHCHH": 0,
+                 "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH": 0}
+    DIM = 3
+    CYCLES = 1000
 
-    algorithm = Greedy(protein, dimensions=dim, debug=True)
-    score = algorithm.run()
-    print(f"Score: {protein.get_bond_score()}")
+    for _ in range(CYCLES):
+        print(f"Cycling {_}")
+        for sequence in sequences.keys():
+            protein = Protein(sequence)
 
-    if dim == 2:
-        protein.plot(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{dim}.png')
-    elif dim == 3:
-        protein.plot_3d(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{dim}.png')
+            algorithm = Greedy(protein, dimensions=DIM, debug=False)
+            algorithm.run()
+            if sequences[sequence] > protein.get_bond_score():
+                sequences[sequence] = protein.get_bond_score()
+                print(f"Sequence: {sequence} Score: {protein.get_bond_score()}")
 
+            # if dim == 2:
+            #     protein.plot(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{dim}.png')
+            # elif dim == 3:
+            #     protein.plot_3d(f'./output/evaluate_{algorithm.get_name()}_len{len(sequence)}_dim{dim}.png')
+
+    print(sequences)
 
 if __name__ == '__main__':
     main()
