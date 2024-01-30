@@ -26,8 +26,13 @@ class StateQueue:
             assert len(self.states) == 0
             raise QueueEmptyError
 
-        max_score = max(self.scores)
-        idx = self.scores.index(max_score)
+        # Reverse lists for now so we can work with whatever we last added, otherwise it takes ages to find a good score
+        scores_rev = self.scores[::-1]
+
+        max_score = max(scores_rev)
+        idx_rev = scores_rev.index(max_score)
+
+        idx = len(self.scores) - 1 - idx_rev
 
         self.scores.pop(idx)
         return self.states.pop(idx)
@@ -77,7 +82,7 @@ class BeamSearch(Algorithm):
     def find_next_orders(self, order) -> list[list[int]]:
         valid_next_orders = []
         for direction in self.directions:
-            if direction == order[-1]:
+            if direction == -order[-1]:
                 continue
 
             test_order = order + [direction]
