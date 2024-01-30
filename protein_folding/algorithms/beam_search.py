@@ -26,13 +26,8 @@ class StateQueue:
             assert len(self.states) == 0
             raise QueueEmptyError
 
-        # Reverse lists for now so we can work with whatever we last added, otherwise it takes ages to find a good score
-        scores_rev = self.scores[::-1]
-
-        max_score = max(scores_rev)
-        idx_rev = scores_rev.index(max_score)
-
-        idx = len(self.scores) - 1 - idx_rev
+        min_score = min(self.scores)
+        idx = self.scores.index(min_score)
 
         self.scores.pop(idx)
         return self.states.pop(idx)
@@ -126,7 +121,8 @@ class BeamSearch(Algorithm):
         self.save_orders(next_orders)
 
         # if self._debug and self._iteration % 1000 == 0:
-        #     print(depth)
+        #     print(f"Depth: {depth} | "
+        #           f"Score so far: {fast_compute_bond_score(self.protein.sequence[:len(next_orders[0]) + 1], next_orders[0])}")
 
     def run(self) -> int:
         if self._show_progress:
