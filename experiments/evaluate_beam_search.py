@@ -29,7 +29,7 @@ def main():
     print(f"Using sequence {sequence}")
 
     protein = Protein(sequence)
-    algorithm = BreadthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
+    algorithm = BeamSearch(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
                              debug=True, keep_score_history=True,
                              keep_order_history=ANIMATE_SEARCH, show_progressbar=True)
 
