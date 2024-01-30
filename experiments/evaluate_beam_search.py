@@ -9,7 +9,7 @@ N_DIMENSIONS = 2
 
 USE_RANDOM_SEQUENCE = False
 RANDOM_SEQUENCE_LENGTH = 30
-CUSTOM_SEQUENCE = "HPHPPHHPHPPHPHHPPHPH"
+CUSTOM_SEQUENCE = "HHPHHHPHPHHHPH"
 PLOT_BEST = True
 ANIMATE_SEARCH = False
 
@@ -47,42 +47,6 @@ def main():
 
     if ANIMATE_SEARCH:
         protein.animate_2d(algorithm.order_history)
-
-
-def find_best_prune_parameter(sequence: str):
-    run_iterations = int(N_ITERATIONS/2)
-    parameter = int(len(sequence) * (5/6))
-    best_score = 1
-    best_p = 15
-
-    while parameter > 2.5:
-        print(f"Trying prune_parameter = {parameter}")
-        protein = Protein(sequence)
-        algorithm = DepthFirst(protein, dimensions=N_DIMENSIONS, max_iterations=run_iterations,
-                               prune_alpha=ALPHA, prune_beta=parameter, keep_score_history=True,
-                               keep_order_history=True, show_progressbar=False,
-                               heuristics=[
-                                   MinimiseDimensions
-                               ])
-
-        run_score = algorithm.run()
-        print(f"Ran algorithm, found score of {run_score} with parameter = {parameter}. "
-              f"Ran {algorithm._iteration}/{run_iterations} iterations.")
-
-        if run_score < best_score:
-            best_score = run_score
-            best_p = parameter
-
-        if algorithm._iteration < run_iterations / 2:
-            # More pruning will only result in even less searches
-            break
-
-        if parameter > 1.5 * -best_score:
-            parameter = int(1.5 * -best_score)
-        else:
-            parameter -= 1
-
-    return best_p
 
 
 if __name__ == '__main__':
