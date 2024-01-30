@@ -37,7 +37,7 @@ class StateQueue:
         self.states.append(order)
 
 
-class BreadthFirst(Algorithm):
+class BeamSearch(Algorithm):
     """
     A greedy algorithm that applies a direction for each individual
         node, starting from the first node after the root node. It determines

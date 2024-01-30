@@ -1,7 +1,7 @@
 import cProfile
 from experiments_helper import create_experiment_folders, generate_realistic_sequence
 from protein_folding.protein import Protein
-from protein_folding.algorithms import BreadthFirst
+from protein_folding.algorithms import BeamSearch
 from protein_folding.algorithms.heuristics import *
 
 N_ITERATIONS = 100000
