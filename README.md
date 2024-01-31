@@ -1,7 +1,7 @@
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
-## Case Uitleg
+## Case Explanation
 In our chosen case, we implement solutions for efficiently solving the H-P protein model. 
 This a simplified model for folding protein structures in order to achieve a low energy state i.e., form the most H-bonds between atoms in the protein.
 These bonds can only form if the modecules are directly next to eachother on a grid.
@@ -9,59 +9,58 @@ However, getting the right molecules positioned next to eachother requires a wel
 
 We implemented multiple algorithms that are designed to achieve these low-energy folds in a short timespan, and we extended the model to 3D.
 
-## Run
+## Running the program
 By running main.py, there is a small UI in the terminal that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
-More information on these parameters and heuristics is read below.
+More information on these configurations is read below.
 
-## Separate Experiments (milestone)
-To run timed tests on (i.e. simulated annealing) algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
+## Configurations
 
-## Algorithms
-**Brute Force**: Tries all possible combinations. Given enough time, this algorithm will find the best shape, but is impractical to run for sufficiently large proteins.
+### Algorithms
+- **Brute Force**: Tries all possible combinations. Given enough time, this algorithm will find the best shape, but is impractical to run for sufficiently large proteins.
 
-**PureRandom**: Generates a random list of directions, ensures it's valid and computes the resulting score.
+- **PureRandom**: Generates a random list of directions, ensures it's valid and computes the resulting score.
 
-**IterativeRandom**: Loops through the protein, and finds the available directions for each node separately, trying to prevent collisions.
+- **IterativeRandom**: Loops through the protein, and finds the available directions for each node separately, trying to prevent collisions.
 
-**Spiral**: Arranges the protein in a spiral shape.
+- **Spiral**: Arranges the protein in a spiral shape.
 
-**Greedy**: Loops through the protein, and bends each node into the most favourable position based on score, or chooses a random direction otherwise.
+- **Greedy**: Loops through the protein, and bends each node into the most favourable position based on score, or chooses a random direction otherwise.
 
-**Regression**: Makes a number of random folds, only keeping the new shape if it has a better score than the previous shape.
+- **Regression**: Makes a number of random folds, only keeping the new shape if it has a better score than the previous shape.
 
-**Simulated Annealing**: Similar to *Regression*, but has a (each iteration decreasing) chance that a new shape will be accepted even if it is worse.
+- **Simulated Annealing**: Similar to *Regression*, but has a (each iteration decreasing) chance that a new shape will be accepted even if it is worse.
 
-**Depth First**: Recursively loops through the protein, and tries all directions in a depth-first approach. Tries directions in an order based on selected heuristics and prunes branches if they're not promising enough.
+- **Depth First**: Recursively loops through the protein, and tries all directions in a depth-first approach. Tries directions in an order based on selected heuristics and prunes branches if they're not promising enough.
 
-**Beam Search**: Explores position that has the highest points at that moment. Saves others in a queue.
+- **Beam Search**: Explores position that has the highest points at that moment. Saves others in a queue.
 
-## Parameters
+### Parameters
 
-**Dimensions**: The user can choose whether they want to run the algorithm in 2D or 3D.
+- **Dimensions**: The user can choose whether they want to run the algorithm in 2D or 3D.
 
-**Debugging**: Outputs internal data describing at where the algorithm is at that point. (ONLY USE IF ALGORITHM CRASHES)
+- **Debugging**: Outputs internal data describing at where the algorithm is at that point. (ONLY USE IF ALGORITHM CRASHES)
 
-**Verbose**: Outputs more global information, i.e. when the algorithm has found a new best score.
+- **Verbose**: Outputs more global information, i.e. when the algorithm has found a new best score.
 
-**Progressbar**: Displays a progressbar while running.
+- **Progressbar**: Displays a progressbar while running.
 
-**State History**: Allows the algorithm to save previous states to enable the user to animate the algorithm.
+- **State History**: Allows the algorithm to save previous states to enable the user to animate the algorithm.
 
-**Max Iterations**: Caps the amount of iterations the algorithm is allowed to run for.
+- **Max Iterations**: Caps the amount of iterations the algorithm is allowed to run for.
 
-### DepthFirst Heuristics: Only available in the DepthFirst algorithm
+### Heuristics: Only available in the DepthFirst algorithm
 
-**MinimiseDimensions**: Nudges the algorithm in directions where the overall dimensions of the protein are kept as small as possible.
+- **MinimiseDimensions**: Nudges the algorithm in directions where the overall dimensions of the protein are kept as small as possible.
 
-**PotentialPlus**: Nudges the algorithm in directions where hydrophobic nodes are kept together and polar nodes are placed further away.
+- **PotentialPlus**: Nudges the algorithm in directions where hydrophobic nodes are kept together and polar nodes are placed further away.
 
-**FoldAmount**: Nudges the algorithm in directions where the protein makes the most amount of 90 degree folds.
-
+- **FoldAmount**: Nudges the algorithm in directions where the protein makes the most amount of 90 degree folds.
 
 
-## Voorbeeld Run
 
-De UI in the terminal looks as followed:
+## Example Run and Output
+
+Running `main.py` looks as followed:
 ```
 /Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/.venv/bin/python /Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/main.py 
 Enter sequence: PPCHHPPCHPPPPCHHHHCHHPPHHPPPPHHPPHPP
@@ -98,10 +97,12 @@ Process finished with exit code 0
 ```
 Once this is run, the user will be able to find a plot of the protein in the `./experiments/output` folder.
 
-
 <div align="center">
 <figure>
     <img src="./trophies/presentationPlots/evaluate_DepthFirst_len36_dim2_a0.5_b12.png" width="425" height="350">
     <figcaption>Output DepthFirst Algorithm</figcaption>
 </figure>
 </div>
+
+## Separate Experiments (milestone)
+To run timed tests on (i.e. simulated annealing) algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
