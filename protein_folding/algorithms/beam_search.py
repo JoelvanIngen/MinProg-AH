@@ -106,7 +106,6 @@ class BeamSearch(Algorithm):
 
     def get_best_order(self):
         state = self.queue.get_highest_score_state()
-        # print(state, fast_compute_bond_score(self.protein.sequence[:len(state) + 1], state))
         return state
 
     def save_orders(self, orders):
@@ -121,7 +120,7 @@ class BeamSearch(Algorithm):
         for order in orders:
             score = fast_compute_bond_score(self.protein.sequence[:len(order) + 1], order)
             if score < self.best_score:
-                if self.debug:
+                if self.verbose:
                     print(f"Found new best score of {score} with order: {order}")
 
                 self.best_score = score
@@ -138,9 +137,9 @@ class BeamSearch(Algorithm):
 
         self.save_orders(next_orders)
 
-        # if self._debug and self._iteration % 1000 == 0:
-        #     print(f"Depth: {depth} | "
-        #           f"Score so far: {fast_compute_bond_score(self.protein.sequence[:len(next_orders[0]) + 1], next_orders[0])}")
+        if self.debug and self._iteration % 1000 == 0:
+            print(f"Depth: {depth} | "
+                  f"Score so far: {fast_compute_bond_score(self.protein.sequence[:len(next_orders[0]) + 1], next_orders[0])}")
 
     def run(self) -> int:
         if self.show_progress:
@@ -157,6 +156,8 @@ class BeamSearch(Algorithm):
 
             self._increment_iteration()
 
-        print(self.best_order)
+        if self.verbose:
+            print(f"Best order: {self.best_order}")
+
         self.protein.set_order(self.best_order)
         return self.best_score

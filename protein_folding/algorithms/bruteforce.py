@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 from protein_folding.protein import Protein
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 from . import Algorithm
@@ -88,7 +90,14 @@ class BruteForce(Algorithm):
         # for i, order in zip(range(self.configs), self.order_list):
         max_configs = self.get_max_configs()
         order = tuple([-2] * (len(self.protein.sequence) - 1))
+
+        if self.show_progress:
+            self.pbar = tqdm(max_configs)
+
         for _ in range(max_configs):
+            if self.pbar:
+                self.pbar.update(1)
+
             if fast_validate_protein(order):
                 self.valid_configurations_found += 1
                 score = fast_compute_bond_score(seq=self.sequence, order=order)
