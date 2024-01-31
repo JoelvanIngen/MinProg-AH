@@ -104,6 +104,19 @@ def set_parameters(algorithm):
         setattr(algorithm, param, value)
 
 
+def optional_add_heuristics(algorithm):
+    heuristics = {
+        'MinimiseDimensions': MinimiseDimensions,
+        'PotentialPlus': PotentialPlus,
+        'FoldAmount': FoldAmount,
+    }
+
+    if algorithm.name == "DepthFirst":
+        for heuristic_name, heuristic in heuristics.items():
+            if get_user_bool(f"Add heuristic {heuristic_name}? (y/n): "):
+                algorithm.heuristics.append(heuristic(algorithm.protein))
+
+
 def set_bool_parameters(algorithm):
     setattr(algorithm, 'debug', get_user_bool("Use debugging? (y/n): "))
     setattr(algorithm, 'visualise', get_user_bool("Keep state history for animating? (y/n): "))
@@ -123,6 +136,8 @@ def main():
     set_parameters(algorithm)
 
     set_bool_parameters(algorithm)
+
+    optional_add_heuristics(algorithm)
 
     score = algorithm.run()
     print(f"\n\nFinal score: {score}")
