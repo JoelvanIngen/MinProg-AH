@@ -96,7 +96,7 @@ Once this is run, the user will be able to find a plot of the protein in the `./
 
 <div align="center">
 <figure>
-    <img src="./trophies/presentationPlots/evaluate_DepthFirst_len36_dim2_a0.5_b12.png" width="425" height="300">
+    <img src="./trophies/presentationPlots/evaluate_DepthFirst_len36_dim2_a0.5_b12.png" width="425" height="350">
     <figcaption>Output DepthFirst Algorithm</figcaption>
 </figure>
 </div>
