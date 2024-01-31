@@ -1,6 +1,24 @@
+
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
+## Table of Contents
+
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Case Explanation](#case-explanation)
+- [Running the program](#running-the-program)
+- [Configurations](#configurations)
+   * [Algorithms](#algorithms)
+   * [Parameters](#parameters)
+   * [Heuristics: Only available in the DepthFirst algorithm](#heuristics-only-available-in-the-depthfirst-algorithm)
+- [Example Run and Output](#example-run-and-output)
+- [Separate Experiments (milestone)](#separate-experiments-milestone)
+
+<!-- TOC end -->
+
+
+<!-- TOC --><a name="case-explanation"></a>
 ## Case Explanation
 In our chosen case, we implement solutions for efficiently solving the H-P protein model. 
 This a simplified model for folding protein structures in order to achieve a low energy state i.e., form the most H-bonds between atoms in the protein.
@@ -9,12 +27,15 @@ However, getting the right molecules positioned next to eachother requires a wel
 
 We implemented multiple algorithms that are designed to achieve these low-energy folds in a short timespan, and we extended the model to 3D.
 
+<!-- TOC --><a name="running-the-program"></a>
 ## Running the program
 By running main.py, there is a small UI in the terminal that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
 More information on these configurations is read below.
 
+<!-- TOC --><a name="configurations"></a>
 ## Configurations
 
+<!-- TOC --><a name="algorithms"></a>
 ### Algorithms
 - **Brute Force**: Tries all possible combinations. Given enough time, this algorithm will find the best shape, but is impractical to run for sufficiently large proteins.
 
@@ -34,6 +55,7 @@ More information on these configurations is read below.
 
 - **Beam Search**: Explores position that has the highest points at that moment. Saves others in a queue.
 
+<!-- TOC --><a name="parameters"></a>
 ### Parameters
 
 - **Dimensions**: The user can choose whether they want to run the algorithm in 2D or 3D.
@@ -48,6 +70,7 @@ More information on these configurations is read below.
 
 - **Max Iterations**: Caps the amount of iterations the algorithm is allowed to run for.
 
+<!-- TOC --><a name="heuristics-only-available-in-the-depthfirst-algorithm"></a>
 ### Heuristics: Only available in the DepthFirst algorithm
 
 - **MinimiseDimensions**: Nudges the algorithm in directions where the overall dimensions of the protein are kept as small as possible.
@@ -58,11 +81,12 @@ More information on these configurations is read below.
 
 
 
+<!-- TOC --><a name="example-run-and-output"></a>
 ## Example Run and Output
 
 Running `main.py` looks as followed:
 ```
-/Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/.venv/bin/python /Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/main.py 
+$ python3 main.py 
 Enter sequence: PPCHHPPCHPPPPCHHHHCHHPPHHPPPPHHPPHPP
 Available algorithms:
 [0] PureRandom
@@ -95,7 +119,9 @@ Final score: -19
 
 Process finished with exit code 0
 ```
+
 Once this is run, the user will be able to find a plot of the protein in the `./experiments/output` folder.
+This particular sequence and configuration yields the following protein:
 
 <div align="center">
 <figure>
@@ -104,5 +130,6 @@ Once this is run, the user will be able to find a plot of the protein in the `./
 </figure>
 </div>
 
+<!-- TOC --><a name="separate-experiments-milestone"></a>
 ## Separate Experiments (milestone)
 To run timed tests on (i.e. simulated annealing) algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
