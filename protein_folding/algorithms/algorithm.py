@@ -15,6 +15,7 @@ class Algorithm:
                  debug=False,
                  visualise=False,
                  show_progressbar=True,
+                 verbose=False,
                  keep_score_history=False,
                  keep_order_history=False):
 
@@ -36,6 +37,8 @@ class Algorithm:
         self.visualise = visualise
         self._order_history = []
 
+        self.verbose = verbose
+
         self.show_progress = show_progressbar
         self.pbar = None
 
@@ -49,7 +52,7 @@ class Algorithm:
         return self.__class__.__name__
 
     def _keep_order_history(self, order: list[int] | None):
-        if self._visualise:
+        if self.visualise:
             self._order_history.append(order[:] if order else self.protein.order[:])
 
     def _process_heuristics_single_direction(self,

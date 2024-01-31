@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 from protein_folding.protein import Protein
 from protein_folding.fast_protein import fast_validate_protein, fast_compute_bond_score
 from . import Algorithm
@@ -53,7 +55,7 @@ def generate_new_combination(directions: list[int], prev_combination: Iterable[i
 
 class BruteForce(Algorithm):
 
-    def __init__(self, protein: 'Protein', dimensions: int, *args, max_iterations=0, verbose=False, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, *args, max_iterations=0, **kwargs):
         super().__init__(protein, dimensions, *args, **kwargs)
         self.sequence = self.protein.sequence
         self.n = len(self.protein.sequence) - 1
@@ -61,8 +63,7 @@ class BruteForce(Algorithm):
 
         # if 0 < max_iterations < len(self.order_list):
         #     self.order_list = sample(self.order_list, max_iterations)
-        
-        self.verbose = verbose
+
         self.dimensions = dimensions
 
         self.configs = 1
@@ -72,7 +73,7 @@ class BruteForce(Algorithm):
 
         self.valid_configurations_found = 0
 
-        self.user_parameters = [('max_iterations', self.max_iterations), ('verbose', self.verbose)]
+        self.user_parameters = [('max_iterations', self.max_iterations)]
 
     def get_max_configs(self):
         if self.max_iterations > 0:
@@ -88,7 +89,14 @@ class BruteForce(Algorithm):
         # for i, order in zip(range(self.configs), self.order_list):
         max_configs = self.get_max_configs()
         order = tuple([-2] * (len(self.protein.sequence) - 1))
+
+        if self.show_progress:
+            self.pbar = tqdm(max_configs)
+
         for _ in range(max_configs):
+            if self.pbar:
+                self.pbar.update(1)
+
             if fast_validate_protein(order):
                 self.valid_configurations_found += 1
                 score = fast_compute_bond_score(seq=self.sequence, order=order)

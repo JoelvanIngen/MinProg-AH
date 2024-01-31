@@ -106,7 +106,7 @@ class DepthFirst(Algorithm):
             if depth < self.batch_lowest_callback:
                 self.batch_lowest_callback = depth
 
-        if self.debug and self._iteration % 1000 == 0:
+        if self.verbose and self._iteration % 1000 == 0:
             print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/batch lowest/lowest: '
                   f'{depth}/{self.batch_lowest_callback}/{self.lowest_callback},'
                   f' Best score: {self.best_score} ({self.amount_of_best_found} found), End nodes reached: '
