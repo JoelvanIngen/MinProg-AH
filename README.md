@@ -1,7 +1,10 @@
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
-## Experiments (milestone)
+## Run
+By running main.py, there is a small UI that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
+
+## Separate Experiments (milestone)
 To run timed tests on simulated annealing algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
 
 ## Algorithms
@@ -20,3 +23,5 @@ To run timed tests on simulated annealing algorithm: run experiments/iterate_sa.
 **Simulated Annealing**: Similar to *Regression*, but has a (each iteration decreasing) chance that a new shape will be accepted even if it is worse.
 
 **Depth First**: Recursively loops through the protein, and tries all directions in a depth-first approach. Tries directions in an order based on selected heuristics and prunes branches if they're not promising enough.
+
+**Beam Search**: Explores position that has the highest points at that moment. Saves others in a queue.
