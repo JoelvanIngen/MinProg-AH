@@ -2,9 +2,10 @@
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
-<div align="center" style="overflow: hidden;">
+<div align="center">
 <figure>
     <img src="./trophies/atest-cropped.gif" height="439">
+    <h4></h4>
     <figcaption>A sample 3D protein fold.</figcaption>
 </figure>
 </div>
@@ -145,7 +146,8 @@ This particular sequence and configuration yields the following protein:
 
 <div align="center">
 <figure>
-    <img src="./trophies/presentationPlots/evaluate_DepthFirst_len36_dim2_a0.5_b12.png" width="425" height="350">
+    <img src="./trophies/presentationPlots/evaluate_DepthFirst_len36_dim2_a0.5_b12.png" width="640" height="480">
+    <h4></h4>
     <figcaption>Output DepthFirst Algorithm</figcaption>
 </figure>
 </div>
