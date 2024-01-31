@@ -47,8 +47,6 @@ def generate_new_combination(directions: list[int], prev_combination: Iterable[i
             continue
         else:
             new_combination[i] = directions[directions.index(direction) + 1]
-            # if fast_validate_protein(new_combination):
-            #     return tuple(new_combination)
             return tuple(new_combination)
     return None
 
@@ -59,10 +57,6 @@ class BruteForce(Algorithm):
         super().__init__(protein, dimensions, *args, **kwargs)
         self.sequence = self.protein.sequence
         self.n = len(self.protein.sequence) - 1
-        # self.order_list = generate_combinations(self.directions, self.n)
-
-        # if 0 < max_iterations < len(self.order_list):
-        #     self.order_list = sample(self.order_list, max_iterations)
 
         self.dimensions = dimensions
 
@@ -83,10 +77,7 @@ class BruteForce(Algorithm):
 
         return max_configs
 
-# probleem: none wordt als order teruggegeven, kan alleen als alle orders bekeken zijn.
-# dit komt doordat aantal iteraties te groot is.
     def run(self) -> dict:
-        # for i, order in zip(range(self.configs), self.order_list):
         max_configs = self.get_max_configs()
         order = tuple([-2] * (len(self.protein.sequence) - 1))
 
