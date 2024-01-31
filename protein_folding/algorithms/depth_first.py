@@ -39,6 +39,8 @@ class DepthFirst(Algorithm):
         self.prune_alpha = prune_alpha
         self.prune_beta = prune_beta
 
+        self.user_parameters = ["max_iterations", "prune_alpha", "prune_beta"]
+
     def _increment_iteration(self):
         self._iteration += 1
 
