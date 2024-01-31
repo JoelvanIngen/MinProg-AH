@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
 import torch
 from torch.utils.data import DataLoader, random_split, Subset
 
@@ -28,7 +29,7 @@ def train_loop(batch_size, norm_val, dataset, model, loss_fn, optimizer):
 		# loop over batch and sum total loss
 		loss = 0
 		for (sequence, coordinates, score) in batch:
-			indexed_sequence = torch.tensor(index_sequence(sequence))
+			indexed_sequence = torch.tensor(index_sequence(sequence), requires_grad=True)
 			predicted_coords = model(indexed_sequence)
 
 			loss += loss_fn(
@@ -84,19 +85,21 @@ def test_loop(batch_size, norm_val, dataset, model, loss_fn):
 
 def main():
 	# settings
-	model_path = './models/first_test/model.pt' # where to save weights
+	model_path = './models/first_test/model_2d_50k.pt' # where to save weights
 	norm_val = 15 # normalisation value (see FoldDataset)
 	train_test_split = .8 # ratio training/testing data split
 	learning_rate = 1e-3 # model learning rate
 	batch_size = 256 # amount of datapooints in
-	epochs = 2 # number of epochs to train
-	patience = 10 # number of epochs validation loss can rise before stopping
+	epochs = 2000 # number of epochs to train
+	patience = 20 # number of epochs validation loss can rise before stopping
+	print(f"Beginning training of model {model_path}")
 
 	# instantiate datasets for training and validation
-	dataset = FoldDataset('./data/test_data.csv', norm_val = norm_val)
+	dataset = FoldDataset('./data/50k_datapoints.csv', norm_val = norm_val)
 	train_len = int(train_test_split * len(dataset))
 	test_len = len(dataset) - train_len
 	train_dataset, test_dataset = random_split(dataset, [train_len, test_len])
+	print("Datasets loaded")
 
 	# instantiate model, loss function and optimizer
 	model = AmadeusFold()
@@ -108,6 +111,7 @@ def main():
 	overfit_counter = 0
 
 	# start training procedure
+	print(f"Started training at {datetime.now()}")
 	for ep in range(epochs):
 		# determine training loss
 		loss_train = train_loop(
@@ -128,7 +132,7 @@ def main():
 		)
 		
 		# display status update
-		print(f"Epoch {ep + 1}/{epochs}. training loss: {loss_train} eval loss: {loss_test}")
+		print(f"Epoch {ep + 1}/{epochs}. training loss: {loss_train} eval loss: {loss_test} time: {datetime.now()}")
 		
 		# check for overfitting and update validation loss
 		if loss_test > loss_prev_test:
