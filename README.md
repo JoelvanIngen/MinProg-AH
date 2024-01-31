@@ -132,4 +132,4 @@ This particular sequence and configuration yields the following protein:
 
 <!-- TOC --><a name="separate-experiments-milestone"></a>
 ## Separate Experiments (milestone)
-To run timed tests on (i.e. simulated annealing) algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
+To run timed tests on specific algorithms (i.e. simulated annealing), run experiments/iterate_sa.py, adjust sequence, timing and parameters as necessary.
