@@ -55,7 +55,7 @@ def generate_new_combination(directions: list[int], prev_combination: Iterable[i
 
 class BruteForce(Algorithm):
 
-    def __init__(self, protein: 'Protein', dimensions: int, *args, max_iterations=0, verbose=False, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, *args, max_iterations=0, **kwargs):
         super().__init__(protein, dimensions, *args, **kwargs)
         self.sequence = self.protein.sequence
         self.n = len(self.protein.sequence) - 1
@@ -63,8 +63,7 @@ class BruteForce(Algorithm):
 
         # if 0 < max_iterations < len(self.order_list):
         #     self.order_list = sample(self.order_list, max_iterations)
-        
-        self.verbose = verbose
+
         self.dimensions = dimensions
 
         self.configs = 1
