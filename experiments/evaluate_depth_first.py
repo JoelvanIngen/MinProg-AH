@@ -31,19 +31,19 @@ from protein_folding.protein import Protein
 from protein_folding.algorithms import DepthFirst
 from protein_folding.algorithms.heuristics import *
 
-N_ITERATIONS = 1000000
+N_ITERATIONS = 20000
 N_DIMENSIONS = 2
 
 USE_RANDOM_SEQUENCE = False
 RANDOM_SEQUENCE_LENGTH = 30
-CUSTOM_SEQUENCE = "HHPHHHPHPHHHPH"
+CUSTOM_SEQUENCE = "PPCHHPPCHPPPPCHHHHCHHPPHHPPPPHHPPHPP"
 PLOT_BEST = True
 ANIMATE_SEARCH = False
 
 ALPHA = 0.5
-BETA = 6
+BETA = 35
 
-FIND_BEST_BETA_VALUE = False
+FIND_BEST_BETA_VALUE = True
 USE_PROFILING = False
 
 

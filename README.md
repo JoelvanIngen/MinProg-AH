@@ -1,6 +1,9 @@
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
+## Case Uitleg
+
+
 ## Run
 By running main.py, there is a small UI that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
 More information on these parameters and heuristics is read below.
@@ -48,3 +51,43 @@ To run timed tests on (i.e. simulated annealing) algorithm: run experiments/iter
 **PotentialPlus**: Nudges the algorithm in directions where hydrophobic nodes are kept together and polar nodes are placed further away.
 
 **FoldAmount**: Nudges the algorithm in directions where the protein makes the most amount of 90 degree folds.
+
+
+
+## Voorbeeld Run
+```
+/Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/.venv/bin/python /Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/main.py 
+Enter sequence: PPCHHPPCHPPPPCHHHHCHHPPHHPPPPHHPPHPP
+Available algorithms:
+[0] PureRandom
+[1] IterativeRandom
+[2] Spiral
+[3] BruteForce
+[4] Regression
+[5] SimulatedAnnealing
+[6] Greedy
+[7] BeamSearch
+[8] DepthFirst
+Choose an algorithm 0-8: 8
+Choose a number of dimensions (2 / 3): 2
+Change parameter max_iterations (default 5000)? (y/n): y
+Set parameter max_iterations to: 20000
+Change parameter prune_alpha (default 0.5)? (y/n): n
+Change parameter prune_beta (default 15)? (y/n): y
+Set parameter prune_beta to: 12
+Use debugging? (y/n): n
+Keep state history for animating? (y/n): n
+Use progressbar? (y/n): y
+Output verbose information? (y/n): n
+Add heuristic MinimiseDimensions? (y/n): y
+Add heuristic PotentialPlus? (y/n): n
+Add heuristic FoldAmount? (y/n): n
+ 98%|█████████▊| 19691/20000 [00:04<00:00, 4562.28it/s]
+
+Final score: -19
+20001it [00:05, 3966.01it/s]                           
+
+Process finished with exit code 0
+```
+
+## Laat plotje zien
