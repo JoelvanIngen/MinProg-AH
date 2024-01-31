@@ -6,8 +6,8 @@ from protein_folding.fast_protein import fast_validate_protein, fast_compute_bon
 from protein_folding.protein import Protein, _get_posvecs_from_order
 from protein_folding.vector import Vec3D, get_min_max
 
-from . import Algorithm
-from .heuristics.minimise_dimensions import MinimiseDimensions
+from protein_folding.algorithms import Algorithm
+from protein_folding.algorithms.heuristics.minimise_dimensions import MinimiseDimensions
 
 
 class SimulatedAnnealingMinDim(Algorithm):
