@@ -15,7 +15,7 @@ order_index_reverse = {
 
 def main():
 	# settings
-	model_path = './models/first_test/model_2d_50k_class.pt'
+	model_path = './models/<your_model>.pt'
 	sequence = 'HHPHHCCHPHCPP' # 'HHCHHCPCHCH'
 	multiplier = 8 # check dataset settings
 
