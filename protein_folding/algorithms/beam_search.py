@@ -1,4 +1,3 @@
-import heapq
 from tqdm import tqdm
 
 from protein_folding.fast_protein import fast_compute_bond_score, fast_validate_protein
@@ -13,30 +12,7 @@ class QueueEmptyError(Exception):
     pass
 
 
-class StateQueueHeapQ:
-    def __init__(self):
-        self._queue = []
-        heapq.heappush(self._queue, ((0, 0), [1]))
-
-        self.iteration = 1
-
-    def get_highest_score_state(self) -> list[int]:
-        """
-        Finds and returns state with the highest score so far
-        """
-        if len(self._queue) == 0:
-            raise QueueEmptyError
-
-        _score_iteration, state = heapq.heappop(self._queue)
-        print(_score_iteration[0])
-        return state
-
-    def push(self, order: list[int], score: int) -> None:
-        heapq.heappush(self._queue, ((-score, self.iteration), order))
-        self.iteration += 1
-
-
-class StateQueueStandard:
+class StateQueue:
     def __init__(self):
         self.scores: list[int] = [0]
         self.states: list[list[int]] = [[1]]
@@ -73,7 +49,7 @@ class BeamSearch(Algorithm):
         self.end_nodes_evaluated = 0
         self.amount_of_best_found = 0
 
-        self.queue = StateQueueStandard()
+        self.queue = StateQueue()
 
         self.user_parameters = [('max_iterations', self.max_iterations)]
 
