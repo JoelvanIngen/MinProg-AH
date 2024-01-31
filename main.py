@@ -1,3 +1,4 @@
+import os
 import sys
 from protein_folding.protein import Protein
 from protein_folding.algorithms import *
@@ -110,6 +111,12 @@ def set_bool_parameters(algorithm):
     setattr(algorithm, 'show_progress', get_user_bool("Use progressbar? (y/n): "))
 
 
+def plot_protein(protein: Protein, filename: str = './experiments/output/unnamed_file.png'):
+    if not os.path.exists('./experiments/output/'):
+        os.makedirs('./experiments/output/')
+    protein.plot(filename=filename)
+
+
 def main():
     sequence = get_sequence()
     protein = Protein(sequence)
@@ -127,7 +134,7 @@ def main():
     print(f"\n\nFinal score: {score}")
 
     # Visualisation??
-    protein.plot()
+    plot_protein(protein, filename=f"./experiments/output/{algorithm.name}_len{len(protein)}_score{protein.get_bond_score()}.png")
 
 
 if __name__ == '__main__':
