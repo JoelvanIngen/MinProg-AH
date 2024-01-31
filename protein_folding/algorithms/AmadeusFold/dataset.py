@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import ast
 
+from utils import index_sequence
+
 
 class FoldDataset(Dataset):
 	"""
@@ -17,11 +19,9 @@ class FoldDataset(Dataset):
 			self,
 			csv_location='./data/test_data.csv',
 			shuffle=True,
-			transform = ToTensor(),
 			normalize = True,
-			norm_val = 15
+			norm_val = 8
 			) -> None:
-		self.transform = transform
 		self.normalize = normalize
 		self.norm_val = norm_val
 		
@@ -35,17 +35,17 @@ class FoldDataset(Dataset):
 	
 	def __getitem__(self, idx: int) -> tuple:
 		datapoint = self.dataframe.iloc[idx]
-		sequence = datapoint['sequence']
+		sequence = index_sequence(datapoint['sequence'])[0]
 		coordinates = np.asarray(ast.literal_eval(datapoint['coordinates']))
-		score = datapoint['score']
-
-		if self.transform:
-			coordinates = self.transform(coordinates)
-			score = torch.tensor(score)
-	
 		# divide by maximum found value if normalized
 		if self.normalize:
 			coordinates/= self.norm_val
+		score = datapoint['score']
+
+		sequence = torch.tensor(sequence)
+		coordinates = torch.tensor(coordinates, dtype=torch.float32, requires_grad=True) #self.transform(coordinates, dtype=torch.float32)
+		score = torch.tensor(score)
+	
 				
 		return sequence, coordinates, score
 
