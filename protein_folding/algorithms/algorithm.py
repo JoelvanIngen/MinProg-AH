@@ -39,6 +39,8 @@ class Algorithm:
         self._show_progress = show_progressbar
         self.pbar = None
 
+        self.user_parameters = []
+
     @property
     def name(self):
         return self.get_name()

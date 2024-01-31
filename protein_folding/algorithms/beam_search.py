@@ -76,6 +76,8 @@ class BeamSearch(Algorithm):
 
         self.queue = StateQueueStandard()
 
+        self.user_parameters = [('max_iterations', self.max_iterations)]
+
     def _increment_iteration(self):
         if self.pbar:
             self.pbar.update(1)
