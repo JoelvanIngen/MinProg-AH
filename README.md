@@ -2,7 +2,12 @@
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
 ## Case Uitleg
+In our chosen case, we implement solutions for efficiently solving the H-P protein model. 
+This a simplified model for folding protein structures in order to achieve a low energy state i.e., form the most H-bonds between atoms in the protein.
+These bonds can only form if the modecules are directly next to eachother on a grid.
+However, getting the right molecules positioned next to eachother requires a well-structured protein, as the protein cannot cross itself.
 
+We implemented multiple algorithms that are designed to achieve these low-energy folds in a short timespan, and we extended the model to 3D.
 
 ## Run
 By running main.py, there is a small UI that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
