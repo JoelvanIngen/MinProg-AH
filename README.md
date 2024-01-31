@@ -2,7 +2,7 @@
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
-<div align="center" style="overflow: hidden;">>
+<div align="center" style="overflow: hidden;">
 <figure>
     <img src="./trophies/atest.gif" height="350">
     <figcaption>A sample 3D protein fold.</figcaption>
