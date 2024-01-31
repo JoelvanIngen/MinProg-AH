@@ -73,7 +73,7 @@ class BruteForce(Algorithm):
 
         self.valid_configurations_found = 0
 
-        self.user_parameters = [('max_iterations', self.max_iterations), ('verbose', self.verbose)]
+        self.user_parameters = [('max_iterations', self.max_iterations)]
 
     def get_max_configs(self):
         if self.max_iterations > 0:
