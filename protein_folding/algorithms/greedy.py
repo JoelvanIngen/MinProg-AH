@@ -46,13 +46,7 @@ class Greedy(Algorithm):
                         neighbours.append(node.bond_value(other_node))
 
                 direction_scores[direction] = sum(neighbours)
-                # direction_scores[direction] = self.protein.get_bond_score()
                 self.protein.revert()
-
-            # results = {}
-            # for k, v in direction_scores.items():
-            #     results[direction_dict[k]] = v
-            # print(results)
 
             min_value = min(direction_scores.values())
             best_directions = [k for k, v in direction_scores.items() if v == min_value]
