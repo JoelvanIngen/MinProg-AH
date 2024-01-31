@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class Spiral(Algorithm):
     def __init__(self, protein: 'Protein', dimensions, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
+        assert dimensions == 2, "Spiral only works in 2D"
 
     def create_repetitions(self, num_of_nodes: int) -> list:
         repetitions = []
