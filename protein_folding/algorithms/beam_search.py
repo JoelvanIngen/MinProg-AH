@@ -3,7 +3,6 @@ from tqdm import tqdm
 
 from protein_folding.fast_protein import fast_compute_bond_score, fast_validate_protein
 from . import Algorithm
-from .pruning import *
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -122,7 +121,7 @@ class BeamSearch(Algorithm):
         for order in orders:
             score = fast_compute_bond_score(self.protein.sequence[:len(order) + 1], order)
             if score < self.best_score:
-                if self._debug:
+                if self.debug:
                     print(f"Found new best score of {score} with order: {order}")
 
                 self.best_score = score
@@ -144,7 +143,7 @@ class BeamSearch(Algorithm):
         #           f"Score so far: {fast_compute_bond_score(self.protein.sequence[:len(next_orders[0]) + 1], next_orders[0])}")
 
     def run(self) -> int:
-        if self._show_progress:
+        if self.show_progress:
             self.pbar = tqdm(range(self.max_iterations))
 
         # Start at first node after root node

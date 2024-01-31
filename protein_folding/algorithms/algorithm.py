@@ -31,12 +31,12 @@ class Algorithm:
         self.keep_order_history = keep_order_history
         self.order_history = []
 
-        self._debug = debug
+        self.debug = debug
 
-        self._visualise = visualise
+        self.visualise = visualise
         self._order_history = []
 
-        self._show_progress = show_progressbar
+        self.show_progress = show_progressbar
         self.pbar = None
 
         self.user_parameters = []

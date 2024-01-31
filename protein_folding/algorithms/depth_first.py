@@ -106,7 +106,7 @@ class DepthFirst(Algorithm):
             if depth < self.batch_lowest_callback:
                 self.batch_lowest_callback = depth
 
-        if self._debug and self._iteration % 1000 == 0:
+        if self.debug and self._iteration % 1000 == 0:
             print(f'Iteration: {self._iteration}/{self.max_iterations}, Depth/batch lowest/lowest: '
                   f'{depth}/{self.batch_lowest_callback}/{self.lowest_callback},'
                   f' Best score: {self.best_score} ({self.amount_of_best_found} found), End nodes reached: '
@@ -115,13 +115,13 @@ class DepthFirst(Algorithm):
             self.batch_lowest_callback = len(self.protein)
 
     def run(self) -> float:
-        if self._show_progress:
+        if self.show_progress:
             self.pbar = tqdm(range(self.max_iterations))
 
         # Start at first node after root node
         self._next_fold(depth=1)
 
-        if self._debug:
+        if self.debug:
             print(self.best_order)
 
         self.protein.set_order(self.best_order[1:])

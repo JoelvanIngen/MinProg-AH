@@ -97,13 +97,17 @@ def set_parameters(algorithm):
             continue
 
         value = get_user_float(f"Set parameter {param} to: ")
+
+        if param in ['max_iterations']:
+            value = int(value)
+
         setattr(algorithm, param, value)
 
 
 def set_bool_parameters(algorithm):
-    setattr(algorithm, '_debug', get_user_bool("Use debugging? (y/n): "))
-    setattr(algorithm, '_visualise', get_user_bool("Keep state history for animating? (y/n): "))
-    setattr(algorithm, '_show_progress', get_user_bool("Use progressbar? (y/n): "))
+    setattr(algorithm, 'debug', get_user_bool("Use debugging? (y/n): "))
+    setattr(algorithm, 'visualise', get_user_bool("Keep state history for animating? (y/n): "))
+    setattr(algorithm, 'show_progress', get_user_bool("Use progressbar? (y/n): "))
 
 
 def main():

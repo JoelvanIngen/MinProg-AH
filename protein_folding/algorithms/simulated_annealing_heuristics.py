@@ -128,7 +128,7 @@ class SimulatedAnnealingHeuristics(Algorithm):
         Runs the algorithm up to the maximum amount of iterations, and resets
         if there has been no improvement for `self.reset_threshold` iterations.
         """
-        if self._show_progress:
+        if self.show_progress:
             self.pbar = tqdm(range(self.n_permutations))
 
         while True:

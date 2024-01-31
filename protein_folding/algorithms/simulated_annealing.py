@@ -21,7 +21,7 @@ class SimulatedAnnealing(Algorithm):
         self.decrease = .999
         # number of random mutations to allow
         # TODO: decide how to determine when to stop algorithm
-        self.n_permutations = 15000 #15000
+        self.max_iterations = 15000 #15000
         self.orders = list()
         self.orders.append(([1] * (len(protein.sequence) - 1)))
 
@@ -61,7 +61,7 @@ class SimulatedAnnealing(Algorithm):
         best_order = []
         score = 0
         threshold = 1
-        for _ in range(self.n_permutations): #tqdm(range(self.n_permutations)):
+        for _ in range(self.max_iterations): #tqdm(range(self.n_permutations)):
             # get random node idx to permutate from and new directions
             node_idx = random.randint(1, len(self.protein.sequence) - 1)
             dirs_total = self.get_permutated_directions(node_idx)

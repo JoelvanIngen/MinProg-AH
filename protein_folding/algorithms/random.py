@@ -51,7 +51,7 @@ class PureRandom(Algorithm):
 
             failed_attempts += 1
 
-        if self._debug:
+        if self.debug:
             print(f"Failed attempts: {failed_attempts}")
 
         score = fast_compute_bond_score(self.protein.sequence, random_order)
@@ -99,7 +99,7 @@ class IterativeRandom(Algorithm):
 
             failed_attempts += 1
 
-        if self._debug:
+        if self.debug:
             print(f"Failed attempts: {failed_attempts}")
 
         # If the following fails, self._attempt_construct_order actually

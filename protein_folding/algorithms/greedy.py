@@ -68,7 +68,7 @@ class Greedy(Algorithm):
 
             failed_attempts += 1
 
-        if self._debug:
+        if self.debug:
             print(f"Failed attempts: {failed_attempts}")
 
         # If the following fails, self._attempt_construct_order actually
