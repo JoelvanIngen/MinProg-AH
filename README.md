@@ -2,6 +2,13 @@
 # MinProg-AH: Protein Po(w)der
 Jarec Schouten, Joël van Ingen & Wolf Gautier
 
+<div align="center" style="overflow: hidden;">
+<figure>
+    <img src="./trophies/atest.gif" height="350">
+    <figcaption>A sample 3D protein fold.</figcaption>
+</figure>
+</div>
+
 ## Table of Contents
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
@@ -12,6 +19,8 @@ Jarec Schouten, Joël van Ingen & Wolf Gautier
    * [Algorithms](#algorithms)
    * [Parameters](#parameters)
    * [Heuristics: Only available in the DepthFirst algorithm](#heuristics-only-available-in-the-depthfirst-algorithm)
+- [ML approach: AmadeusFold](#amadeusfold)
+   * [Pipeline overview](#pipeline-overview)
 - [Example Run and Output](#example-run-and-output)
 - [Separate Experiments (milestone)](#separate-experiments-milestone)
 
@@ -79,6 +88,17 @@ More information on these configurations is read below.
 
 - **FoldAmount**: Nudges the algorithm in directions where the protein makes the most amount of 90 degree folds.
 
+<!-- TOC --><a name="amadeusfold"></a>
+## ML approach: AmadeusFold
+In addition to the mentioned algorithms, an LSTM-based machine learning approach was implemented. Once trained, it takes a sequence as input and outputs an order, following the conventions of the rest of the project. 
+
+<!-- TOC --><a name="pipeline"></a>
+### Pipeline overview
+In general, the following steps should be taken to obtain a functioning model.
+1. **Generate a dataset:** using the file data_generator.py, a customisable dataset can be generated consisting of sequences and their optimal solutions, obtained through the bruteforce algorithm. It is stored as a .csv.
+2. **Choose a model structure:** models can be trained with standard loss functions, resulting in quicker training but slightly lower accuracy, or a custom loss function, yielding higher accuracy but taking longer to train. A further choice can be made between opting for a classifier architecture or one that outputs coordinates directly.
+3. **Train the chosen model with the generated dataset:** once data is generated and a model is chosen, adjusting the desired parameters in a training_(model).py script begins training the model and saves the state dict once training finishes.
+4. **Obtaining fold results:** within either run.py or run_classifier.py, simply adjust the sequence variable to the one that should be folded and run the script. An order or a set of coordinates will be displayed to the screen.
 
 
 <!-- TOC --><a name="example-run-and-output"></a>
