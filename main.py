@@ -108,6 +108,7 @@ def set_bool_parameters(algorithm):
     setattr(algorithm, 'debug', get_user_bool("Use debugging? (y/n): "))
     setattr(algorithm, 'visualise', get_user_bool("Keep state history for animating? (y/n): "))
     setattr(algorithm, 'show_progress', get_user_bool("Use progressbar? (y/n): "))
+    setattr(algorithm, 'verbose', get_user_bool("Output verbose information? (y/n): "))
 
 
 def main():
