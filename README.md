@@ -3,9 +3,10 @@ Jarec Schouten, Joël van Ingen & Wolf Gautier
 
 ## Run
 By running main.py, there is a small UI that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
+More information on these parameters and heuristics is read below.
 
 ## Separate Experiments (milestone)
-To run timed tests on simulated annealing algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
+To run timed tests on (i.e. simulated annealing) algorithm: run experiments/iterate_sa.py, adjust sequence and timing as necessary.
 
 ## Algorithms
 **Brute Force**: Tries all possible combinations. Given enough time, this algorithm will find the best shape, but is impractical to run for sufficiently large proteins.
@@ -25,3 +26,25 @@ To run timed tests on simulated annealing algorithm: run experiments/iterate_sa.
 **Depth First**: Recursively loops through the protein, and tries all directions in a depth-first approach. Tries directions in an order based on selected heuristics and prunes branches if they're not promising enough.
 
 **Beam Search**: Explores position that has the highest points at that moment. Saves others in a queue.
+
+## Parameters
+
+**Dimensions**: The user can choose whether they want to run the algorithm in 2D or 3D.
+
+**Debugging**: Outputs internal data describing at where the algorithm is at that point. (ONLY USE IF ALGORITHM CRASHES)
+
+**Verbose**: Outputs more global information, i.e. when the algorithm has found a new best score.
+
+**Progressbar**: Displays a progressbar while running.
+
+**State History**: Allows the algorithm to save previous states to enable the user to animate the algorithm.
+
+**Max Iterations**: Caps the amount of iterations the algorithm is allowed to run for.
+
+### DepthFirst Heuristics: Only available in the DepthFirst algorithm
+
+**MinimiseDimensions**: Nudges the algorithm in directions where the overall dimensions of the protein are kept as small as possible.
+
+**PotentialPlus**: Nudges the algorithm in directions where hydrophobic nodes are kept together and polar nodes are placed further away.
+
+**FoldAmount**: Nudges the algorithm in directions where the protein makes the most amount of 90 degree folds.
