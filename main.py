@@ -135,7 +135,8 @@ def main():
     print(f"\n\nFinal score: {score}")
 
     # Visualisation??
-    plot_protein(protein, filename=f"./experiments/output/{algorithm.name}_len{len(protein)}_score{protein.get_bond_score()}.png")
+    plot_protein(protein, filename=f"./experiments/output/{algorithm.name}"
+                                   f"_len{len(protein)}_score{protein.get_bond_score()}.png")
 
 
 if __name__ == '__main__':
