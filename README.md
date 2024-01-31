@@ -5,7 +5,7 @@ Jarec Schouten, Joël van Ingen & Wolf Gautier
 
 
 ## Run
-By running main.py, there is a small UI that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
+By running main.py, there is a small UI in the terminal that allows the user to enter a sequence and select an algorithm alongside paramaters and heuristcs.
 More information on these parameters and heuristics is read below.
 
 ## Separate Experiments (milestone)
@@ -55,6 +55,8 @@ To run timed tests on (i.e. simulated annealing) algorithm: run experiments/iter
 
 
 ## Voorbeeld Run
+
+De UI in the terminal looks as followed:
 ```
 /Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/.venv/bin/python /Users/jarecs/Documents/MinorProgramming/AH/MinProg-AH/main.py 
 Enter sequence: PPCHHPPCHPPPPCHHHHCHHPPHHPPPPHHPPHPP
@@ -89,5 +91,12 @@ Final score: -19
 
 Process finished with exit code 0
 ```
+Once this is run, the user will be able to find a plot of the protein in the `./experiments/output` folder.
 
-## Laat plotje zien
+
+<div align="center">
+<figure>
+    <img src="./trophies/presentationPlots/evaluate_DepthFirst_len36_dim2_a0.5_b12.png" width="425" height="300">
+    <figcaption>Output DepthFirst Algorithm</figcaption>
+</figure>
+</div>
