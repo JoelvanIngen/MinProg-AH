@@ -13,31 +13,45 @@ class QueueEmptyError(Exception):
 
 
 class StateQueue:
-    def __init__(self):
-        self.scores: list[int] = [0]
-        self.states: list[list[int]] = [[1]]
+    def __init__(self, scoring_param: float):
+        self.states: list[list[list[int]]] = [[[1]]]
+
+        self.scoring_param = scoring_param
 
     def get_highest_score_state(self) -> list[int]:
         """
         Finds and returns state with the highest score so far
         """
-        if len(self.scores) == 0:
-            assert len(self.states) == 0
+        if len(self.states) == 0:
             raise QueueEmptyError
 
-        min_score = min(self.scores)
-        idx = self.scores.index(min_score)
+        state = self.states[-1].pop(0)
+        return state
 
-        self.scores.pop(idx)
-        return self.states.pop(idx)
+    def purge_empty_scores(self) -> None:
+        while not self.states[-1]:
+            del self.states[-1]
 
     def push(self, order: list[int], score: int) -> None:
-        self.scores.append(score)
-        self.states.append(order)
+        score = -score
+
+        # Apply penalty
+        depth = len(order)
+        score -= int(depth * self.scoring_param)
+
+        # Ensure score is positive
+        score = max(score, 0)
+
+        while len(self.states) - 1 < score:
+            self.states.append([])
+
+        # print(score, len(self.states), self.states)
+
+        self.states[score].append(order)
 
 
 class BeamSearch(Algorithm):
-    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, **kwargs):
+    def __init__(self, protein: 'Protein', dimensions: int, max_iterations: int = 5000, scoring_param=0, **kwargs):
         super().__init__(protein, dimensions, **kwargs)
 
         self._iteration = 0
@@ -49,7 +63,7 @@ class BeamSearch(Algorithm):
         self.end_nodes_evaluated = 0
         self.amount_of_best_found = 0
 
-        self.queue = StateQueue()
+        self.queue = StateQueue(scoring_param=scoring_param)
 
         self.user_parameters = [('max_iterations', self.max_iterations)]
 
@@ -123,6 +137,7 @@ class BeamSearch(Algorithm):
 
         # Start at first node after root node
         for iteration in range(self.max_iterations):
+            self.queue.purge_empty_scores()
             try:
                 order = self.get_best_order()
             except QueueEmptyError:
@@ -135,5 +150,8 @@ class BeamSearch(Algorithm):
         if self.verbose:
             print(f"Best order: {self.best_order}")
 
-        self.protein.set_order(self.best_order)
+        try:
+            self.protein.set_order(self.best_order)
+        except AssertionError:
+            pass
         return self.best_score

@@ -1,15 +1,16 @@
 import cProfile
+import numpy as np
 from experiments_helper import create_experiment_folders, generate_realistic_sequence
 from protein_folding.protein import Protein
 from protein_folding.algorithms import BeamSearch
 from protein_folding.algorithms.heuristics import *
 
-N_ITERATIONS = 100000
-N_DIMENSIONS = 2
+N_ITERATIONS = 50000
+N_DIMENSIONS = 3
 
 USE_RANDOM_SEQUENCE = False
 RANDOM_SEQUENCE_LENGTH = 30
-CUSTOM_SEQUENCE = "HHPHHHPHPHHHPH"
+CUSTOM_SEQUENCE = "HCPHPHPHCHHHHPCCPPHPPPHPPPPCPPPHPPPHPHHHHCHPHPHPHH"
 PLOT_BEST = True
 ANIMATE_SEARCH = False
 
@@ -28,12 +29,15 @@ def main():
         sequence = CUSTOM_SEQUENCE
     print(f"Using sequence {sequence}")
 
-    protein = Protein(sequence)
-    algorithm = BeamSearch(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
-                             debug=True, keep_score_history=True,
-                             keep_order_history=ANIMATE_SEARCH, show_progressbar=True)
+    for i in np.arange(0.2, 0.4, 0.02):
+        protein = Protein(sequence)
+        algorithm = BeamSearch(protein, dimensions=N_DIMENSIONS, max_iterations=N_ITERATIONS,
+                               debug=False, verbose=False, keep_score_history=True,
+                               keep_order_history=ANIMATE_SEARCH, show_progressbar=True, scoring_param=i)
 
-    score = algorithm.run()
+        score = algorithm.run()
+        print(f"Parameter: {round(i, 2)}: Score: {score}")
+
     print(f"Sequence: {sequence}")
     print(f"Score: {score}")
 
