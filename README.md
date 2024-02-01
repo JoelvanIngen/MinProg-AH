@@ -4,7 +4,7 @@ Jarec Schouten, Joël van Ingen & Wolf Gautier
 
 <div align="center">
 <figure>
-    <img src="./trophies/atest-cropped2.gif" height="439">
+    <img src="./trophies/atest-cropped2.gif" height="420">
     <h4></h4>
     <figcaption>A sample 3D protein fold.</figcaption>
 </figure>
