@@ -1,3 +1,9 @@
 matplotlib
 numpy
 tqdm
+random
+torch
+mayavi
+PyQt5
+ast
+datetime

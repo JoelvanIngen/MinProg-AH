@@ -14,11 +14,23 @@ def collate_fn(batch):
     sequences, coordinates, scores = zip(*batch)
     
     # Pad sequences to the length of the longest sequence
-    padded_sequences = pad_sequence(sequences, batch_first=True, padding_value=3)
+    padded_sequences = pad_sequence(sequences, batch_first=True, padding_value=0)
     padded_coordinates = pad_sequence(coordinates, batch_first=True, padding_value=1.)
 
     return padded_sequences, padded_coordinates
 
+
+def collate_fn_order(batch):
+    # Sort the batch by sequence length (in descending order)
+    batch.sort(key=lambda x: len(x[0]), reverse=True)
+
+    sequences, coordinates, scores = zip(*batch)
+    
+    # Pad sequences to the length of the longest sequence
+    padded_sequences = pad_sequence(sequences, batch_first=True, padding_value=3)
+    padded_order = pad_sequence(coordinates, batch_first=True, padding_value=0)
+
+    return padded_sequences, padded_order
 
 def collate_fn_with_score(batch):
     # Sort the batch by sequence length (in descending order)

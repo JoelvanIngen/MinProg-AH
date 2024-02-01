@@ -27,7 +27,6 @@ class SimulatedAnnealing(Algorithm):
 
     def get_permutated_directions(self, node_idx: int):
         """
-        TODO: should be implemented within protein
         A function to obtain a set of directions that differs from the current
         protein ordering starting from a direction change at node [node_idx].
         The returned directions are an ordering of the same sequence as
